@@ -1,0 +1,6 @@
+# fig5 panel e -- fig5.py  |  multivariate distance from a never-engaged site; null over 2,000 label shuffles
+chemotypes,n_sites,observed_distance,null_distance
+1,1529,0.491,0.12
+2-3,624,0.913,0.183
+4-5,142,1.215,0.369
+>=6,82,2.65,0.487

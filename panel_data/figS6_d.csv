@@ -1,0 +1,4 @@
+# figS6 panel d -- figS6.py  |  intervals are the 2.5th to 97.5th percentile over the protein-held-out splits
+fit,auc,ci_lo,ci_hi
+training,0.619,0.613,0.624
+held-out proteins,0.617,0.594,0.64

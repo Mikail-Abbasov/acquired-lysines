@@ -1,0 +1,4 @@
+# figS3 panel a -- figS3.py  |  clonality control
+group,clonal_pct,n
+both detected,11.11111111111111,27
+mutant only,26.923076923076923,26

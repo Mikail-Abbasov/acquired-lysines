@@ -1,0 +1,6 @@
+# figS9 panel d -- figS9.py  |  what one-site-per-protein does to the excess; 20 draws, step 28b
+arm,design,ratio_to_control
+A  both sides at CB,every site,1.3926829268292682
+A  both sides at CB,one site per protein,1.2032495410349306
+"B  both sides modelled, NZ",every site,1.6163141993957704
+"B  both sides modelled, NZ",one site per protein,1.2909198094727306

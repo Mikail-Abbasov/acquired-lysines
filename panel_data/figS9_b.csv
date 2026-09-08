@@ -1,0 +1,6 @@
+# figS9 panel b -- figS9.py  |  each arm's acquired-vs-engaged distance divided by its own control
+arm,slug,mismatched,d_union_engaged,d_control,ratio_to_control
+A  both sides at CB (the plan),cb,False,0.570628927957859,0.4103807510705463,1.3904865822026955
+"B  both sides modelled, at NZ",nz,False,0.5353764689261222,0.3310804715238686,1.617058434349624
+"D  both sides at CB, symmetric convention",cb_symmetric,False,0.5826889041669696,0.4069043613885699,1.4320045678019553
+C  MISMATCHED: union CB vs measured NZ,mismatched,True,2.256082303600889,0.329818926375501,6.840366404662672

@@ -1,0 +1,5 @@
+# figS4 panel d -- figS4.py  |  identifications across all experiments, and those surviving the score margin
+category,n_all,n_above_margin
+downstream target,58,25
+boundary control,2,0
+entrapment,0,0

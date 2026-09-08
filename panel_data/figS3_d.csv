@@ -1,0 +1,6 @@
+# figS3 panel d -- figS3.py  |  effect on identification
+feature,standardised_effect
+"histidine (basic, not a cleavage site)",-0.22
+C-terminal K/R (every tryptic peptide),-0.004
+internal K/R (missed cleavages),-0.621
+"basic centres, all",-0.584

@@ -1,0 +1,222 @@
+{
+ "CRISPRGeneEffect.csv": {
+  "kind": "external",
+  "source": "DepMap Public 26Q1",
+  "where": "depmap.org/portal/download"
+ },
+ "CRISPRInferredCommonEssentials.csv": {
+  "kind": "external",
+  "source": "DepMap Public 26Q1",
+  "where": "depmap.org/portal/download"
+ },
+ "CyMPSA": {
+  "kind": "external",
+  "source": "Ryan et al. 2024 JACS, SI site tables",
+  "where": "see manuscript references"
+ },
+ "MANE.GRCh38.v1.2": {
+  "kind": "external",
+  "source": "MANE Select v1.2",
+  "where": "ncbi.nlm.nih.gov/refseq/MANE"
+ },
+ "Meroterpenoid": {
+  "kind": "external",
+  "source": "Bracken et al. 2024 JACS, SI site tables",
+  "where": "see manuscript references"
+ },
+ "Model.csv": {
+  "kind": "external",
+  "source": "DepMap Public 26Q1",
+  "where": "depmap.org/portal/download"
+ },
+ "NatChem": {
+  "kind": "external",
+  "source": "Abbasov et al. 2021 Nat Chem, SI site tables",
+  "where": "see manuscript references"
+ },
+ "OmicsExpressionTPMLogp1HumanProteinCodingGenes.csv": {
+  "kind": "external",
+  "source": "DepMap Public 26Q1",
+  "where": "depmap.org/portal/download"
+ },
+ "OmicsSomaticMutations.csv": {
+  "kind": "external",
+  "source": "DepMap Public 26Q1",
+  "where": "depmap.org/portal/download"
+ },
+ "SMILES.xlsx": {
+  "kind": "external",
+  "source": "Abbasov 2021 Nat Chem; Bracken 2024 JACS; Ryan 2024 JACS -- SI compound tables, redistributed here with citation",
+  "where": "see manuscript references"
+ },
+ "Table_S1_Sample_Information.xlsx": {
+  "kind": "external",
+  "source": "Nusinow et al. 2020 Table S1",
+  "where": "doi.org/10.1016/j.cell.2019.12.023"
+ },
+ "cmc_export.tsv": {
+  "kind": "external",
+  "source": "COSMIC Cancer Mutation Census v103",
+  "where": "cancer.sanger.ac.uk/cmc"
+ },
+ "dbNSFP5.4a": {
+  "kind": "external",
+  "source": "dbNSFP 5.4a",
+  "where": "database.liulab.science/dbNSFP"
+ },
+ "gdc_barcode_project.csv": {
+  "kind": "external",
+  "source": "GDC sample-to-project barcode map",
+  "where": "portal.gdc.cancer.gov"
+ },
+ "gnomad.exomes.r2.1.1.non_cancer": {
+  "kind": "external",
+  "source": "gnomAD v2.1.1 non-cancer exomes",
+  "where": "gnomad.broadinstitute.org"
+ },
+ "gnomad.joint.v4.1": {
+  "kind": "external",
+  "source": "gnomAD v4.1 joint",
+  "where": "gnomad.broadinstitute.org"
+ },
+ "harmonized_MS_CCLE_Gygi.csv": {
+  "kind": "external",
+  "source": "Nusinow et al. 2020 Table S2",
+  "where": "doi.org/10.1016/j.cell.2019.12.023"
+ },
+ "mc3.v0.2.8.PUBLIC.maf": {
+  "kind": "external",
+  "source": "TCGA MC3 v0.2.8-PUBLIC",
+  "where": "gdc.cancer.gov/about-data/publications/mc3-2017"
+ },
+ "uniprot_annotation.tsv": {
+  "kind": "external",
+  "source": "UniProt release used at analysis time",
+  "where": "uniprot.org"
+ },
+ "uniprot_entrap_decoy.txt": {
+  "kind": "external",
+  "source": "FDRBench v1.1.1",
+  "where": "github.com/Noble-Lab/FDRBench"
+ },
+ "uniprot_entrapment_pep.fasta": {
+  "kind": "external",
+  "source": "FDRBench v1.1.1",
+  "where": "github.com/Noble-Lab/FDRBench"
+ },
+ "uniprot_gene_map.tsv": {
+  "kind": "external",
+  "source": "UniProt release used at analysis time",
+  "where": "uniprot.org"
+ },
+ "uniprot_hugo_entrez_id_mapping.csv": {
+  "kind": "external",
+  "source": "UniProt / HGNC / Entrez cross-reference",
+  "where": "uniprot.org"
+ },
+ "uniprot_keyword_categories.tsv": {
+  "kind": "external",
+  "source": "UniProt release used at analysis time",
+  "where": "uniprot.org"
+ },
+ "acquired_K_searched_vs_detected.csv": {
+  "kind": "deposited intermediate",
+  "note": "per-site searched/detected table for acquired lysines",
+  "path": "ccle_plex05/acquired_K_searched_vs_detected.csv"
+ },
+ "depmap_variants_annotated.parquet": {
+  "kind": "deposited intermediate",
+  "note": "annotated DepMap variant table (46 MB)",
+  "path": "ccle_plex05/depmap_variants_annotated.parquet"
+ },
+ "fdp_p2.csv": {
+  "kind": "deposited intermediate",
+  "note": "plex-2 q-value vs entrapment curve (9.5 MB)",
+  "path": "ccle_plex05/fdp_p2.csv"
+ },
+ "features_final_full.csv": {
+  "kind": "deposited intermediate",
+  "note": "per-site structural features, ungated (11 MB)",
+  "path": "ligand_rebuild/features_final_full.csv"
+ },
+ "fig3_deltamass.csv": {
+  "kind": "deposited intermediate",
+  "note": "precursor mass errors, cached from the PSM tables (97 MB)",
+  "path": "ccle_plex05/fig3_deltamass.csv"
+ },
+ "fig3_margins.csv": {
+  "kind": "deposited intermediate",
+  "note": "per-peptide score margins, cached from the PSM tables",
+  "path": "ccle_plex05/fig3_margins.csv"
+ },
+ "hits62.tsv": {
+  "kind": "deposited intermediate",
+  "note": "per-PSM detail for the acquired-lysine detections",
+  "path": "ccle_plex05/hits62.tsv"
+ },
+ "mc3_bysample.tsv": {
+  "kind": "deposited intermediate",
+  "note": "MC3 per-sample table (34 MB)",
+  "path": "ligand_rebuild/superseded/mc3_bysample.tsv"
+ },
+ "mc3_nt.tsv": {
+  "kind": "deposited intermediate",
+  "note": "MC3 nucleotide-level table (31 MB)",
+  "path": "ligand_rebuild/superseded/mc3_nt.tsv"
+ },
+ "proteomics_subset.csv": {
+  "kind": "deposited intermediate",
+  "note": "the 375-line CCLE proteomic subset (61 MB)",
+  "path": "Datasets/pipeline_out/proteomics_subset.csv"
+ },
+ "region_compare_conv.tsv": {
+  "kind": "deposited intermediate",
+  "note": "per-site search outcome, conventional MANE database",
+  "path": "ccle_plex05/region_compare_conv.tsv"
+ },
+ "region_compare_pep.tsv": {
+  "kind": "deposited intermediate",
+  "note": "per-site search outcome, mutation-aware peptide database",
+  "path": "ccle_plex05/region_compare_pep.tsv"
+ },
+ "residue_flux_by_line.csv": {
+  "kind": "deposited intermediate",
+  "note": "per-line residue gain/loss counts",
+  "path": "Datasets/pandepmap_out/residue_flux_by_line.csv"
+ },
+ "sites_covalent_residues.csv": {
+  "kind": "deposited intermediate",
+  "note": "covalent-residue site table across DepMap (28 MB)",
+  "path": "ccle_plex05/sites_covalent_residues.csv"
+ },
+ "step10_roc_pooled.csv": {
+  "kind": "deposited intermediate",
+  "note": "pooled ROC of the ligandability composite",
+  "path": "ligand_rebuild/step10_roc_pooled.csv"
+ },
+ "step10_roc_splits.csv": {
+  "kind": "deposited intermediate",
+  "note": "per-split ROC band of the ligandability composite",
+  "path": "ligand_rebuild/step10_roc_splits.csv"
+ },
+ "step27_modnz_measured.csv": {
+  "kind": "deposited intermediate",
+  "note": "measured lysine NZ positions (2.3 MB)",
+  "path": "ligand_rebuild/step27_modnz_measured.csv"
+ },
+ "step27_modnz_union.csv": {
+  "kind": "deposited intermediate",
+  "note": "modelled NZ positions for union sites (9.0 MB)",
+  "path": "ligand_rebuild/step27_modnz_union.csv"
+ },
+ "step37_within_NatChem.csv": {
+  "kind": "deposited intermediate",
+  "note": "within-NatChem descriptor x site-preference correlations",
+  "path": "ligand_rebuild/step37_within_NatChem.csv"
+ },
+ "step43_enclosure.csv": {
+  "kind": "deposited intermediate",
+  "note": "per-site enclosure, from the AlphaFold models (4.3 MB)",
+  "path": "ligand_rebuild/step43_enclosure.csv"
+ }
+}

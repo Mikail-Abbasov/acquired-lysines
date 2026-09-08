@@ -1,0 +1,6 @@
+# figS4 panel a -- figS4.py  |  the four matched sets FDRBench builds per plex; one row per set
+peptide_type,n_peptides
+target,147397
+p_target,147397
+decoy,147397
+p_decoy,147397

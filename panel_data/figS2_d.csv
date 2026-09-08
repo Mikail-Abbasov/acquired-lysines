@@ -1,0 +1,4 @@
+# figS2 panel d -- figS2.py  |  PSM-weighted, the comparable pair
+group,missed_cleavage_pct,n_psms
+all identified peptides,21.6,12737437
+peptides carrying an acquired lysine,23.8,4584

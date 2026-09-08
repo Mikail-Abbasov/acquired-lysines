@@ -1,0 +1,46 @@
+# figS8 panel a -- figS8.py  |  each probe against unlabelled lysines, within protein; all 22 site features
+feature,label,probe,family,row,d,q,n_proteins,significant
+anionic_8A,anionic 8Å,anionic (STP),charge,0,-0.3496377795735846,1.7605539334721407e-26,1026,True
+anionic_8A,anionic 8Å,neutral (NASA),charge,0,-0.3086691647508106,2.4452741582080816e-20,1007,True
+propka_pKa,predicted pKa,anionic (STP),charge,1,-0.1574207409736464,2.4212930250692704e-06,1026,True
+propka_pKa,predicted pKa,neutral (NASA),charge,1,-0.1508560016638884,1.4430503554498411e-05,1007,True
+salt_bridge,salt bridge,anionic (STP),charge,2,-0.150384324905769,6.220114967694114e-06,1026,True
+salt_bridge,salt bridge,neutral (NASA),charge,2,-0.1349645559935704,0.0001122450146307,1007,True
+dist_nearest_pocket,dist. to pocket,anionic (STP),pocket,3,-0.0981793749663398,0.0054016040857282,1026,True
+dist_nearest_pocket,dist. to pocket,neutral (NASA),pocket,3,-0.0353649838384876,0.4808143361962914,1007,False
+plddt_8A,plddt 8Å,anionic (STP),shape,4,-0.0573293763984922,0.1644251969781202,1022,False
+plddt_8A,plddt 8Å,neutral (NASA),shape,4,0.0695134826677443,0.0686499626854484,1002,False
+sasa_sidechain,side-chain exp.,anionic (STP),shape,5,-0.0370666366856178,0.4319634921651138,1026,False
+sasa_sidechain,side-chain exp.,neutral (NASA),shape,5,0.0195566303694376,0.7187256721122652,1007,False
+dist_centroid,dist. to centroid,anionic (STP),shape,6,-0.0262725438508524,0.6102830343556758,1026,False
+dist_centroid,dist. to centroid,neutral (NASA),shape,6,-0.0316921515167004,0.5331517852735085,1007,False
+rsa_tien,exposure,anionic (STP),shape,7,-0.0249264075913827,0.6102830343556758,1026,False
+rsa_tien,exposure,neutral (NASA),shape,7,0.0106637947210961,0.7702736795207973,1007,False
+pocket_drugscore,pocket drugscore,anionic (STP),pocket,8,-0.0214243300577134,0.6102830343556758,1026,False
+pocket_drugscore,pocket drugscore,neutral (NASA),pocket,8,-0.0145801338791725,0.7598785569063837,1007,False
+crowding_8A,crowding 8Å,anionic (STP),shape,9,-0.0126498589120364,0.7938145314901353,1026,False
+crowding_8A,crowding 8Å,neutral (NASA),shape,9,0.0074808266381955,0.8124932068808178,1007,False
+polar_8A,polar 8Å,anionic (STP),shape,10,-0.0109364325253995,0.7989388641066165,1026,False
+polar_8A,polar 8Å,neutral (NASA),shape,10,0.0759697342811022,0.0444126316566009,1007,True
+pocket_volume,pocket volume,anionic (STP),pocket,11,-0.0054015151209315,0.9038211204289552,1026,False
+pocket_volume,pocket volume,neutral (NASA),pocket,11,-0.012943996412525,0.7598785569063837,1007,False
+plddt_site,plddt site,anionic (STP),shape,12,0.0028102731772519,0.9283265330690652,1026,False
+plddt_site,plddt site,neutral (NASA),shape,12,0.0915129978412121,0.0138673100016537,1007,True
+atoms_10A,atoms 10Å,anionic (STP),shape,13,0.0211083271034767,0.6102830343556758,1026,False
+atoms_10A,atoms 10Å,neutral (NASA),shape,13,0.0217620761448655,0.7187256721122652,1007,False
+n_lys_8A,nearby lysines 8Å,anionic (STP),charge,14,0.0229502991552327,0.6102830343556758,1026,False
+n_lys_8A,nearby lysines 8Å,neutral (NASA),charge,14,-0.0200931700765802,0.7187256721122652,1007,False
+pocket_score,pocket score,anionic (STP),pocket,15,0.0256311395799096,0.6102830343556758,1026,False
+pocket_score,pocket score,neutral (NASA),pocket,15,-0.0185990920989509,0.7187256721122652,1007,False
+nz_sasa,NZ exposure,anionic (STP),shape,16,0.0388402518341339,0.4279397792122164,1026,False
+nz_sasa,NZ exposure,neutral (NASA),shape,16,0.0591564305618199,0.1218084340039783,1007,False
+hydrophobic_8A,hydrophobic 8Å,anionic (STP),shape,17,0.0509325116803988,0.2272035926491638,1026,False
+hydrophobic_8A,hydrophobic 8Å,neutral (NASA),shape,17,0.0830689238094866,0.0268702050293276,1007,True
+in_pocket,in pocket,anionic (STP),pocket,18,0.0950390249263977,0.0066113062486075,1026,True
+in_pocket,in pocket,neutral (NASA),pocket,18,0.0125446801361849,0.7598785569063837,1007,False
+cationic_8A,cationic 8Å,anionic (STP),charge,19,0.1719814716868099,2.550452519058267e-07,1026,True
+cationic_8A,cationic 8Å,neutral (NASA),charge,19,-0.0603551839246632,0.1218084340039783,1007,False
+aromatic_8A,aromatic 8Å,anionic (STP),shape,20,0.2629530278273712,9.319306241758114e-16,1026,True
+aromatic_8A,aromatic 8Å,neutral (NASA),shape,20,0.0996184958747685,0.0071576261872408,1007,True
+net_charge_8A,net charge 8Å,anionic (STP),charge,21,0.3890178924590831,6.470170479828363e-32,1026,True
+net_charge_8A,net charge 8Å,neutral (NASA),charge,21,0.1890904790907027,3.0707081601051166e-08,1007,True

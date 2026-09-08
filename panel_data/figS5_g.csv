@@ -1,0 +1,8 @@
+# figS5 panel g -- figS5.py  |  binned medians of the scatter; the gate keeps sites at pLDDT >= 90
+plddt_band_low,plddt_band_high,plddt_band_mid,n_sites,median_max_occupancy
+20,50,35.0,109,65.39792387543253
+50,70,60.0,178,68.89572570190205
+70,80,75.0,175,69.5852534562212
+80,90,85.0,601,69.41896024464832
+90,95,92.5,806,69.1358024691358
+95,100,97.5,1178,69.33696616739208

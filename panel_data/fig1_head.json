@@ -1,0 +1,54 @@
+{
+ "script": "fig1.py",
+ "written": "2026-09-07",
+ "numbers": {
+  "a_all_missense": 4395403,
+  "a_genes": 20365,
+  "a_multi_source": 93769,
+  "a_union_K": 295411,
+  "c_bands": {
+   "absent": 154188,
+   "lt_1e-5": 96892,
+   "1e-5_1e-4": 19194,
+   "1e-4_1e-3": 3297,
+   "gt_1e-3": 1971,
+   "not_assessed": 19869
+  },
+  "c_pct_not_assessed": 6.725883599459736,
+  "c_pct_somatic_of_assessed": 91.12222456104695,
+  "d_OR": 1.675091104755484,
+  "d_n_K": 19239,
+  "d_n_other": 311166,
+  "d_p": 1.272465548049287e-10,
+  "d_pct_driver_K": 1.0239617443734081,
+  "d_pct_driver_other": 0.6138202759941639,
+  "e_n_driver_K": 315,
+  "e_n_driver_other": 3465,
+  "e_sig_K": {
+   "UV": 23.49,
+   "MSI": 20.63,
+   "POLE": 15.24,
+   "APOBEC": 8.25,
+   "smoking": 18.73,
+   "CpG": 10.48
+  },
+  "e_sig_other": {
+   "UV": 9.64,
+   "MSI": 6.29,
+   "POLE": 6.0,
+   "APOBEC": 4.27,
+   "smoking": 26.15,
+   "CpG": 28.2
+  },
+  "f_SKCM": 39.0,
+  "f_SKCM_fold": 13.0,
+  "f_UVM": 0.0,
+  "f_n_lineages": 32,
+  "g_fold": 2.0428292356263755,
+  "g_germ_nc_pct": 3.41,
+  "g_germ_nc_per_individual": 508.0,
+  "g_germ_pct": 3.29,
+  "g_germ_per_individual": 471.1,
+  "g_som_pct": 6.720908185210776
+ }
+}

@@ -1,0 +1,4 @@
+# fig2 panel b -- fig2.py  |  gate 1, both architectures
+search,covered,observations,pct
+"conventional 20,431-protein MANE",640,8470,7.556080283353011
+mutation-aware 10.17M peptide,617,8470,7.284533648170012

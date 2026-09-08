@@ -1,0 +1,4 @@
+# figS8 panel c -- figS8.py  |  the same data, pooled and within protein; the sign reverses
+design,feature,d,n_labelled,n_unlabelled,n_proteins
+pooled across sites,enclosure,-0.031648583413515785,25979,141078,
+within protein,enclosure,0.072915557405237,,,3836

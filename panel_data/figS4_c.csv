@@ -1,0 +1,14 @@
+# figS4 panel c -- figS4.py  |  C-terminal residue composition; one row per bar
+cterm_residue,series,pct
+R,target,49.97184474582251
+R,entrapment,49.97184474582251
+K,target,47.043698311363194
+K,entrapment,47.043698311363194
+L,target,0.41656207385496313
+L,entrapment,0.41656207385496313
+S,target,0.34736120816570215
+S,entrapment,0.34736120816570215
+P,target,0.227955792858742
+P,entrapment,0.227955792858742
+T,target,0.1960691194529061
+T,entrapment,0.1960691194529061

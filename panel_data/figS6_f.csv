@@ -1,0 +1,15 @@
+# figS6 panel f -- figS6.py  |  one point per feature; the two chemotypes' effects against each other
+feature,effect_cympsa,effect_meroterpenoid,same_direction,q
+anionic_8A,-0.03,-0.32,True,0.258
+net_charge_8A,-0.004,0.299,False,0.258
+hydrophobic_8A,0.157,-0.045,False,0.636
+rsa_tien,-0.079,0.056,False,0.736
+sasa_sidechain,-0.073,0.078,False,0.736
+aromatic_8A,0.075,0.223,True,0.736
+atoms_10A,0.096,0.006,True,0.781
+polar_8A,0.012,0.1,True,0.781
+plddt_site,0.042,0.18,True,0.781
+nz_sasa,-0.016,0.054,False,0.8
+crowding_8A,0.058,-0.004,False,0.811
+propka_pKa,-0.139,-0.091,True,0.83
+dist_centroid,0.029,0.053,True,0.873

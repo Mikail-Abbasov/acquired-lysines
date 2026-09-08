@@ -1,0 +1,10 @@
+# figS9 panel c -- figS9.py  |  fraction of each population inside the region holding 90% of engaged lysines
+arm,slug,population,pct_inside_90_region
+A  both sides at CB (the plan),cb,acquired union,82.06287751704608
+A  both sides at CB (the plan),cb,"labelled, not engaged",88.7023560775272
+"B  both sides modelled, at NZ",nz,acquired union,83.4240813377374
+"B  both sides modelled, at NZ",nz,"labelled, not engaged",92.3445493191152
+"D  both sides at CB, symmetric convention",cb_symmetric,acquired union,82.20414430222957
+"D  both sides at CB, symmetric convention",cb_symmetric,"labelled, not engaged",88.75639455292168
+C  MISMATCHED: union CB vs measured NZ,mismatched,acquired union,63.02485632825407
+C  MISMATCHED: union CB vs measured NZ,mismatched,"labelled, not engaged",91.61683118380289

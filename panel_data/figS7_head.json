@@ -1,0 +1,45 @@
+{
+ "script": "figS7.py",
+ "written": "2026-09-07",
+ "numbers": {
+  "a_n_compounds_pooled": 82,
+  "a_n_compounds_slopes": 173,
+  "a_n_compounds_within_natchem": 62,
+  "a_n_descriptors": 6,
+  "a_n_descriptors_with_hits": 3,
+  "a_n_pairs_significant_pooled": 21,
+  "a_n_pairs_slopes": 72,
+  "a_n_pairs_tested": 84,
+  "a_n_pairs_within_natchem": 84,
+  "a_n_significant_slopes": 0,
+  "a_n_significant_within_natchem": 0,
+  "a_pairs_by_descriptor": {
+   "MW": 8,
+   "volume": 7,
+   "logP": 6
+  },
+  "b_n_compounds": 173,
+  "b_n_features": 12,
+  "b_n_features_not_strengthening": 2,
+  "b_n_features_strengthening": 10,
+  "c_n_features": 15,
+  "c_n_significant_max_occ": 12,
+  "c_n_significant_mean_occ": 14,
+  "c_n_significant_sum_occ_norm": 15,
+  "d_n_deciles": 10,
+  "d_n_features": 5,
+  "e_cuts_not_monotonic": [
+   40,
+   80
+  ],
+  "e_n_cuts": 5,
+  "e_n_cuts_not_monotonic": 2,
+  "e_smallest_group_n": 25,
+  "f_between_compound_npr1_sd": 0.123,
+  "f_charge_max_abs_rho": 0.193,
+  "f_chirality_reembedded_max_dnpr1": 0.281,
+  "f_chirality_reflected_max_dnpr1": 0.0,
+  "f_mw_median_abs_rho": 0.552,
+  "f_n_descriptors": 10
+ }
+}

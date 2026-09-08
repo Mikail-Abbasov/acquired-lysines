@@ -1,0 +1,20 @@
+{
+ "script": "figS8.py",
+ "written": "2026-09-07",
+ "numbers": {
+  "a_n_features": 22,
+  "a_n_proteins_anionic": 1026,
+  "a_n_proteins_neutral": 1007,
+  "a_n_significant_anionic": 8,
+  "a_n_significant_neutral": 8,
+  "a_n_sites_anionic_only": 4612,
+  "a_n_sites_neutral_only": 4574,
+  "b_n_sites": 167057,
+  "b_spearman_rho": -0.862,
+  "b_variance_shared_pct": 74.3,
+  "c_enclosure_d_pooled": -0.032,
+  "c_enclosure_d_within_protein": 0.073,
+  "d_cationic_d_neutral_assumption": 0.233,
+  "d_cationic_d_partly_ionised_bound": 0.46
+ }
+}

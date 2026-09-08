@@ -1,0 +1,26 @@
+{
+ "script": "fig7.py",
+ "written": "2026-09-07",
+ "numbers": {
+  "a_n_both": 12298,
+  "a_n_nasa_only": 5851,
+  "a_n_proteins_with_both": 383,
+  "a_n_stp_only": 6294,
+  "b_cationic_8A_d": 0.233,
+  "b_cationic_8A_q": "1.6e-04",
+  "b_n_features": 22,
+  "b_n_pocket": 5,
+  "b_n_pocket_significant": 0,
+  "b_n_shape": 9,
+  "b_n_shape_significant": 0,
+  "b_n_significant": 2,
+  "b_net_charge_8A_d": 0.18,
+  "b_net_charge_8A_q": "5.2e-03",
+  "b_next_largest_d": 0.118,
+  "b_next_largest_feature": "aromatic_8A",
+  "e_enclosure_probe_d": 0.019,
+  "e_enclosure_probe_q": 0.71,
+  "e_enclosure_site_d": 0.073,
+  "e_enclosure_site_q": "1.1e-05"
+ }
+}

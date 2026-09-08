@@ -1,0 +1,4 @@
+# figS8 panel d -- figS8.py  |  a sensitivity range, not a confidence interval; the upper endpoint is assumed
+assumption,quantity,lo,hi,kind
+NASA neutral (assumed),cationic_8A d,0.2330066901603175,0.2330066901603175,"measured probe contrast, step 22"
+NASA partly ionised,cationic_8A d,0.2330066901603175,0.46,"sensitivity range across assumed ionisation states, not a confidence interval"

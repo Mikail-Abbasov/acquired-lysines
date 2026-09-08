@@ -1,0 +1,13 @@
+# figS6 panel a -- figS6.py  |  one point per dataset per split depth; intervals over 50 random half-splits
+dataset,compounds_per_half,sites,engaged_pct,ceiling_auc,ci_lo,ci_hi,median_compounds_per_site
+CyMPSA,2.0,24443,1.0,0.884,0.853,0.905,10
+CyMPSA,3.0,14118,1.6,0.881,0.853,0.907,10
+CyMPSA,5.0,14118,2.3,0.926,0.916,0.939,10
+Meroterpenoid,2.0,9264,0.6,0.922,0.864,0.962,10
+Meroterpenoid,3.0,5713,1.0,0.921,0.885,0.961,10
+Meroterpenoid,5.0,4985,1.5,0.938,0.914,0.957,10
+NatChem,2.0,14003,1.0,0.628,0.582,0.686,41
+NatChem,3.0,13887,1.5,0.636,0.6,0.674,41
+NatChem,5.0,12103,2.6,0.66,0.628,0.689,41
+NatChem,10.0,9556,4.7,0.691,0.661,0.721,41
+NatChem,20.0,7203,7.8,0.723,0.706,0.744,41

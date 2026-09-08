@@ -1,0 +1,6 @@
+# figS2 panel c -- figS2.py  |  missed / (missed + cleaved) among identified peptides, split by first basic residue
+first_basic_residue,weighting,missed_cleavage_pct,n
+K,PSM-weighted,15.0,6908108
+K,distinct sequences,23.6,145813
+R,PSM-weighted,29.4,5829329
+R,distinct sequences,37.0,144094

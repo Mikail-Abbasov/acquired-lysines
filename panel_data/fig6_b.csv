@@ -1,0 +1,16 @@
+# fig6 panel b -- fig6.py  |  engaged vs the same compound's below-cut sites, standardised within compound
+feature,shift_sd,sd,n_compounds,q,consistent
+propka_pKa,-0.389,0.317,84,2.99e-17,True
+hydrophobic_8A,0.321,0.345,84,2.07e-12,True
+atoms_10A,0.302,0.332,84,3.89e-12,True
+crowding_8A,0.281,0.324,84,1.82e-11,True
+aromatic_8A,0.267,0.269,84,1.79e-13,True
+polar_8A,0.228,0.254,84,5.89e-12,True
+sasa_sidechain,-0.216,0.275,84,4.52e-10,True
+dist_centroid,-0.206,0.173,84,5.85e-17,True
+rsa_tien,-0.202,0.264,84,8.94e-10,True
+nz_sasa,-0.182,0.276,84,5.54e-08,True
+net_charge_8A,0.149,0.282,84,7.11e-06,True
+cationic_8A,0.103,0.242,84,0.000244,True
+anionic_8A,-0.092,0.237,84,0.000654,True
+n_lys_8A,0.038,0.209,84,0.0972,False

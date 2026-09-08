@@ -1,0 +1,7 @@
+# figS5 panel e -- figS5.py  |  one pair of bars per feature, unadjusted and mutually adjusted
+feature,coef_alone,coef_adjusted
+anionic_8A,-0.225580295897683,-0.137146122594335
+salt_bridge,-0.1495547832269772,-0.0436254434721454
+propka_pKa,-0.109100443219759,-0.0349473175845303
+cationic_8A,-0.0146716166543557,-0.0417346533643256
+net_charge_8A,0.1578773429669812,0.0778407124750238

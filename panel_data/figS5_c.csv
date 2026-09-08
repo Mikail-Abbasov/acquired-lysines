@@ -1,0 +1,17 @@
+# figS5 panel c -- figS5.py  |  leave-one-out; the all-features value for each class is in the head ledger
+feature_class,feature_dropped,r_with_ligandability
+shape,crowding_8A,0.4502315993765584
+shape,atoms_10A,0.3949544281403243
+shape,hydrophobic_8A,0.28230862923007216
+shape,aromatic_8A,0.2361825651867166
+shape,polar_8A,0.4808641060620204
+shape,rsa_tien,0.3301621618994816
+shape,sasa_sidechain,0.36160140311789907
+shape,nz_sasa,0.47057002659810143
+shape,dist_centroid,0.09895234119406335
+charge,propka_pKa,0.9969634759678856
+charge,salt_bridge,0.98876845633878
+charge,net_charge_8A,0.9747935560002221
+charge,anionic_8A,0.9959867701021086
+charge,cationic_8A,0.9896375476365931
+charge,n_lys_8A,0.9898469860047983

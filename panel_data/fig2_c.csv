@@ -1,0 +1,4 @@
+# fig2 panel c -- fig2.py  |  gate 2, mutant-only route
+group,recovered,observations,pct
+region not covered,26,7853,0.33108366229466446
+region covered,27,617,4.376012965964343

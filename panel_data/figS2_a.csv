@@ -1,0 +1,6 @@
+# figS2 panel a -- figS2.py  |  one row per bar; the two gates have different denominators
+cls,gate,pct,n_events,n_denominator
+acquired lysine,gate 1: region covered,7.2845336481700125,617,8470
+other variant,gate 1: region covered,4.574132492113565,87,1902
+acquired lysine,gate 2: mutant recovered where covered,4.376012965964344,27,617
+other variant,gate 2: mutant recovered where covered,6.896551724137931,6,87

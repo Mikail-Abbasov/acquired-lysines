@@ -1,0 +1,8 @@
+# figS6 panel b -- figS6.py  |  AUC held out by protein; one row per single feature plus the composite
+feature,auc,ci_lo,ci_hi
+dist_centroid,0.598,0.375,0.625
+plddt_site,0.568,0.413,0.587
+propka_pKa,0.554,0.426,0.574
+hydrophobic_8A,0.551,0.426,0.574
+rsa_tien,0.544,0.433,0.567
+COMPOSITE (all 14),0.617,0.594,0.64

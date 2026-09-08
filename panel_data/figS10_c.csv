@@ -1,0 +1,50 @@
+# figS10 panel c -- figS10.py  |  four nested gates, the twelve models with the most sites clearing every gate
+cell_line,lineage,gate,sites
+COLO320,Bowel,acquired,45
+COLO320,Bowel,expressed,25
+COLO320,Bowel,protein detected,19
+COLO320,Bowel,dependency,4
+MDST8,Bowel,acquired,111
+MDST8,Bowel,expressed,39
+MDST8,Bowel,protein detected,17
+MDST8,Bowel,dependency,4
+NCIH23,Lung,acquired,71
+NCIH23,Lung,expressed,33
+NCIH23,Lung,protein detected,26
+NCIH23,Lung,dependency,4
+NCIH2110,Lung,acquired,96
+NCIH2110,Lung,expressed,43
+NCIH2110,Lung,protein detected,27
+NCIH2110,Lung,dependency,5
+HS695T,Skin,acquired,53
+HS695T,Skin,expressed,22
+HS695T,Skin,protein detected,14
+HS695T,Skin,dependency,5
+CAMA1,Breast,acquired,75
+CAMA1,Breast,expressed,49
+CAMA1,Breast,protein detected,38
+CAMA1,Breast,dependency,5
+REH,Lymphoid,acquired,68
+REH,Lymphoid,expressed,44
+REH,Lymphoid,protein detected,30
+REH,Lymphoid,dependency,6
+MCF7,Breast,acquired,47
+MCF7,Breast,expressed,27
+MCF7,Breast,protein detected,23
+MCF7,Breast,dependency,7
+NCIH1573,Lung,acquired,90
+NCIH1573,Lung,expressed,55
+NCIH1573,Lung,protein detected,39
+NCIH1573,Lung,dependency,9
+MDAMB453,Breast,acquired,93
+MDAMB453,Breast,expressed,48
+MDAMB453,Breast,protein detected,38
+MDAMB453,Breast,dependency,9
+JURKAT,Lymphoid,acquired,131
+JURKAT,Lymphoid,expressed,96
+JURKAT,Lymphoid,protein detected,59
+JURKAT,Lymphoid,dependency,15
+HEC59,Uterus,acquired,179
+HEC59,Uterus,expressed,118
+HEC59,Uterus,protein detected,95
+HEC59,Uterus,dependency,19

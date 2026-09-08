@@ -1,0 +1,8 @@
+# figS7 panel a -- figS7.py  |  step 37 pooled: one bar per compound descriptor, pairs clearing q < 0.05
+descriptor,pairs_significant,pairs_tested
+MW,8,14
+volume,7,14
+logP,6,14
+NPR1,0,14
+NPR2,0,14
+rodness,0,14

@@ -1,0 +1,97 @@
+{
+ "script": "figS1.py",
+ "written": "2026-09-07",
+ "numbers": {
+  "a_EK_share_pct": 4.12,
+  "a_EK_sites": 181252,
+  "a_pairs_observed": 363,
+  "a_total_subs": 4395403,
+  "b_EK_obs_over_exp": 1.116,
+  "b_top12": {
+   "E->K": 1.116,
+   "P->S": 0.974,
+   "A->T": 1.043,
+   "A->V": 1.017,
+   "P->L": 1.338,
+   "D->N": 0.992,
+   "R->Q": 3.156,
+   "S->F": 1.094,
+   "R->H": 3.588,
+   "R->C": 3.383,
+   "G->R": 0.936,
+   "L->F": 1.141
+  },
+  "c_band_pct": {
+   "absent": 52.19,
+   "lt_1e-5": 32.8,
+   "not_assessed": 6.73,
+   "1e-5_1e-4": 6.5,
+   "1e-4_1e-3": 1.12,
+   "gt_1e-3": 0.67
+  },
+  "d_C_gained": 211386,
+  "d_C_rank": 11,
+  "d_K_gained": 295411,
+  "d_K_rank": 4,
+  "d_gain_rank": [
+   "L",
+   "S",
+   "V",
+   "K",
+   "T",
+   "N",
+   "I",
+   "H",
+   "R",
+   "F",
+   "C",
+   "Q"
+  ],
+  "e_C_lost": 66703,
+  "e_C_net": 144683,
+  "e_K_lost": 164237,
+  "e_K_net": 131174,
+  "e_net_rank": [
+   "N",
+   "C",
+   "I",
+   "H",
+   "K",
+   "F"
+  ],
+  "f_allmis_by_class": {
+   "C>A": 19.25,
+   "C>G": 9.02,
+   "C>T": 51.08,
+   "T>A": 4.43,
+   "T>C": 10.67,
+   "T>G": 5.55
+  },
+  "f_gain_by_class": {
+   "C>A": 10.3,
+   "C>G": 1.02,
+   "C>T": 85.51,
+   "T>A": 2.23,
+   "T>C": 0.0,
+   "T>G": 0.94
+  },
+  "f_loss_by_class": {
+   "C>A": 29.8,
+   "C>G": 8.24,
+   "C>T": 0.0,
+   "T>A": 8.83,
+   "T>C": 23.08,
+   "T>G": 30.05
+  },
+  "h_C_rank": 4,
+  "h_C_ratio": 1.76,
+  "h_K_rank": 3,
+  "h_K_ratio": 2.05,
+  "h_below_one": 8,
+  "h_ratio_max": 2.63,
+  "h_ratio_max_res": "F",
+  "h_ratio_median": 1.07,
+  "h_ratio_min": 0.43,
+  "h_ratio_min_res": "A"
+ }
+}

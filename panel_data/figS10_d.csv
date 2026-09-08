@@ -1,0 +1,14 @@
+# figS10 panel d -- figS10.py  |  driver-flagged acquired lysines ranked by the number of cell lines carrying each
+label,gene,change,models,in_figure_8d
+BRAF V600K,BRAF,V600K,3,False
+MTOR E1799K,MTOR,E1799K,3,False
+CCND3 I290K,CCND3,I290K,4,False
+PIK3CD E1021K,PIK3CD,E1021K,4,False
+NOS1 E832K,NOS1,E832K,4,False
+AKT1 E17K,AKT1,E17K,5,True
+TP53 E285K,TP53,E285K,6,False
+TP53 E286K,TP53,E286K,7,False
+XPO1 E571K,XPO1,E571K,9,False
+PIK3CA E542K,PIK3CA,E542K,15,True
+PIK3CA E545K,PIK3CA,E545K,33,True
+NRAS Q61K,NRAS,Q61K,36,True

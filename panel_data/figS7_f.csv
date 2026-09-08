@@ -1,0 +1,97 @@
+# figS7 panel f -- figS7.py  |  upper axis: charge information in the tested descriptors; lower axis: NPR1 change under reflection, re-embedding and between compounds
+part,label,measure,value
+charge,rings,abs_rho_with_molecular_weight,0.6025907259869268
+charge,HBA,abs_rho_with_molecular_weight,0.5469638290654635
+charge,heavy,abs_rho_with_molecular_weight,0.97377948329579
+charge,fsp3,abs_rho_with_molecular_weight,0.1220719854651626
+charge,MW,abs_rho_with_molecular_weight,1.0
+charge,aromatic_rings,abs_rho_with_molecular_weight,0.469622600286652
+charge,TPSA,abs_rho_with_molecular_weight,0.5401646964755817
+charge,rotatable,abs_rho_with_molecular_weight,0.6059757663778319
+charge,HBD,abs_rho_with_molecular_weight,0.1775082084573102
+charge,logP,abs_rho_with_molecular_weight,0.5572684977624394
+charge,rings,abs_rho_with_net_charge,0.1933916296107309
+charge,HBA,abs_rho_with_net_charge,0.1862078357024379
+charge,heavy,abs_rho_with_net_charge,0.1550433427075894
+charge,fsp3,abs_rho_with_net_charge,0.1546115226929879
+charge,MW,abs_rho_with_net_charge,0.1511415799997018
+charge,aromatic_rings,abs_rho_with_net_charge,0.1062508681251057
+charge,TPSA,abs_rho_with_net_charge,0.0751160930719995
+charge,rotatable,abs_rho_with_net_charge,0.0626934388362095
+charge,HBD,abs_rho_with_net_charge,0.0618183031270433
+charge,logP,abs_rho_with_net_charge,0.0170049796813979
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,reflected,change_in_NPR1,0.0
+chirality,re-embedded,change_in_NPR1,0.0609471412881606
+chirality,re-embedded,change_in_NPR1,0.0098905728428301
+chirality,re-embedded,change_in_NPR1,0.0661311091942287
+chirality,re-embedded,change_in_NPR1,0.0431516211346455
+chirality,re-embedded,change_in_NPR1,0.0083692951669272
+chirality,re-embedded,change_in_NPR1,0.2809609080186832
+chirality,re-embedded,change_in_NPR1,0.0401252743201141
+chirality,re-embedded,change_in_NPR1,0.0340159780246289
+chirality,re-embedded,change_in_NPR1,0.2378520549868567
+chirality,re-embedded,change_in_NPR1,0.0641047964452602
+chirality,re-embedded,change_in_NPR1,0.0544171390298507
+chirality,re-embedded,change_in_NPR1,0.0057666844777005
+chirality,re-embedded,change_in_NPR1,0.0520762074693549
+chirality,re-embedded,change_in_NPR1,0.0019950009055394
+chirality,re-embedded,change_in_NPR1,0.0134149329953099
+chirality,re-embedded,change_in_NPR1,0.0456466387348207
+chirality,re-embedded,change_in_NPR1,0.0124846440830024
+chirality,re-embedded,change_in_NPR1,0.0174082880313475
+chirality,re-embedded,change_in_NPR1,0.0108573680553808
+chirality,re-embedded,change_in_NPR1,0.1544036923258597
+chirality,re-embedded,change_in_NPR1,0.0020449976341417
+chirality,re-embedded,change_in_NPR1,0.0383659520289607
+chirality,re-embedded,change_in_NPR1,0.0804745522152306
+chirality,re-embedded,change_in_NPR1,0.0544780281640207
+chirality,re-embedded,change_in_NPR1,0.1569637945026124
+chirality,between compounds,change_in_NPR1,0.12679301690748473
+chirality,between compounds,change_in_NPR1,0.026936133024667186
+chirality,between compounds,change_in_NPR1,0.03767206617656338
+chirality,between compounds,change_in_NPR1,0.12167525825748443
+chirality,between compounds,change_in_NPR1,0.06922007992567192
+chirality,between compounds,change_in_NPR1,0.00856792864798922
+chirality,between compounds,change_in_NPR1,0.2552137620478709
+chirality,between compounds,change_in_NPR1,0.010456390485005573
+chirality,between compounds,change_in_NPR1,0.2131477621962206
+chirality,between compounds,change_in_NPR1,0.12752174946427722
+chirality,between compounds,change_in_NPR1,0.08098168439109993
+chirality,between compounds,change_in_NPR1,0.07381548626216722
+chirality,between compounds,change_in_NPR1,0.07148821936707753
+chirality,between compounds,change_in_NPR1,0.07718908563958282
+chirality,between compounds,change_in_NPR1,0.23570393350136648
+chirality,between compounds,change_in_NPR1,0.10487519206547857
+chirality,between compounds,change_in_NPR1,0.01160432984353127
+chirality,between compounds,change_in_NPR1,0.025739193596055726
+chirality,between compounds,change_in_NPR1,0.051858825256464236
+chirality,between compounds,change_in_NPR1,0.02756535392284637
+chirality,between compounds,change_in_NPR1,0.03499502254779033
+chirality,between compounds,change_in_NPR1,0.21147785958355247
+chirality,between compounds,change_in_NPR1,0.2392229173337062
+chirality,between compounds,change_in_NPR1,0.03634503674954123
+chirality,between compounds,change_in_NPR1,0.041389588775680636

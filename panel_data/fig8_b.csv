@@ -1,0 +1,11 @@
+# fig8 panel b -- fig8.py  |  medians of the nine environment features, three populations, and the engaged and unengaged offsets in SD of the acquired distribution
+feature,plain_name,median_acquired,median_engaged,median_labelled_not_engaged,sd_acquired,z_engaged,z_not_engaged
+crowding_8A,neighbours,12.0,12.0,11.0,4.10020063152093,0.0,-0.24389050436028534
+atoms_10A,atom density,117.0,114.0,107.0,36.763024663803606,-0.08160373166884065,-0.27201243889613547
+hydrophobic_8A,greasy,5.0,6.0,5.0,3.0304284101259635,0.32998634670219246,0.0
+aromatic_8A,rings,1.0,1.0,1.0,1.5182160160209988,0.0,0.0
+polar_8A,polar,3.0,3.0,3.0,1.9623864045088524,0.0,0.0
+anionic_8A,acidic,1.0,1.0,1.0,1.1961476459449398,0.0,0.0
+cationic_8A,basic,2.0,1.0,2.0,1.3694202371597488,-0.730236031909426,0.0
+net_charge_8A,net charge,1.0,0.0,0.0,1.7767499551487735,-0.562825397632424,-0.562825397632424
+n_lys_8A,other lysines,1.0,1.0,1.0,0.9281593107335172,0.0,0.0

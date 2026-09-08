@@ -1,0 +1,8 @@
+# fig5 panel d -- fig5.py  |  principal components of the 14 features
+component,variance_pct,cumulative_pct
+1,48.9,48.9
+2,14.5,63.4
+3,7.8,71.2
+4,7.3,78.5
+5,4.9,83.4
+6,4.6,88.1

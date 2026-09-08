@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this code or data, please cite both the paper and the archived release."
+title: "Absent by construction, not by chemistry: the lysines cancer creates -- code and deposited data"
+abstract: >-
+  Analysis code and panel-level deposited data for a study of mutation-created ("acquired")
+  lysines as a covalent target class: their catalogue across DepMap, TCGA and COSMIC; a
+  mutation-aware re-search of 42 published CCLE TMT proteomes; burden-matched entrapment to
+  measure the realised false-discovery proportion within the variant class; and an analysis of
+  what governs lysine reactivity and ligandability across three chemoproteomic screens.
+type: software
+authors:
+  - given-names: Mikail
+    name-particle: E.
+    family-names: Abbasov
+    affiliation: "Department of Pharmaceutical Sciences, University of Oklahoma Health Sciences Center"
+    orcid: "https://orcid.org/PLACEHOLDER -- fill before deposit"
+license: MIT
+license-url: "https://opensource.org/licenses/MIT"
+keywords:
+  - chemoproteomics
+  - covalent lysine targeting
+  - acquired lysines
+  - false discovery rate
+  - entrapment
+  - ligandability
+  - reproducibility
+repository-code: "https://github.com/PLACEHOLDER -- fill before deposit"

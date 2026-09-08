@@ -1,0 +1,23 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+The data files in this deposit -- panel_data/ and data/ -- are licensed under
+CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+
+You are free to share and adapt them for any purpose, including commercially,
+provided you give appropriate credit to the accompanying publication.
+
+The code is licensed separately under the MIT License; see LICENSE.
+
+NOTE ON UPSTREAM TERMS. Several inputs are redistributed here in derived form
+and carry their own terms, which are not superseded by this licence:
+
+  DepMap Public 26Q1                 CC BY 4.0
+  TCGA MC3 (v0.2.8-PUBLIC)           NIH Genomic Data Sharing Policy; open-access tier
+  COSMIC Cancer Mutation Census v103 academic use; commercial use requires a licence
+                                     from the Wellcome Sanger Institute
+  gnomAD v4.1 / v2.1.1               CC0
+  UniProt                            CC BY 4.0
+  AlphaFold DB                       CC BY 4.0
+
+COSMIC is the one to check before commercial reuse. Files derived from it are
+marked in external_inputs.json.

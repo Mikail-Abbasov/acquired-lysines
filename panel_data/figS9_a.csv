@@ -1,0 +1,14 @@
+# figS9 panel a -- figS9.py  |  distance between group averages, four anchorings x three comparisons
+arm,slug,comparison,distance,n_union,n_engaged,n_not_engaged
+A  both sides at CB (the plan),cb,acquired vs engaged,0.570628927957859,156781,3047,27758
+A  both sides at CB (the plan),cb,acquired vs unengaged,0.7125014354873541,156781,3047,27758
+A  both sides at CB (the plan),cb,engaged vs unengaged (control),0.4103807510705463,156781,3047,27758
+"B  both sides modelled, at NZ",nz,acquired vs engaged,0.5353764689261222,155008,3047,27758
+"B  both sides modelled, at NZ",nz,acquired vs unengaged,0.8001655416903991,155008,3047,27758
+"B  both sides modelled, at NZ",nz,engaged vs unengaged (control),0.3310804715238686,155008,3047,27758
+"D  both sides at CB, symmetric convention",cb_symmetric,acquired vs engaged,0.5826889041669696,155008,3047,27758
+"D  both sides at CB, symmetric convention",cb_symmetric,acquired vs unengaged,0.7066212073699882,155008,3047,27758
+"D  both sides at CB, symmetric convention",cb_symmetric,engaged vs unengaged (control),0.4069043613885699,155008,3047,27758
+C  MISMATCHED: union CB vs measured NZ,mismatched,acquired vs engaged,2.256082303600889,156781,3047,27758
+C  MISMATCHED: union CB vs measured NZ,mismatched,acquired vs unengaged,2.376638357967895,156781,3047,27758
+C  MISMATCHED: union CB vs measured NZ,mismatched,engaged vs unengaged (control),0.329818926375501,156781,3047,27758

@@ -1,0 +1,7 @@
+# fig2 panel f -- fig2.py  |  two detection routes
+route,sites
+mutant peptide,53
+downstream peptide,15
+shared by both,7
+downstream only,8
+union,61

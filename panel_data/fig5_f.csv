@@ -1,0 +1,4 @@
+# fig5 panel f -- fig5.py  |  enantiomer pairs with enough shared coverage to compare
+pair,n_sites_measured,engaged_by_both,expected_by_chance,only_plus,only_minus,correlation
+euglobal G2,7560,6,0.0,0,1,0.675
+guadial B,7043,19,0.1,4,4,0.717

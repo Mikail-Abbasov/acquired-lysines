@@ -1,0 +1,18 @@
+# figS9 panel f -- figS9.py  |  four quantile cuts, both legitimate arms, both comparison populations
+arm,slug,population,engaged_region_pct,pct_inside
+A,cb,acquired union,50,42.5
+A,cb,acquired union,75,68.7
+A,cb,acquired union,90,82.1
+A,cb,acquired union,95,87.8
+A,cb,"labelled, not engaged",50,46.7
+A,cb,"labelled, not engaged",75,72.6
+A,cb,"labelled, not engaged",90,88.7
+A,cb,"labelled, not engaged",95,94.7
+B,nz,acquired union,50,45.0
+B,nz,acquired union,75,66.6
+B,nz,acquired union,90,83.4
+B,nz,acquired union,95,89.0
+B,nz,"labelled, not engaged",50,49.9
+B,nz,"labelled, not engaged",75,78.1
+B,nz,"labelled, not engaged",90,92.3
+B,nz,"labelled, not engaged",95,95.6
