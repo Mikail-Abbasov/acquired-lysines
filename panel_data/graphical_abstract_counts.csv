@@ -1,0 +1,5 @@
+# graphical_abstract panel counts -- graphical_abstract.py  |  mutant-peptide detections among acquired-lysine observations
+stage,detections,denominator
+conventional search,0,8470
+mutation-aware search,53,8470
+margin >= 10,30,8470

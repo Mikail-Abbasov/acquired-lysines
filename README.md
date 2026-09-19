@@ -1,4 +1,4 @@
-# Absent by construction, not by chemistry: the lysines cancer creates
+# A mutation-aware search of 375 cancer cell-line proteomes recovers 53 of 8,470 acquired-lysine observations
 
 Code and deposited data for the manuscript. Everything the paper reports is either produced by a
 script here or read from a public source named in `external_inputs.json`.
@@ -12,19 +12,34 @@ trust.
 
 ## Two tiers
 
-**Tier 1 — redraw any figure from deposited data.** `panel_data/` holds one tidy CSV per figure
+**Tier 1. Redraw any figure from deposited data.** `panel_data/` holds one tidy CSV per figure
 panel plus an `<figure>_head.json` ledger of the numbers that figure's caption and text quote.
 This tier needs nothing but the files in this deposit.
 
-**Tier 2 — regenerate the panel data from public inputs.** The analysis scripts in `ccle_plex05/`
+**Tier 2. Regenerate the panel data from public inputs.** The analysis scripts in `ccle_plex05/`
 and `ligand_rebuild/` rebuild those CSVs from the sources in `external_inputs.json`. This tier
 needs those downloads, and for the proteomic re-search it needs the search engine as well
 (MSFragger 4.4.1 / FragPipe v24.0 / Philosopher).
 
-Some intermediates could not be traced to a producing script by static analysis — the filename is
-assembled at run time or written through a config constant — so they ship as data under `data/`
-and are labelled `deposited intermediate` in `external_inputs.json`. Tier 1 works for those;
-tier 2 does not, and the deposit says so rather than implying otherwise.
+Twenty intermediates could not be traced to a producing script by static analysis, because the
+filename is assembled at run time or written through a config constant. They are labelled
+`deposited intermediate` in `external_inputs.json` and ship as data under `data/` in the Zenodo
+archive. Tier 1 works for the figures that read them; tier 2 does not, and the deposit says so
+rather than implying otherwise.
+
+## What is in which deposit
+
+This repository and the Zenodo archive are not the same tree. Git carries what is small enough to
+clone and diff; the archive carries everything.
+
+| | this repository | Zenodo archive |
+|---|---|---|
+| code, `panel_data/`, `external_inputs.json` | yes | yes |
+| `data/`, the 20 deposited intermediates (343 MB) | no | yes |
+| variant and decoy search databases (120 MB) | no | yes |
+
+Tier 1 therefore works from a clone of this repository alone. Tier 2 needs the archive as well as
+the public downloads named below.
 
 ## Layout
 
@@ -33,7 +48,7 @@ ccle_plex05/          the proteomic re-search, Figures 1-3 and S1-S4, S10
 ccle_plex05/manuscript/  the manuscript build: prose, captions, references, assembly
 ligand_rebuild/       the chemoproteomic ligandability analysis, Figures 4-8 and S5-S9
 panel_data/           one CSV per panel + one JSON ledger per figure  (tier 1)
-data/                 analysis intermediates that ship as data         (tier 1)
+data/                 the 20 deposited intermediates       (Zenodo archive only)
 repo/                 the manifest, the release builder, and the checks
 external_inputs.json  every input at the edge, with its source and version
 ```
@@ -52,30 +67,31 @@ Run from `repo/`.
 | `acceptance.py` | does the assembled deposit actually reproduce the deposited ledgers? |
 
 `verify.py` and `reverse_check.py` are not symmetric. A ledger value missing from the prose is
-usually fine — scripts compute more than a paper quotes. A prose number that no ledger produces is
+usually fine: scripts compute more than a paper quotes. A prose number that no ledger produces is
 the dangerous direction, and `reverse_check.py` exists because that direction cannot be spotted by
 reading.
 
-Current state: 18 of 18 figures carry a ledger; 692 of 717 ledger values (97%) appear in the text;
+Current state: 19 ledgers cover 18 figures and the graphical abstract; 713 of 736 ledger values
+(97%) appear in the text;
 `seams_check.py` reports 0 issues.
 
 ## Does the deposit actually reproduce the paper? (`acceptance.py`)
 
 `acceptance.py` runs each figure script inside the assembled tree and diffs the ledger it writes
-against the ledger deposited with the paper. Not "the code is here" — "the code here gives the
+against the ledger deposited with the paper. Not "the code is here" but "the code here gives the
 same answers". Result on the deposited tree:
 
 | verdict | n | figures |
 |---|---|---|
-| **MATCH** — every deposited value reproduced | 11 | 2, 4, 5, 7, 8, S1, S5, S6, S7, S8, S9 |
-| **PARTIAL** — reproduced values agree, some panels skipped | 4 | 1, 3, S2, S3 |
-| **NOT RUN** — needs an input not in the deposit | 3 | 6, S4, S10 |
+| **MATCH**, every deposited value reproduced | 11 | 2, 4, 5, 7, 8, S1, S5, S6, S7, S8, S9 |
+| **PARTIAL**, reproduced values agree, some panels skipped | 4 | 1, 3, S2, S3 |
+| **NOT RUN**, needs an input not in the deposit | 3 | 6, S4, S10 |
 
 Nothing DIFFERS. Every gap is a named input that is public but not redistributed here:
 
 | figure | needs | why not included |
 |---|---|---|
-| 1 (panel e), S10 | `OmicsSomaticMutations.csv` | DepMap 26Q1 — free download, not ours to mirror |
+| 1 (panel e), S10 | `OmicsSomaticMutations.csv` | DepMap 26Q1; free download, not ours to mirror |
 | 3 (panel d) | `SpecQuality/sq_out/` | 364 MB of per-spectrum features for one panel |
 | S2, S3 | `out_plex*/psm.tsv` | raw search output, several GB |
 | 6 | `SMILES.xlsx` | compound structures from three papers' SI |
@@ -90,7 +106,8 @@ Two of these were found by this test rather than by reading, and both were silen
   to the manifest's file-extension list.
 - Figure 8e reported **0 peptides** for AKT1 E17K, when the answer is 3. Zero there reads as "the
   site was never searched", which is the opposite of the paper's claim. The script now refuses to
-  emit a count it cannot compute, and the search databases ship so that it can.
+  emit a count it cannot compute, and the search databases ship in the Zenodo archive so that it
+  can.
 
 ## Known output-filename collisions
 
@@ -124,7 +141,7 @@ in `abbasov_style.py`; the deposit helper is `figure_data.py`.
 ## Licence
 
 Code: MIT (`LICENSE`). Data: CC BY 4.0 (`LICENSE-DATA`). Several inputs carry upstream terms that
-this licence does not supersede — COSMIC in particular restricts commercial use. See
+this licence does not supersede; COSMIC in particular restricts commercial use. See
 `LICENSE-DATA`.
 
 ## Citation

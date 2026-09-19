@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this code or data, please cite both the paper and the archived release."
-title: "Absent by construction, not by chemistry: the lysines cancer creates -- code and deposited data"
+title: "A mutation-aware search of 375 cancer cell-line proteomes recovers 53 of 8,470 acquired-lysine observations: code and deposited data"
 abstract: >-
   Analysis code and panel-level deposited data for a study of mutation-created ("acquired")
   lysines as a covalent target class: their catalogue across DepMap, TCGA and COSMIC; a
@@ -9,8 +9,7 @@ abstract: >-
   what governs lysine reactivity and ligandability across three chemoproteomic screens.
 type: software
 authors:
-  - given-names: Mikail
-    name-particle: E.
+  - given-names: Mikail E.
     family-names: Abbasov
     affiliation: "Department of Pharmaceutical Sciences, University of Oklahoma Health Sciences Center"
     orcid: "https://orcid.org/PLACEHOLDER -- fill before deposit"
@@ -24,4 +23,4 @@ keywords:
   - entrapment
   - ligandability
   - reproducibility
-repository-code: "https://github.com/PLACEHOLDER -- fill before deposit"
+repository-code: "https://github.com/PLACEHOLDER/acquired-lysines -- fill username before deposit"

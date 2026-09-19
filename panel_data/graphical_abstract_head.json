@@ -1,0 +1,30 @@
+{
+ "script": "graphical_abstract.py",
+ "written": "2026-09-19",
+ "numbers": {
+  "akt1_e17k_peptides_searched": 3,
+  "akt1_e17k_spectra": 0,
+  "chemoproteomic_screens": 3,
+  "composite_auc": 0.617,
+  "conv_mutant_detections": 0,
+  "conv_rows_acquiredK": 8470,
+  "engaged_lysines": 3047,
+  "gated_union_positions": 156781,
+  "lysines_labelled": 30805,
+  "lysines_scored": 245684,
+  "margin_found": 30,
+  "margin_pct": 0.35,
+  "margin_threshold": 10,
+  "mutation_aware_found": 53,
+  "mutation_aware_pct": 0.63,
+  "observations": 8470,
+  "overlap_engaged_region_pct": 82.0,
+  "p_closer_than_engaged": 0.443,
+  "probe_features_separating": 2,
+  "probe_site_features": 22,
+  "proteomes_searched": 375,
+  "reproducibility_ceiling_auc": 0.723,
+  "union_K_genes": 20365,
+  "union_K_sites": 295411
+ }
+}
