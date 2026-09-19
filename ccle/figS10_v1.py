@@ -423,8 +423,8 @@ HEAD = {
  "e_best_engaged_occupancy_pct": round(float(_be.occ.iloc[0]), 1) if len(_be) else float("nan"),
 }
 
-fig.savefig(os.path.join(D, "ccle_plex05", "figS10.png"))
-fig.savefig(os.path.join(D, "ccle_plex05", "figS10.pdf"))
+fig.savefig(os.path.join(D, "ccle", "figS10.png"))
+fig.savefig(os.path.join(D, "ccle", "figS10.pdf"))
 fd.head("figS10", HEAD)
-open(os.path.join(D, "ccle_plex05", "figS10_report.txt"), "w").write("\n".join(log) + "\n")
+open(os.path.join(D, "ccle", "figS10_report.txt"), "w").write("\n".join(log) + "\n")
 say("\nwrote figS10.png/.pdf and figS10_report.txt")

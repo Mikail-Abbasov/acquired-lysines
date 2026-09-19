@@ -24,7 +24,7 @@ import os, re, sys, csv, json
 from collections import defaultdict
 
 TOP = os.path.expanduser("~/mnt/DepMap")
-SEARCH_DIRS = ["ccle_plex05", "ligand_rebuild", "Datasets"]
+SEARCH_DIRS = ["ccle", "ligand_rebuild", "Datasets"]
 
 # The published figure set, in the order the manuscript presents it.
 FIGURES = [

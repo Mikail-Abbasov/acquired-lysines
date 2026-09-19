@@ -52,7 +52,7 @@ HEAD = {}       # headline numbers per panel, captured where they are computed
 MARGIN = 10     # score-margin threshold -- one definition for the axis line, the label and the count
 
 def find(n):
-    for d in (".", "..", os.path.join(_TOP, 'ccle_plex05')):
+    for d in (".", "..", os.path.join(_TOP, 'ccle')):
         p = os.path.join(d, n)
         if os.path.exists(p): return p
     return None

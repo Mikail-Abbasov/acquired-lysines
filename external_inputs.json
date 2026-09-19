@@ -122,17 +122,17 @@
  "acquired_K_searched_vs_detected.csv": {
   "kind": "deposited intermediate",
   "note": "per-site searched/detected table for acquired lysines",
-  "path": "ccle_plex05/acquired_K_searched_vs_detected.csv"
+  "path": "ccle/acquired_K_searched_vs_detected.csv"
  },
  "depmap_variants_annotated.parquet": {
   "kind": "deposited intermediate",
   "note": "annotated DepMap variant table (46 MB)",
-  "path": "ccle_plex05/depmap_variants_annotated.parquet"
+  "path": "ccle/depmap_variants_annotated.parquet"
  },
  "fdp_p2.csv": {
   "kind": "deposited intermediate",
   "note": "plex-2 q-value vs entrapment curve (9.5 MB)",
-  "path": "ccle_plex05/fdp_p2.csv"
+  "path": "ccle/fdp_p2.csv"
  },
  "features_final_full.csv": {
   "kind": "deposited intermediate",
@@ -142,17 +142,17 @@
  "fig3_deltamass.csv": {
   "kind": "deposited intermediate",
   "note": "precursor mass errors, cached from the PSM tables (97 MB)",
-  "path": "ccle_plex05/fig3_deltamass.csv"
+  "path": "ccle/fig3_deltamass.csv"
  },
  "fig3_margins.csv": {
   "kind": "deposited intermediate",
   "note": "per-peptide score margins, cached from the PSM tables",
-  "path": "ccle_plex05/fig3_margins.csv"
+  "path": "ccle/fig3_margins.csv"
  },
  "hits62.tsv": {
   "kind": "deposited intermediate",
   "note": "per-PSM detail for the acquired-lysine detections",
-  "path": "ccle_plex05/hits62.tsv"
+  "path": "ccle/hits62.tsv"
  },
  "mc3_bysample.tsv": {
   "kind": "deposited intermediate",
@@ -172,12 +172,12 @@
  "region_compare_conv.tsv": {
   "kind": "deposited intermediate",
   "note": "per-site search outcome, conventional MANE database",
-  "path": "ccle_plex05/region_compare_conv.tsv"
+  "path": "ccle/region_compare_conv.tsv"
  },
  "region_compare_pep.tsv": {
   "kind": "deposited intermediate",
   "note": "per-site search outcome, mutation-aware peptide database",
-  "path": "ccle_plex05/region_compare_pep.tsv"
+  "path": "ccle/region_compare_pep.tsv"
  },
  "residue_flux_by_line.csv": {
   "kind": "deposited intermediate",
@@ -187,7 +187,7 @@
  "sites_covalent_residues.csv": {
   "kind": "deposited intermediate",
   "note": "covalent-residue site table across DepMap (28 MB)",
-  "path": "ccle_plex05/sites_covalent_residues.csv"
+  "path": "ccle/sites_covalent_residues.csv"
  },
  "step10_roc_pooled.csv": {
   "kind": "deposited intermediate",

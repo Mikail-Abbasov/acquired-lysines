@@ -16,7 +16,7 @@ trust.
 panel plus an `<figure>_head.json` ledger of the numbers that figure's caption and text quote.
 This tier needs nothing but the files in this deposit.
 
-**Tier 2. Regenerate the panel data from public inputs.** The analysis scripts in `ccle_plex05/`
+**Tier 2. Regenerate the panel data from public inputs.** The analysis scripts in `ccle/`
 and `ligand_rebuild/` rebuild those CSVs from the sources in `external_inputs.json`. This tier
 needs those downloads, and for the proteomic re-search it needs the search engine as well
 (MSFragger 4.4.1 / FragPipe v24.0 / Philosopher).
@@ -44,8 +44,8 @@ the public downloads named below.
 ## Layout
 
 ```
-ccle_plex05/          the proteomic re-search, Figures 1-3 and S1-S4, S10
-ccle_plex05/manuscript/  the manuscript build: prose, captions, references, assembly
+ccle/          the proteomic re-search, Figures 1-3 and S1-S4, S10
+ccle/manuscript/  the manuscript build: prose, captions, references, assembly
 ligand_rebuild/       the chemoproteomic ligandability analysis, Figures 4-8 and S5-S9
 panel_data/           one CSV per panel + one JSON ledger per figure  (tier 1)
 data/                 the 20 deposited intermediates       (Zenodo archive only)
@@ -63,7 +63,7 @@ Run from `repo/`.
 | `build_release.py` | assembles this deposit; **fails** if any input is undeclared; reports output-filename collisions |
 | `verify.py` | ledger → prose: does every number a script computes still appear in the manuscript? |
 | `reverse_check.py` | prose → ledger: is there a number in the text that no script produces? |
-| `../ccle_plex05/manuscript/seams_check.py` | citations, figure pointers, note numbering, recurring quantities |
+| `../ccle/manuscript/seams_check.py` | citations, figure pointers, note numbering, recurring quantities |
 | `acceptance.py` | does the assembled deposit actually reproduce the deposited ledgers? |
 
 `verify.py` and `reverse_check.py` are not symmetric. A ledger value missing from the prose is
@@ -131,7 +131,7 @@ re-run on 7 September 2026. The matching script's report has since been renamed,
 ## Reproducing a figure
 
 ```bash
-cd ccle_plex05
+cd ccle
 python3 fig2_v3.py          # writes fig2.png/.pdf, panel CSVs and fig2_head.json
 ```
 

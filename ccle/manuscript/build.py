@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Assemble the single manuscript draft and the single Supporting Information draft.
 
-Run from ccle_plex05/:   python3 manuscript/build.py
+Run from ccle/:   python3 manuscript/build.py
 
 Outputs into ../results/:
   Manuscript_draft_<date>.docx

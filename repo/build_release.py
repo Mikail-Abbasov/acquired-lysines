@@ -119,14 +119,14 @@ PIPELINE = {
 
 # Shared modules and build machinery that no figure "reads" as data but every figure needs.
 ALWAYS = [
-    "ccle_plex05/abbasov_style.py",
-    "ccle_plex05/figure_data.py",
-    "ccle_plex05/manuscript/build.py",
-    "ccle_plex05/manuscript/sections.py",
-    "ccle_plex05/manuscript/drafted.py",
-    "ccle_plex05/manuscript/si.py",
-    "ccle_plex05/manuscript/refs.py",
-    "ccle_plex05/manuscript/seams_check.py",
+    "ccle/abbasov_style.py",
+    "ccle/figure_data.py",
+    "ccle/manuscript/build.py",
+    "ccle/manuscript/sections.py",
+    "ccle/manuscript/drafted.py",
+    "ccle/manuscript/si.py",
+    "ccle/manuscript/refs.py",
+    "ccle/manuscript/seams_check.py",
     "repo/build_manifest.py",
     "repo/build_release.py",
     "repo/verify.py",
@@ -139,22 +139,22 @@ ALWAYS = [
 # see them. Figure 1g calls _read_germline("germline_lysine.out"); the acceptance test caught
 # their absence as five NaNs in panel g. Add to this list when a figure reads through indirection.
 EXTRA_DATA = [
-    "ccle_plex05/germline_lysine.out",
-    "ccle_plex05/germline_nc.out",
+    "ccle/germline_lysine.out",
+    "ccle/germline_nc.out",
     "SpecQuality/hit_spectra_mgf_features.tsv",
-    "ccle_plex05/SMILES.xlsx",
+    "ccle/SMILES.xlsx",
 ]
 
 # Globs, for inputs a script discovers rather than names. Figure 8e counts the AKT1 E17K peptides
 # by walking the search databases; without them it reports zero, which reads as "never searched"
 # and is the opposite of the claim. 120 MB to make the paper's closing move checkable.
 EXTRA_GLOBS = [
-    "ccle_plex05/plex*_varpep.fasta",
-    "ccle_plex05/plex*_downpep.fasta",
+    "ccle/plex*_varpep.fasta",
+    "ccle/plex*_downpep.fasta",
     # 319 MB of entrapment pairings, so figure S4 -- the entrapment figure -- re-runs from the
     # deposit. Entrapment is what the paper's false-discovery claim rests on, so it is the last
     # thing that should be un-checkable.
-    "ccle_plex05/plex*_varpair.txt",
+    "ccle/plex*_varpair.txt",
 ]
 
 ROOT_FILES = ["README.md", "LICENSE", "LICENSE-DATA", "CITATION.cff", ".zenodo.json",
@@ -380,7 +380,7 @@ def main():
             dep_missing.append(b); continue
         # Keep each intermediate at the relative path its readers expect. A flat data/ directory
         # was tidier but broke tier 2: the scripts locate inputs with a find() that searches "."
-        # and "..", so a file moved out of ccle_plex05/ or ligand_rebuild/ is simply not found.
+        # and "..", so a file moved out of ccle/ or ligand_rebuild/ is simply not found.
         rel = os.path.relpath(hit, TOP)
         dep_paths[b] = rel
         dst = os.path.join(OUT, rel)

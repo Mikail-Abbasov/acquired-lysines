@@ -2,7 +2,7 @@
 """Main-text content, one entry per section, assembled by build.py into a single manuscript.
 
 Cite references as [[key]] or [[key1,key2]]; the builder numbers them globally in order of first
-appearance. `fig` names the figure image (in ccle_plex05/) and `cap` its caption paragraphs.
+appearance. `fig` names the figure image (in ccle/) and `cap` its caption paragraphs.
 `status` is "draft" for written sections and "todo" for placeholders carried from the outline.
 """
 

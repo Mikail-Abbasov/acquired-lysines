@@ -29,7 +29,7 @@ Integers below 100 are dropped: they match too much to be evidence either way.
 import os, sys, json, glob, re, importlib.util
 
 TOP = os.path.expanduser("~/mnt/DepMap")
-MAN = os.path.join(TOP, "ccle_plex05", "manuscript")
+MAN = os.path.join(TOP, "ccle", "manuscript")
 LED = os.path.join(TOP, "results", "panel_data")
 
 sys.path.insert(0, MAN)

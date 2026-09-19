@@ -42,7 +42,7 @@ _TOP = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 st.apply()
 
 def find(n):
-    for d in (".", "..", os.path.join(_TOP, 'ccle_plex05')):
+    for d in (".", "..", os.path.join(_TOP, 'ccle')):
         p = os.path.join(d, n)
         if os.path.exists(p): return p
     return None

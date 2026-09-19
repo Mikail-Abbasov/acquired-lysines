@@ -38,7 +38,7 @@ st.apply()
 
 def find(name):
     for d in (".", "..", _TOP,
-              os.path.join(_TOP, 'ccle_plex05'),
+              os.path.join(_TOP, 'ccle'),
               os.path.join(_TOP, 'Datasets'),
               os.path.join(_TOP, 'Datasets/pandepmap_out')):
         p = os.path.join(d, name)

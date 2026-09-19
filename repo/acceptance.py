@@ -24,15 +24,15 @@ DEPOSITED = os.path.join(REL, "panel_data")
 PRODUCED = os.path.join(REL, "results", "panel_data")
 
 SCRIPT = {
-    "fig1": "ccle_plex05/fig1_v3.py",   "fig2": "ccle_plex05/fig2_v3.py",
-    "fig3": "ccle_plex05/fig3_v3.py",   "fig4": "ccle_plex05/fig4_v3.py",
-    "fig5": "ccle_plex05/fig5_v1.py",   "fig6": "ccle_plex05/fig6_v1.py",
-    "fig7": "ccle_plex05/fig7_v1.py",   "fig8": "ccle_plex05/fig8_v1.py",
-    "figS1": "ccle_plex05/figS1_v3.py", "figS2": "ccle_plex05/figS2_v3.py",
-    "figS3": "ccle_plex05/figS3_v3.py", "figS4": "ccle_plex05/figS4_v3.py",
-    "figS5": "ccle_plex05/figS5_v3.py", "figS6": "ccle_plex05/figS6_v1.py",
-    "figS7": "ccle_plex05/figS7_v1.py", "figS8": "ccle_plex05/figS8_v1.py",
-    "figS9": "ccle_plex05/figS9_v1.py", "figS10": "ccle_plex05/figS10_v1.py",
+    "fig1": "ccle/fig1_v3.py",   "fig2": "ccle/fig2_v3.py",
+    "fig3": "ccle/fig3_v3.py",   "fig4": "ccle/fig4_v3.py",
+    "fig5": "ccle/fig5_v1.py",   "fig6": "ccle/fig6_v1.py",
+    "fig7": "ccle/fig7_v1.py",   "fig8": "ccle/fig8_v1.py",
+    "figS1": "ccle/figS1_v3.py", "figS2": "ccle/figS2_v3.py",
+    "figS3": "ccle/figS3_v3.py", "figS4": "ccle/figS4_v3.py",
+    "figS5": "ccle/figS5_v3.py", "figS6": "ccle/figS6_v1.py",
+    "figS7": "ccle/figS7_v1.py", "figS8": "ccle/figS8_v1.py",
+    "figS9": "ccle/figS9_v1.py", "figS10": "ccle/figS10_v1.py",
 }
 
 

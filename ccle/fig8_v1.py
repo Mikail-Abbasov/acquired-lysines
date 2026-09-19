@@ -23,7 +23,7 @@ PANELS
 ROBUSTNESS (the same comparison under three anchorings, plus the artefact) is figS9.
 
 INPUT   ligand_rebuild/step28c_medians.csv, step28_results.csv, step31_crystal.csv,
-        ccle_plex05/acquired_K_searched_vs_detected.csv
+        ccle/acquired_K_searched_vs_detected.csv
 OUTPUT  fig8.pdf, fig8.png
 """
 import os, sys

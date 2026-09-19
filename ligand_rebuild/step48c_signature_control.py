@@ -25,7 +25,7 @@ import os
 import numpy as np, pandas as pd, warnings
 warnings.filterwarnings("ignore")
 
-CC = os.environ.get("CCLE_DIR", "../ccle_plex05")
+CC = os.environ.get("CCLE_DIR", "../ccle")
 MIN_N = 200
 
 log = []

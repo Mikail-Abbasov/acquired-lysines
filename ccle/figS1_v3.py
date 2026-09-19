@@ -34,7 +34,7 @@ st.apply()
 def find(n):
     # ligand_rebuild added 2026-09-04: the two panels consolidated in from figS2 read their
     # step48 outputs from there.
-    for d in (".", "..", os.path.join(_TOP, 'ccle_plex05'),
+    for d in (".", "..", os.path.join(_TOP, 'ccle'),
               os.path.join(_TOP, 'ligand_rebuild')):
         p = os.path.join(d, n)
         if os.path.exists(p): return p
