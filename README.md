@@ -23,32 +23,29 @@ needs those downloads, and for the proteomic re-search it needs the search engin
 
 Twenty intermediates could not be traced to a producing script by static analysis, because the
 filename is assembled at run time or written through a config constant. They are labelled
-`deposited intermediate` in `external_inputs.json` and ship as data under `data/` in the Zenodo
-archive. Tier 1 works for the figures that read them; tier 2 does not, and the deposit says so
-rather than implying otherwise.
+`deposited intermediate` in `external_inputs.json`. They are this project's own outputs rather
+than public downloads, they total 343 MB, and they are not redistributed. Tier 1 covers every
+figure that reads one; tier 2 does not, and the deposit says so rather than implying otherwise.
 
-## What is in which deposit
+## This repository and the archived release
 
-This repository and the Zenodo archive are not the same tree. Git carries what is small enough to
-clone and diff; the archive carries everything.
+There is one tree, not two. The archived release is a frozen snapshot of this repository at a
+tagged commit, so it holds exactly what you see here: the code, `panel_data/` and
+`external_inputs.json`. Neither carries the 343 MB of deposited intermediates or the 120 MB of
+variant and decoy search databases; `.gitignore` says so, and the table of gaps below says what
+that costs.
 
-| | this repository | Zenodo archive |
-|---|---|---|
-| code, `panel_data/`, `external_inputs.json` | yes | yes |
-| `data/`, the 20 deposited intermediates (343 MB) | no | yes |
-| variant and decoy search databases (120 MB) | no | yes |
-
-Tier 1 therefore works from a clone of this repository alone. Tier 2 needs the archive as well as
-the public downloads named below.
+Tier 1 therefore runs from a clone of this repository, or from the archive, with no download at
+all. Tier 2 runs for every step whose inputs are public and named in `external_inputs.json`, and
+not for the steps that read an undeposited intermediate.
 
 ## Layout
 
 ```
-ccle/          the proteomic re-search, Figures 1-3 and S1-S4, S10
-ccle/manuscript/  the manuscript build: prose, captions, references, assembly
+ccle/                 the proteomic re-search, Figures 1-3 and S1-S4, S10
+ccle/manuscript/      the manuscript build: prose, captions, references, assembly
 ligand_rebuild/       the chemoproteomic ligandability analysis, Figures 4-8 and S5-S9
 panel_data/           one CSV per panel + one JSON ledger per figure  (tier 1)
-data/                 the 20 deposited intermediates       (Zenodo archive only)
 repo/                 the manifest, the release builder, and the checks
 external_inputs.json  every input at the edge, with its source and version
 ```
@@ -79,7 +76,8 @@ Current state: 19 ledgers cover 18 figures and the graphical abstract; 713 of 73
 
 `acceptance.py` runs each figure script inside the assembled tree and diffs the ledger it writes
 against the ledger deposited with the paper. Not "the code is here" but "the code here gives the
-same answers". Result on the deposited tree:
+same answers". Measured on an assembled tree that also held the undeposited intermediates, so
+these verdicts are the ceiling rather than what a clone of this repository reaches:
 
 | verdict | n | figures |
 |---|---|---|
@@ -97,6 +95,10 @@ Nothing DIFFERS. Every gap is a named input that is public but not redistributed
 | 6 | `SMILES.xlsx` | compound structures from three papers' SI |
 | S4 | `plex*_varpair.txt` | 319 MB of entrapment pairings |
 
+One class of gap is different in kind. The twenty `deposited intermediate` entries in
+`external_inputs.json` are this project's own outputs, not public downloads, so where a step reads
+one there is no download that closes the gap and tier 2 cannot be run from this deposit at all.
+
 **Tier 1 covers all of them**: every panel above can be redrawn from `panel_data/` with no
 download at all. The gaps are only in re-deriving that data from scratch.
 
@@ -106,8 +108,7 @@ Two of these were found by this test rather than by reading, and both were silen
   to the manifest's file-extension list.
 - Figure 8e reported **0 peptides** for AKT1 E17K, when the answer is 3. Zero there reads as "the
   site was never searched", which is the opposite of the paper's claim. The script now refuses to
-  emit a count it cannot compute, and the search databases ship in the Zenodo archive so that it
-  can.
+  emit a count it cannot compute rather than print a zero it cannot stand behind.
 
 ## Known output-filename collisions
 

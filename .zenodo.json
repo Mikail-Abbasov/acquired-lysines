@@ -7,8 +7,7 @@
   "creators": [
     {
       "name": "Abbasov, Mikail E.",
-      "affiliation": "Department of Pharmaceutical Sciences, University of Oklahoma Health Sciences Center",
-      "orcid": "PLACEHOLDER"
+      "affiliation": "Department of Pharmaceutical Sciences, University of Oklahoma Health Sciences Center"
     }
   ],
   "keywords": [
@@ -20,12 +19,5 @@
     "ligandability",
     "reproducible research"
   ],
-  "related_identifiers": [
-    {
-      "relation": "isSupplementTo",
-      "identifier": "PLACEHOLDER -- manuscript DOI once assigned",
-      "scheme": "doi"
-    }
-  ],
-  "notes": "Data files are licensed CC BY 4.0 (see LICENSE-DATA); the code is MIT. Some redistributed inputs carry upstream terms -- COSMIC restricts commercial use."
+  "notes": "Data files are licensed CC BY 4.0 (see LICENSE-DATA); the code is MIT. Some redistributed inputs carry upstream terms -- COSMIC restricts commercial use. ORCID and the manuscript DOI are added in the Zenodo web form after the release is imported."
 }

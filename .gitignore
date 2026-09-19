@@ -1,6 +1,6 @@
-# The deposited intermediates are ~246 MB and belong in the Zenodo archive, not in git.
-# Tier 1 (redraw any figure) needs only panel_data/, which is 0.8 MB and IS tracked.
-# deposited intermediates (~246 MB) live beside their readers; Zenodo only
+# The 20 deposited intermediates total 343 MB and are not redistributed, here or in the
+# archived release, which is a snapshot of this repository. Tier 1 (redraw any figure) needs
+# only panel_data/, 1.1 MB, which IS tracked. See the README section on gaps.
 ccle/fdp_p2.csv
 ccle/depmap_variants_annotated.parquet
 ccle/region_compare_*.tsv
@@ -16,7 +16,7 @@ release/
 __pycache__/
 *.pyc
 *.bak_*
-# search databases: 120 MB, needed only to re-derive Figure 8e's peptide count. Zenodo only.
+# search databases: 120 MB, needed only to re-derive Figure 8e's peptide count. Not redistributed.
 ccle/plex*_varpep.fasta
 ccle/plex*_downpep.fasta
 SpecQuality/
