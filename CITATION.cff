@@ -12,7 +12,7 @@ authors:
   - given-names: Mikail E.
     family-names: Abbasov
     affiliation: "Department of Pharmaceutical Sciences, University of Oklahoma Health Sciences Center"
-    # orcid: "https://orcid.org/0000-0000-0000-0000"   # FILL BEFORE PUBLISHING
+    orcid: "https://orcid.org/0000-0002-0542-9696"
 license: MIT
 license-url: "https://opensource.org/licenses/MIT"
 keywords:
