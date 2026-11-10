@@ -25,6 +25,10 @@ import figure_data as fd
 # One body type size for this figure; every other size is a ratio to it.
 BODY = 7.0
 st.apply(BODY)
+# The PNG raster. apply() resets rcParams, so this has to follow it, and every
+# main figure sets it. These ten did not, so they rendered at 600 dpi: twice the
+# pixels for the same canvas, which is not a finer figure, only a bigger file.
+plt.rcParams["savefig.dpi"] = 300
 
 def find(n):
     for d in (".", "..", "ligand_rebuild", "../ligand_rebuild"):
@@ -45,13 +49,24 @@ CHARGE = ["anionic_8A","cationic_8A","net_charge_8A","propka_pKa","salt_bridge",
 POCKET = ["in_pocket","dist_nearest_pocket","pocket_volume","pocket_score","pocket_drugscore"]
 FAM = lambda f: "charge" if f in CHARGE else ("pocket" if f in POCKET else "shape")
 NICE = lambda f: (f.replace("_8A"," 8Å").replace("_10A"," 10Å").replace("_"," ")
-                   .replace("rsa tien","exposure").replace("propka pKa","predicted pKa")
+                   .replace("rsa tien","exposure").replace("propka pKa","predicted pK$_a$")
                    .replace("nz sasa","NZ exposure").replace("sasa sidechain","side-chain exp.")
                    .replace("dist centroid","dist. to centroid").replace("n lys","nearby lysines")
                    .replace("dist nearest pocket","dist. to pocket"))
 
-fig = plt.figure(figsize=(st.DOUBLE, st.DOUBLE * 0.52))
-gs = fig.add_gridspec(1, 4, left=0.085, right=0.980, top=0.905, bottom=0.150, wspace=0.62,
+# ONE ROW, SIZED BY ITS LABEL COUNT. These four panels were 4.53 in tall against the family
+# row's 1.55, which made them 0.36 to 0.47 as wide as they were tall where the main figures
+# run 0.71 to 2.82. Panel a carries the most category labels; 1.68 family rows is what they
+# need at 0.129 in each.
+_ML, _MR = 0.9800, 0.2300      # left and right margins, inches
+_MB, _MT = 0.9500, 0.3800      # bottom and top margins, inches
+_WS = 0.62
+_FW = 11.5367
+_FH = st.block_h(1, 0.0, [1.84]) + _MB + _MT
+fig = plt.figure(figsize=(_FW, _FH))
+gs = fig.add_gridspec(1, 4, wspace=_WS,
+                      left=_ML / _FW, right=1 - _MR / _FW,
+                      top=1 - _MT / _FH, bottom=_MB / _FH,
                       width_ratios=[1.30, 1.0, 1.0, 1.0])
 
 # ---------------------------------------------------------------- a
@@ -76,13 +91,13 @@ for i, f in enumerate(feats):
                        significant=bool(r.q < 0.05)))
 fd.panel("figS8", "a", _A,
          note="each probe against unlabelled lysines, within protein; all 22 site features")
-ax.set_yticks(range(len(feats))); ax.set_yticklabels([NICE(f) for f in feats], fontsize=st.sz(5))
-ax.set_xlabel("preference vs unlabeled (d)", fontsize=st.sz(6.0))
+ax.set_yticks(range(len(feats))); ax.set_yticklabels([NICE(f) for f in feats], fontsize=st.sz(6.3))
+ax.set_xlabel("preference vs unlabeled (d)", fontsize=st.sz(6.3))
 ax.set_ylim(-2.6, len(feats) - 0.4); ax.set_xlim(-0.46, 0.50)
 for j, (nm, c, mk) in enumerate([("anionic probe", st.ORANGE, "o"), ("neutral probe", st.GREY, "s")]):
     yy = -1.35 - j * 0.62
     ax.plot([-0.43], [yy], mk, color=c, ms=3.2, mew=0, clip_on=False)
-    ax.text(-0.40, yy, nm, fontsize=st.sz(5), color=c, va="center")
+    ax.text(-0.40, yy, nm, fontsize=st.sz(6.3), color=c, va="center")
 for s_ in ("top", "right"): ax.spines[s_].set_visible(False)
 
 # ---------------------------------------------------------------- b
@@ -99,11 +114,11 @@ fd.panel("figS8", "b", sub[["uniprot", "position", "rsa_tien", "enclosure", "lab
          note=("the %d points drawn, a seed-0 subsample of %d lysines at pLDDT >= 70; "
                "Spearman rho %.4f and fit y = %.4f x + %.4f are computed on all %d"
                % (len(sub), len(M), rho, b[0], b[1], len(M))))
-ax.set_xlabel("relative solvent accessibility", fontsize=st.sz(6.0))
-ax.set_ylabel("enclosure", fontsize=st.sz(6.0))
+ax.set_xlabel("relative solvent accessibility", fontsize=st.sz(6.3))
+ax.set_ylabel("enclosure", fontsize=st.sz(6.3))
 ax.set_xlim(0, M.rsa_tien.quantile(0.999)); ax.set_ylim(0, 1.02)
 ax.text(0.97, 0.95, "ρ = %.2f\n%.0f%% shared" % (rho, 100 * rho ** 2), transform=ax.transAxes,
-        ha="right", va="top", fontsize=st.sz(5.2), color=st.BLUE, linespacing=1.4)
+        ha="right", va="top", fontsize=st.sz(6.3), color=st.BLUE, linespacing=1.4)
 for s_ in ("top", "right"): ax.spines[s_].set_visible(False)
 
 # ---------------------------------------------------------------- c
@@ -128,11 +143,11 @@ for i, (nm, v, c) in enumerate([("pooled\nacross sites", POOL_D, st.ORANGE),
                                 ("within\nprotein", WITH_D, st.BLUE)]):
     ax.barh([i], [v], height=st.BARW, color=c)
     ax.text(v + (0.006 if v > 0 else -0.006), i, "%+.3f" % v, va="center",
-            ha="left" if v > 0 else "right", fontsize=st.sz(5.6), color=c)
+            ha="left" if v > 0 else "right", fontsize=st.sz(6.3), color=c)
 ax.axvline(0, color=st.GREY, lw=0.9)
 ax.set_yticks([0, 1]); ax.set_yticklabels(["pooled\nacross sites", "within\nprotein"],
-                                          fontsize=st.sz(5.2), linespacing=1.35)
-ax.set_xlabel("enclosure, labeled vs unlabeled (d)", fontsize=st.sz(6.0))
+                                          fontsize=st.sz(6.3), linespacing=1.35)
+ax.set_xlabel("enclosure, labeled vs unlabeled (d)", fontsize=st.sz(6.3))
 ax.set_xlim(-0.075, 0.115); ax.set_ylim(-0.7, 1.7)
 for s_ in ("top", "right", "left"): ax.spines[s_].set_visible(False)
 ax.tick_params(axis="y", length=0)
@@ -154,8 +169,8 @@ for i, (nm, lo, hi, c) in enumerate([("NASA neutral\n(assumed)", OBS, OBS, st.BL
         ax.plot([lo], [i], "o", color=c, ms=4.0, mew=0)
 ax.axvline(0, color=st.GREY, lw=0.8)
 ax.set_yticks([0, 1]); ax.set_yticklabels(["NASA neutral\n(assumed)", "NASA partly\nionized"],
-                                          fontsize=st.sz(5.2), linespacing=1.35)
-ax.set_xlabel("true reagent effect,\ncationic 8Å (d)", fontsize=st.sz(6.0), linespacing=1.4)
+                                          fontsize=st.sz(6.3), linespacing=1.35)
+ax.set_xlabel("true reagent effect,\ncationic 8Å (d)", fontsize=st.sz(6.3), linespacing=1.4)
 ax.set_xlim(0, 0.52); ax.set_ylim(-0.7, 1.7)
 for s_ in ("top", "right", "left"): ax.spines[s_].set_visible(False)
 ax.tick_params(axis="y", length=0)

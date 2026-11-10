@@ -67,10 +67,10 @@
    "f"
   ],
   "mid_list": false,
-  "entry": "(F) The downstream peptide gives 15 sites, 7 shared with the first route and 8 new, 61 in the union. It returned zero entrapment hits across 42 experiments (figure S4d) against 0.58% for variant-containing peptides in the same searches, which is why the two are kept apart. Of the 53 mutant-peptide sites, 41 rest on a single spectrum and 12 on two or more; of the 30 past the margin, 24 and six (figure S3e).",
-  "kept": "(F) The downstream peptide gives 15 sites, 7 shared with the first route and 8 new, 61 in the union. It returned zero entrapment hits across 42 experiments (figure S4d) against 0.58% for variant-containing peptides in the same searches, which is why the two are kept apart. Values in Table S2.",
+  "entry": "(F) The downstream peptide gives 15 sites, 7 shared with the first route and 8 new, 61 in the union. It returned zero entrapment hits across 42 experiments (Figure S4D) against 0.58% for variant-containing peptides in the same searches, which is why the two are kept apart. Of the 53 mutant-peptide sites, 41 rest on a single spectrum and 12 on two or more; of the 30 past the margin, 24 and six (Figure S3E).",
+  "kept": "(F) The downstream peptide gives 15 sites, 7 shared with the first route and 8 new, 61 in the union. It returned zero entrapment hits across 42 experiments (Figure S4D) against 0.58% for variant-containing peptides in the same searches, which is why the two are kept apart. Values in Table S2.",
   "moved": [
-   "Of the 53 mutant-peptide sites, 41 rest on a single spectrum and 12 on two or more; of the 30 past the margin, 24 and six (figure S3e)."
+   "Of the 53 mutant-peptide sites, 41 rest on a single spectrum and 12 on two or more; of the 30 past the margin, 24 and six (Figure S3E)."
   ]
  },
  {
@@ -141,8 +141,8 @@
    "e"
   ],
   "mid_list": false,
-  "entry": "(E) The permutation test, over the gate ladder and against the null. Two stacked axes. Agreement is the correlation, across the features of one kind, between a feature's effect on reactivity and its effect on ligandability. The upper axis is that agreement as the gate tightens: charge stays at 0.98 to 0.99 throughout while shape falls 0.97, 0.90, 0.77, 0.35 at gates of none, 50, 70 and 90. Printed above each gate is the exact one-sided permutation p for the gap between the two kinds at that gate: 0.412, 0.034, 0.009 and 0.003. The lower is the null itself, all 5,005 ways of splitting these fifteen features six against nine, with both observed values marked: +0.009 ungated and +0.639 gated. Both are stated because either alone misleads, and figure S5g is the control against the gate keeping only the strongest sites.",
-  "kept": "(E) The permutation test, over the gate ladder and against the null. Two stacked axes. Agreement is the correlation, across the features of one kind, between a feature's effect on reactivity and its effect on ligandability. Printed above each gate is the exact one-sided permutation p for the gap between the two kinds at that gate: 0.412, 0.034, 0.009 and 0.003. Both are stated because either alone misleads, and figure S5g is the control against the gate keeping only the strongest sites. Values in Table S2.",
+  "entry": "(E) The permutation test, over the gate ladder and against the null. Two stacked axes. Agreement is the correlation, across the features of one kind, between a feature's effect on reactivity and its effect on ligandability. The upper axis is that agreement as the gate tightens: charge stays at 0.98 to 0.99 throughout while shape falls 0.97, 0.90, 0.77, 0.35 at gates of none, 50, 70 and 90. Printed above each gate is the exact one-sided permutation p for the gap between the two kinds at that gate: 0.412, 0.034, 0.009 and 0.003. The lower is the null itself, all 5,005 ways of splitting these fifteen features six against nine, with both observed values marked: +0.009 ungated and +0.639 gated. Both are stated because either alone misleads, and Figure S5G is the control against the gate keeping only the strongest sites.",
+  "kept": "(E) The permutation test, over the gate ladder and against the null. Two stacked axes. Agreement is the correlation, across the features of one kind, between a feature's effect on reactivity and its effect on ligandability. Printed above each gate is the exact one-sided permutation p for the gap between the two kinds at that gate: 0.412, 0.034, 0.009 and 0.003. Both are stated because either alone misleads, and Figure S5G is the control against the gate keeping only the strongest sites. Values in Table S2.",
   "moved": [
    "The upper axis is that agreement as the gate tightens: charge stays at 0.98 to 0.99 throughout while shape falls 0.97, 0.90, 0.77, 0.35 at gates of none, 50, 70 and 90.",
    "The lower is the null itself, all 5,005 ways of splitting these fifteen features six against nine, with both observed values marked: +0.009 ungated and +0.639 gated."
@@ -215,8 +215,8 @@
    "e"
   ],
   "mid_list": false,
-  "entry": "(E) Concavity belongs to the site, not the reagent. Enclosure d = +0.073 (q = 1.1 × 10⁻⁵) for labeled against unlabeled lysines, and d = 0.019 (q = 0.71) between the two probes. See also Figures S8B and S8c.",
-  "kept": "(E) Concavity belongs to the site, not the reagent. See also Figures S8B and S8c. Values in Table S2.",
+  "entry": "(E) Concavity belongs to the site, not the reagent. Enclosure d = +0.073 (q = 1.1 × 10⁻⁵) for labeled against unlabeled lysines, and d = 0.019 (q = 0.71) between the two probes. See also Figures S8B and S8C.",
+  "kept": "(E) Concavity belongs to the site, not the reagent. See also Figures S8B and S8C. Values in Table S2.",
   "moved": [
    "Enclosure d = +0.073 (q = 1.1 × 10⁻⁵) for labeled against unlabeled lysines, and d = 0.019 (q = 0.71) between the two probes."
   ]

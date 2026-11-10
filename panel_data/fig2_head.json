@@ -1,7 +1,7 @@
 {
  "script": "fig2_v3.py",
  "stem": "fig2",
- "written": "2026-11-08",
+ "written": "2026-11-10",
  "numbers": {
   "a_downstream_len": 12,
   "a_mut_detected": 1,

@@ -7,13 +7,13 @@ notes, decision records and drafting commentary are stripped and live in the sec
 
 SI_FIGS = [
  dict(no="S1", fig="figS1.png", parent="Figure 1", title="The substitution matrix in full.", cap=[
-  "**(A) The complete 20 × 20 substitution matrix.** Direct counts from the union, normalised over the whole matrix rather than per row, so cells are comparable across rows.",
-  "**(B) Against a trinucleotide-context expectation, E→K is barely enriched.** Observed over expected for the twelve commonest substitutions: E→K = 1.12, against three CpG hotspots that dominate the panel (R→H 3.59, R→C 3.38, R→Q 3.16).",
-  "**(C) gnomAD frequency bands as shares.** Absent 52.2%, below 10⁻⁵ 32.8%, 10⁻⁵–10⁻⁴ 6.5%, 10⁻⁴–10⁻³ 1.1%, above 10⁻³ 0.7%, not assessed 6.7%. 91.1% of assessed sites are absent or below 10⁻⁵.",
-  "**(D) Which residues are gained.** Sites gained per residue across the union. Lysine is fourth at 295,411; cysteine eleventh at 211,386.",
-  "**(E) Net flux, gains minus losses.** Lysine gains 295,411 and loses 164,237, netting 131,174 and ranking fifth. Cysteine nets 144,683 and ranks second, because cysteine is rarely lost (66,703).",
-  "**(F) Gains are one substitution class; losses are every other one.** Lysine gain is 85.5% C>T and 0% T>C; lysine loss is 0% C>T and spread across the other five. All missense sits between, at 51.1% C>T.",
-  "**(G) The asymmetry is not inherited from the background spectrum.** The signature control, per lineage.",
+  "**(A) The complete 20 × 20 substitution matrix.** Direct counts from the union, normalised over the whole matrix rather than per row, so cells are comparable across rows. The whole matrix sums to 100%, and a white cell was never observed.",
+  "**(B) Against a trinucleotide-context expectation, E→K is barely enriched.** Observed over expected for the twelve commonest substitutions: E→K = 1.12, against three CpG hotspots that dominate the panel (R→H 3.59, R→C 3.38, R→Q 3.16). The expectation is built from trinucleotide context and codon usage, and R→Q, R→H and R→C are the CpG hotspots.",
+  "**(C) gnomAD frequency bands as shares.** Absent 52.2%, below 10⁻⁵ 32.8%, 10⁻⁵ to 10⁻⁴ 6.5%, 10⁻⁴ to 10⁻³ 1.1%, above 10⁻³ 0.7%, not assessed 6.7%. 91.1% of assessed sites are absent or below 10⁻⁵.",
+  "**(D) Which residues are gained.** Sites gained per residue across the union. Lysine is fourth at 295,411; cysteine eleventh at 211,386, so acquired lysines outnumber acquired cysteines 1.40-fold.",
+  "**(E) Net flux, gains minus losses.** Lysine gains 295,411 and loses 164,237, netting 131,174 and ranking fifth. Cysteine nets 144,683 and ranks second, because cysteine is rarely lost (66,703) and so nets higher on far smaller numbers. Lysine turns over more.",
+  "**(F) Gains are one substitution class; losses are every other one.** Lysine gain is 85.5% C>T and 0% T>C; lysine loss is 0% C>T and spread across the other five. All missense sits between, at 51.1% C>T. Missense only, so the three sets are like for like; nonsense adds 3,020 further losses, all T>A.",
+  "**(G) The asymmetry is not inherited from the background spectrum.** The signature control, per lineage, ordered by each cancer's own C>T content, from tobacco-driven lung (LUAD, 22%) to ultraviolet melanoma (SKCM, 86%). Gains follow that ordering; losses do not, and lysine loss is 0.0% C>T in every lineage.",
 
   "**(H) Every residue, not only lysine, and cysteine on the identical calculation.** Somatic "
   "share of the missense burden divided by germline share, for all twenty residues, ordered by the "
@@ -34,7 +34,6 @@ SI_FIGS = [
  dict(no="S2", fig="figS2.png", parent="Figure 2", title="The non-lysine control and what limits detection.", cap=[
   "**(A) The two gates, both classes.** 1,902 variant sites that do not create a lysine, through the identical pipeline. Acquired lysines (n = 8,470): gate 1 7.3% covered, gate 2 4.4% recovered. Other variants (n = 1,902): 4.6% and 6.9%. Acquired lysines are covered more and recovered less, because a non-lysine variant shares peptide boundaries with the wild-type peptide that established coverage while an acquired lysine produces a different peptide.",
   "**(B) Peptide length, both classes.** Medians 13 against 14 residues, so the difference in panel A is not a length artefact.",
-  "Missed cleavage in panels C and D is missed / (missed + cleaved) among IDENTIFIED peptides, as the field reports it. A cleavage site that produced no observable peptide appears in neither term, so this is not a digestion efficiency in the absolute sense.",
   "**(C) Cleavage after arginine fails about twice as often as cleavage after lysine.** Peptides carrying a missed cleavage at the site, split by whether the first basic residue is K or R, PSM-weighted and by distinct sequence: K 15.0% / 23.6%; R 29.4% / 37.0%.",
   "**(D) Acquired-lysine peptides are digested like any other.** Missed cleavage across all identified peptides: 23.8% for peptides carrying an acquired lysine against 21.6% background.",
   "*Panels C and D report missed / (missed + cleaved) among identified peptides, as the field reports it. A cleavage site that produced no observable peptide appears in neither term, so each is a lower bound on how often the protease fails rather than a digestion efficiency in the absolute sense.*",
@@ -74,29 +73,29 @@ SI_FIGS = [
   "same per-observation table as panels A\u2013e.",
  ]),
  dict(no="S4", fig="figS4.png", parent="Figure 3", title="The entrapment design in full.", cap=[
-  "**(A) The four-way design.** 589,588 variant-pair rows read from 8 plexes; entrapment sets of 147,397 each. 100% of entrapment sequences share residues with their target.",
-  "**(B) Length matching.** Peptide-length densities for the two sets, identical by construction.",
+  "**(A) The four-way design.** 589,588 variant-pair rows read from 8 plexes; entrapment sets of 147,397 each. 100% of entrapment sequences share residues with their target. Each set holds 147,397 peptides. The entrapment peptide is its target’s own residues permuted, with the C-terminal K or R kept, so it carries an identical mass and is still tryptic, and every entrapment identification is an observed false positive.",
+  "**(B) Length matching.** Peptide-length densities for the two sets, identical by construction. Target is the filled block and entrapment the line over it.",
   "**(C) What the shuffle preserves.** C-terminal residue composition. Each entrapment peptide is its target's own residues permuted with the C-terminal K or R kept, so the pair shares an exact precursor mass and only fragment ions distinguish them. 100% of pairs share the same residues in a different order, so they have an identical precursor mass and only fragment ions discriminate. The R:K split survives because the C-terminal residue is held fixed.",
-  "**(D) Boundary control.** Identifications across 42 experiments, all against those surviving margin ≥ 10: downstream target 58 → 25; boundary control (the same region shifted one residue, tryptic in neither protein) 2 → 0; entrapment for the downstream route 0 → 0.",
-  "**(E) Per-plex FDP.** 42 plexes ordered by identifications, 0.00% to 9.52%, pooled 0.58%.",
-  "**(F) Nominal against observed FDR.** On plex 2 (79,365 identifications) the nominal q-value from decoys reaches 0.60% where the observed proportion from entrapment reaches 0.99%, decoys underestimate by 1.7-fold.",
+  "**(D) Boundary control.** Identifications across 42 experiments, all against those surviving margin ≥ 10: downstream target 58 → 25; boundary control (the same region shifted one residue, tryptic in neither protein) 2 → 0; entrapment for the downstream route 0 → 0. The boundary control is the same region shifted one residue, tryptic in neither the wild-type nor the mutant protein.",
+  "**(E) Per-plex FDP.** 42 plexes ordered by identifications, 0.00% to 9.52%, pooled 0.58%. 38 of the 42 experiments contributed no entrapment identification at all.",
+  "**(F) Nominal against observed FDR.** On plex 2 (79,365 identifications) the nominal q-value from decoys reaches 0.60% where the observed proportion from entrapment reaches 0.99%, decoys underestimate by 1.7-fold. The diagonal is where the two would agree.",
   "**(G) All four sets.** Score-margin densities. Entrapment peptides are identified, and score like a population that cannot be present should.",
-  "**(H) A published estimator, on the whole search.** The Wen et al. estimator over the entire plex-2 search (79,365 identifications, not the variant subset), so it is not comparable with the 0.58% above.",
+  "**(H) A published estimator, on the whole search.** The Wen et al. estimator over the entire plex-2 search (79,365 identifications, not the variant subset), so it is not comparable with the 0.58% above. This runs over the whole plex-2 search rather than the variant subset, so it is not comparable with the 0.58% in panel E.",
  ]),
  dict(no="S5", fig="figS5.png", parent="Figure 4", title="What the confidence gate does.", cap=[
   "**(A) The tiering null.** Five series. The steepest slope per tier is 0.013, against 0.083 for ligandability, 6.3 times smaller, and the same feature appears on both sides. **(B) Every feature, both gates.** 15 features. **(C) Leave-one-out robustness.** 15 features, the same set as Figure 4, each dropped in turn.",
   "**(D) Dimensionality.** Principal components explain 46.3, 28.8, 18.5, 6.4 and 0.0% of variance for reactivity and 48.9, 14.5, 7.8, 7.3, 4.9 and 4.6% for ligandability; reactivity is close to three-dimensional, ligandability is not. 5 charge features reduce to 3 axes and 14 ligandability features to 5. Each set is redundant and neither collapses to one axis, but they are different sets on different populations, so this is not 3 against 5.",
   "**(E) Mutual adjustment.** Each charge feature on its own against the same feature adjusted for the others. Salt bridge was anionic-neighbor density in another form, and does not survive the adjustment.",
   "**(F) What the gate removes, shown rather than asserted.** Two real engaged sites, each rendered whole-protein and as the lysine with everything within 8 Å, from the same AlphaFold models the features are measured on. PFKL K677, pLDDT 95, 43 compounds at 100% occupancy, kept. LYSMD4 K72 (UniProt Q6MZR2, which the deposited site table carries under its TrEMBL clone name DKFZp779J2370), pLDDT 28, 3 compounds at 95% occupancy, discarded. The same 8 Å sphere: in one of them there is no structure to measure.",
-  "**(G) The gate is not a strength filter**, the control that excludes the objection that gating simply keeps the strongest sites.",
+  "**(G) The gate is not a strength filter**, the control that excludes the objection that gating simply keeps the strongest sites. Median occupancy is flat across the whole confidence range, so the gate removes sites whose features cannot be measured rather than sites that are weakly engaged. The counts above the panel are the sites it discards and the sites it keeps.",
  ]),
  dict(no="S6", fig="figS6.png", parent="Figure 5", title="The ceiling, and the limit.", cap=[
-  "**(A) The ceiling per dataset**, against how deeply each screen is split. Intervals are the 2.5th to 97.5th percentile across 50 random half-splits, the same construction as Figure 5A. The two shallow screens reach 0.881 to 0.938, but at engaged rates of 0.6 to 2.3%, where a few dozen positives make an AUC unstable. The fragment screen is the only screen deep enough to measure a ceiling at a realistic engaged rate, and its ceiling is still rising at 20 compounds per half, so 0.723 is a lower bound. The deeper the split, the less noisy the label.",
+  "**(A) The ceiling per dataset**, against how deeply each screen is split. The key names the screens; each one's median compounds per site and the share of its sites engaged at the deepest split are in Table S2. Intervals are the 2.5th to 97.5th percentile across 50 random half-splits, the same construction as Figure 5A. The two shallow screens reach 0.881 to 0.938, but at engaged rates of 0.6 to 2.3%, where a few dozen positives make an AUC unstable. The fragment screen is the only screen deep enough to measure a ceiling at a realistic engaged rate, and its ceiling is still rising at 20 compounds per half, so 0.723 is a lower bound. The deeper the split, the less noisy the label.",
   "**(B) Single features against the composite.** Each of the 14 features alone, against the composite, held out by protein. The composite reaches 0.617 against 0.598 for the best single feature, distance to the protein centroid, a gain of +0.019. The 14 features are not independent.",
   "**(C) Every coefficient.** The 14 composite coefficients, averaged over the 20 protein-held-out splits, with each feature’s own AUC on the twin axis. An AUC below 0.5 is an inverted feature rather than a weak one: distance to the centroid reads 0.402, which is 0.598 with the sign flipped.",
   "**(D) Train against held-out.** Train 0.619, held-out 0.617, optimism +0.002. Intervals are the 2.5th to 97.5th percentile across the 20 protein-held-out splits, the same construction as Figure 5A and 5C. The model is not overfit. It is fitting all there is to fit, and that is the point.",
   "**(E) The breadth gradient, adjusted for testing depth**: 21 breadth features, the control for the objection that broadly engaged sites are simply the sites tested most often. Holding depth constant strengthens most of the gradient and flips 3 features outright.",
-  "**(F) Two chemotypes agree.** 13 chemotype features. None of the 13 differs significantly between the two chemotypes, and the same sites are engaged by both (26 of 8,211 shared, 5.5 expected, OR 6.05), so one general composite is defensible. The three most discordant features are named in the panel.",
+  "**(F) Two chemotypes agree.** 13 chemotype features, each a point, unlabelled because thirteen names do not fit the panel; the three that disagree most between the chemotypes are net charge 8 Å, anionic 8 Å and hydrophobic 8 Å, and every per-feature value is in panel C and Table S2. None of the 13 differs significantly between the two chemotypes, and the same sites are engaged by both (26 of 8,211 shared, 5.5 expected, OR 6.05), so one general composite is defensible. The three most discordant features are named in the panel.",
   "**(G) Across datasets, a limit, not a result.** This is the only cross-dataset evidence in the paper and the weakest evidence in it, and Figure 5F depends on it. The group carrying the cross-dataset claim is 25 sites in 21 dimensions, and 2 of 6 pairs fall short of their null over 2,000 label shuffles. Figure 5F repeats this test along the breadth gradient within one dataset, and this panel is what happens when it is asked across two. Gray is the null, teal clears it, rust does not.",
  ]),
  dict(no="S7", fig="figS7.png", parent="Figure 6", title="The confound, and what no descriptor can see.", cap=[
@@ -279,8 +278,8 @@ SI_NOTES = [
   "axis: side-chain solvent accessibility \u22120.362, relative accessibility \u22120.350, "
   "N\u03b6 accessibility \u22120.338, atom count +0.369 and crowding +0.368. The pocket terms ride "
   "on it, distance \u22120.135 and in-pocket +0.118, while the charge terms are at zero, net charge "
-  "\u22120.032 and predicted pKa \u22120.020. PC2 carries 13.9% and is the charge axis: predicted "
-  "pKa \u22120.471, anionic contacts \u22120.406, salt bridges \u22120.384, with the pocket terms "
+  "\u22120.032 and predicted pKₐ \u22120.020. PC2 carries 13.9% and is the charge axis: predicted "
+  "pKₐ \u22120.471, anionic contacts \u22120.406, salt bridges \u22120.384, with the pocket terms "
   "back at zero, distance \u22120.066 and volume +0.024. The two properties travel on different "
   "components, so the pocket result is not the charge result under another name."]),
  ("N6",  "withdraw", "Cavity volumes and the covalent-proximity argument. WITHDRAWN: the figures it rested on (41.6% of lysines within 5 Å of a cavity, 10.3% of cavities large enough) appear in no step report and do not reproduce, and step 19's in_pocket IS dist_nearest_pocket ≤ 5, so the two halves of the sentence were one variable. Figure 7E replaces the argument with enclosure, measured independently of both fpocket and solvent accessibility."),
@@ -606,13 +605,13 @@ SI_TABLES = [dict(
     "tumour sequencing, and one of ten expressed and assayed directly; all ten raised "
     "phosphorylation of the mTORC1 and mTORC2 substrates S6K1, 4EBP1 or AKT1 [[grabiner2014]]. "
     "Two cancer lines carry it natively, HEC59 (endometrium) and SNU349 (kidney), with "
-    "rapamycin IC50 values of 0.49 and 0.19 nmol/L against 500 nmol/L for a line carrying a "
+    "rapamycin IC₅₀ values of 0.49 and 0.19 nmol/L against 500 nmol/L for a line carrying a "
     "non-activating MTOR mutation, and rapamycin halted HEC59 xenograft growth outright "
     "[[grabiner2014]]. HEC59 is the model in which this site clears all three gates here.",
     "Gain of function", "[[grabiner2014]]"),
    ("XRCC5 E621K", "Clears all three gates (fig S10c)",
     "No mutation-specific functional study identified. XRCC5 (Ku80) partners Ku70, whose K351 is "
-    "one of the liganded lysines in the fragment screen [[abbasov2021]].", "Not assessed", "\u2014"),
+    "one of the liganded lysines in the fragment screen [[abbasov2021]].", "Not assessed", "None"),
    ("PIK3CD E1021K", "Clears all three gates (fig S10c)",
     "The one acquired lysine here with a proven gain of function, established in the germline "
     "rather than in cancer: E1021K is the canonical allele of activated PI3K\u03b4 syndrome, and "

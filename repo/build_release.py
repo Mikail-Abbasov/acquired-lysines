@@ -127,6 +127,7 @@ ALWAYS = [
     "ccle/manuscript/si.py",
     "ccle/manuscript/refs.py",
     "ccle/manuscript/seams_check.py",
+    "ccle/manuscript/si_pages.py",
     "repo/build_manifest.py",
     "repo/build_release.py",
     "repo/verify.py",

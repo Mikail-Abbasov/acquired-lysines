@@ -33,6 +33,10 @@ import figure_data as fd
 # One body type size for this figure; every other size is a ratio to it.
 BODY = 7.0
 st.apply(BODY)
+# The PNG raster. apply() resets rcParams, so this has to follow it, and every
+# main figure sets it. These ten did not, so they rendered at 600 dpi: twice the
+# pixels for the same canvas, which is not a finer figure, only a bigger file.
+plt.rcParams["savefig.dpi"] = 300
 
 def find(n):
     for d in (".", "..", "ligand_rebuild", "../ligand_rebuild"):
@@ -52,7 +56,7 @@ C40 = pd.read_csv(find("step40_continuous.csv"))
 S37 = pd.read_csv(find("step37_within_compound.csv"))
 
 NICE = lambda f: (f.replace("_8A", " 8Å").replace("_10A", " 10Å").replace("_", " ")
-                   .replace("rsa tien", "exposure").replace("propka pKa", "predicted pKa")
+                   .replace("rsa tien", "exposure").replace("propka pKa", "predicted pK$_a$")
                    .replace("nz sasa", "NZ exposure").replace("sasa sidechain", "side-chain exp.")
                    .replace("dist centroid", "dist. to centroid").replace("n lys", "nearby lysines")
                    .replace("dist nearest pocket", "dist. to pocket")
@@ -89,10 +93,24 @@ HEAD = {}   # headline numbers per panel, captured where they are computed
 # pitch; row 0 gave it 102, and adjacent feature names printed through each other. The
 # type cannot come down, so the figure gets taller. Same cause as fig7 panel b. Panel f is
 # the binding one, not c: 10 rows in a 235 px axes, 11% short of what the labels need.
-fig = plt.figure(figsize=(st.DOUBLE, st.DOUBLE * 1.08))
-gs = fig.add_gridspec(3, 3, hspace=0.66, wspace=0.46,
-                      left=0.072, right=0.982, top=0.945, bottom=0.058,
-                      width_ratios=[1.0, 1.0, 1.0], height_ratios=[1.0, 1.0, 0.82])
+# ALL FOUR MARGINS IN INCHES, AND THE CANVAS SOLVED FROM THE PANEL BLOCK, which is how every
+# main figure is built. The height follows from the y axis, not the other way round: block_h
+# gives the block that puts a unit row on the family's 1.55020 in. Sized by aspect instead,
+# this sheet drew y axes far longer than the family's 483.6 px.
+_ML, _MR = 0.8306, 0.2077      # left and right margins, inches
+_MB, _MT = 0.7515, 0.4200      # bottom and top margins, inches
+_WS, _HS = 0.46, 0.66           # column and row spacing, fractions of the average panel
+_FW = 11.5367                  # 3461 px at 300 dpi, which finalizes to 3600 px and 12.00 in
+# ROW HEIGHT FROM THE LABEL COUNT, not from the family row alone. Panel b fits twelve
+# category labels in a family row at 0.129 in each and reads cleanly; panel c has fifteen of
+# them in the same box, which is 0.103 in and bunched. 1.25 family rows gives c exactly b's
+# pitch, and gives panel f's ten the same. The sheet is deeper for it.
+_FH = st.block_h(3, _HS, [1.25, 1.25, 0.82]) + _MB + _MT
+fig = plt.figure(figsize=(_FW, _FH))
+gs = fig.add_gridspec(3, 3, hspace=_HS, wspace=_WS,
+                      width_ratios=[1.0, 1.0, 1.0], height_ratios=[1.25, 1.25, 0.82],
+                      left=_ML / _FW, right=1 - _MR / _FW,
+                      top=1 - _MT / _FH, bottom=_MB / _FH)
 
 # ---------------------------------------------------------------- a: name the confound
 ax = fig.add_subplot(gs[0, 0]); st.head(fig, ax, "a")
@@ -114,11 +132,11 @@ y = np.arange(len(order))[::-1]
 for yy, d in zip(y, order):
     n = int(cnt.get(d, 0))
     ax.barh([yy], [n], height=st.BARW, color=st.ORANGE if n > 0 else st.LIGHTGREY)
-    ax.text(-0.12, yy, str(d).replace("_", " "), ha="right", va="center", fontsize=st.sz(5.2),
+    ax.text(-0.12, yy, str(d).replace("_", " "), ha="right", va="center", fontsize=st.sz(6.3),
             color=st.GREY, fontweight="bold" if n > 0 else "normal")
 ax.set_yticks([])
 ax.set_xlabel("pairs clearing q < 0.05 when the three\ndatasets are pooled",
-              fontsize=st.sz(6.0), linespacing=1.4)
+              fontsize=st.sz(6.3), linespacing=1.4)
 ax.set_xlim(0, max(cnt.values) * 1.18); ax.set_ylim(-1.2, len(order) - 0.4)
 # "within NatChem" named the journal the screen was published in. The manuscript calls that
 # screen the fragment screen, and a panel cannot carry a superscript reference, so the panel
@@ -128,7 +146,7 @@ ax.text(0.97, 0.05, "%d of %d pooled (%d compounds)\n%d of %d within the fragmen
         % (len(SIG), len(POOL), int(POOL.n.iloc[0]),
            int((NATC.q < 0.05).sum()), len(NATC), int(NATC.n_compounds.iloc[0]),
            int((SLOP.q < 0.05).sum()), len(SLOP), int(SLOP.n.iloc[0])),
-        transform=ax.transAxes, ha="right", va="bottom", fontsize=st.sz(5.0), color=st.ORANGE,
+        transform=ax.transAxes, ha="right", va="bottom", fontsize=st.sz(6.3), color=st.ORANGE,
         fontweight="bold", linespacing=1.4)
 for s_ in ("top", "right", "left"): ax.spines[s_].set_visible(False)
 HEAD["a_n_pairs_tested"] = int(len(POOL))
@@ -158,14 +176,14 @@ for i, (f_, sl, sd, q_, sig) in enumerate(S):
     ax.plot([sl - 1.96 * se, sl + 1.96 * se], [i, i], color=c, lw=1.3, solid_capstyle="round")
     ax.plot([sl], [i], "o", color=c, ms=3.6, mew=0)
 ax.axvline(0, color=st.GREY, lw=0.8)
-ax.set_yticks(y); ax.set_yticklabels([NICE(r[0]) for r in S], fontsize=st.sz(5.2))
+ax.set_yticks(y); ax.set_yticklabels([NICE(r[0]) for r in S], fontsize=st.sz(6.3))
 ax.set_xlabel("how much the preference strengthens\nper 100 points of occupancy",
-              fontsize=st.sz(6.0), linespacing=1.4)
+              fontsize=st.sz(6.3), linespacing=1.4)
 ax.set_xlim(-0.55, 0.55); ax.set_ylim(-0.6, len(S) + 0.3)
 # Top left is empty: the strongest slopes are positive and sit right.
 ax.text(0.02, 0.98, "%d of %d\nn = %d compounds"
         % (sum(1 for r in SLOPE if r[4]), len(SLOPE), _NCMP),
-        transform=ax.transAxes, ha="left", va="top", fontsize=st.sz(5.4), color=st.BLUE, linespacing=1.4)
+        transform=ax.transAxes, ha="left", va="top", fontsize=st.sz(6.3), color=st.BLUE, linespacing=1.4)
 for s in ("top", "right"): ax.spines[s].set_visible(False)
 HEAD["b_n_features"] = int(len(SLOPE))
 HEAD["b_n_features_strengthening"] = int(sum(1 for r in SLOPE if r[4]))
@@ -191,10 +209,15 @@ for m_ in MEAS:
     ax.plot([d.rho.get(f, np.nan) for f in feats], y, mk, color=c, ms=3.0, mew=0,
             label="%s (%d of %d)" % (LBLM[m_], int((d.q < 0.05).sum()), len(d)))
 ax.axvline(0, color=st.GREY, lw=0.8)
-ax.set_yticks(y); ax.set_yticklabels([NICE(f) for f in feats], fontsize=st.sz(5))
-ax.set_xlabel("correlation with occupancy (Spearman ρ)", fontsize=st.sz(6.0))
-ax.set_ylim(-6.3, len(feats) + 0.6)   # blank strip below for the legend; no caption above
-ax.legend(frameon=False, fontsize=st.sz(5), loc="lower left", handletextpad=0.3, borderaxespad=0.3)
+ax.set_yticks(y); ax.set_yticklabels([NICE(f) for f in feats], fontsize=st.sz(6.3))
+ax.set_xlabel("correlation with occupancy (Spearman ρ)", fontsize=st.sz(6.3))
+# THE BLANK STRIP WAS THE DEFECT. Reserving 6.3 units below the categories for the key
+# squeezed fifteen rows into two thirds of the axis, which is why these ticks bunched and
+# panel b's, on the same cell with no strip, did not. Same limits as b now, and the key goes
+# to the lower right, where the sort puts the most negative rho and leaves the corner empty.
+ax.set_ylim(-0.6, len(feats) + 0.3)
+ax.legend(frameon=False, fontsize=st.sz(6.3), loc="lower right", handletextpad=0.3,
+          borderaxespad=0.3)
 # The caption used to sit bottom-right, directly on the legend. The top-left corner is empty
 # because features are sorted by rho, so the highest rows are the ones furthest right.
 
@@ -212,16 +235,16 @@ fd.panel("figS7", "c",
 # ---------------------------------------------------------------- d: decile profile
 ax = fig.add_subplot(gs[1, 0]); st.head(fig, ax, "d")
 DLB = {"rsa_tien": "exposure", "crowding_": "crowding 8Å", "atoms_10A": "atoms 10Å",
-       "propka_pK": "predicted pKa", "in_pocket": "in pocket"}
+       "propka_pK": "predicted pK$_a$", "in_pocket": "in pocket"}
 DC = [st.ORANGE, st.BLUE, st.BLUE, st.ORANGE, st.GREEN]
 xs = [d[2] for d in DEC]
 for j, h in enumerate(dhdr):
     ax.plot(xs, [d[3][j] for d in DEC], "-o", color=DC[j], lw=1.0, ms=2.4, mew=0,
             ls="-" if j % 2 == 0 else "--", label=DLB.get(h, h))
 ax.axhline(0, color=st.LIGHTGREY, lw=0.8)
-ax.set_xlabel("median highest occupancy in the decile (%)", fontsize=st.sz(6.0))
-ax.set_ylabel("shift from the lowest decile", fontsize=st.sz(6.0))
-ax.legend(frameon=False, fontsize=st.sz(5), loc="lower left", handlelength=1.4, ncol=2,
+ax.set_xlabel("median highest occupancy in the decile (%)", fontsize=st.sz(6.3))
+ax.set_ylabel("shift from the lowest decile", fontsize=st.sz(6.3))
+ax.legend(frameon=False, fontsize=st.sz(6.3), loc="lower left", handlelength=1.4, ncol=2,
           columnspacing=0.9, borderaxespad=0.3)
 ax.set_ylim(-0.34, 0.32)
 HEAD["d_n_deciles"] = int(len(DEC))
@@ -242,15 +265,15 @@ for cut, rows, mono in CUTS:
     c = st.ORANGE if not mono else (st.BLUE if cut == 60 else st.GREY)
     lw_ = 1.3 if cut == 60 else (1.1 if not mono else 0.8)
     ax.plot(xs, [r[1] for r in rows], "-o", color=c, lw=lw_, ms=2.9 if cut == 60 else 2.3, mew=0)
-    ax.text(len(rows) - 0.9, rows[-1][1], "  %d%%" % cut, fontsize=st.sz(5), color=c, va="center",
+    ax.text(len(rows) - 0.9, rows[-1][1], "  %d%%" % cut, fontsize=st.sz(6.3), color=c, va="center",
             fontweight="bold" if (not mono or cut == 60) else "normal")
 _NREF = 50                       # the reference line this panel draws, named once
 ax.axhline(_NREF, color=st.GREY, lw=0.9, ls=(0, (3, 1.6)))
-ax.text(0.02, _NREF + 2, "%d sites" % _NREF, fontsize=st.sz(5), color=st.GREY, va="bottom")
+ax.text(0.02, _NREF + 2, "%d sites" % _NREF, fontsize=st.sz(6.3), color=st.GREY, va="bottom")
 ax.set_yscale("log"); st.plain_log(ax)
-ax.set_xticks(xs); ax.set_xticklabels([r[0].replace(">=", "≥") for r in CUTS[2][1]], fontsize=st.sz(5.4))
-ax.set_xlabel("compounds that engage the site", fontsize=st.sz(6.0))
-ax.set_ylabel("sites in the group", fontsize=st.sz(6.0))
+ax.set_xticks(xs); ax.set_xticklabels([r[0].replace(">=", "≥") for r in CUTS[2][1]], fontsize=st.sz(6.3))
+ax.set_xlabel("compounds that engage the site", fontsize=st.sz(6.3))
+ax.set_ylabel("sites in the group", fontsize=st.sz(6.3))
 ax.set_xlim(-0.3, len(xs) + 0.7)
 # Open a clear decade below the data so the caption has its own space instead of lying across
 # the 70% and 80% end labels, which fall to the bottom right of the log axis.
@@ -274,17 +297,19 @@ CHG = pd.read_csv(find("step42_charge_information.csv"))
 CHI = pd.read_csv(find("step42_chirality.csv"))
 NPR = pd.read_csv(find("step42_npr_spread.csv"))
 
-fsub = gs[1, 2].subgridspec(2, 1, hspace=0.62, height_ratios=[2.05, 1.0])
+# 2.05 -> 2.75: panel f carries ten category labels and its companion carries none, so the
+# split between them is set by f's label count, 0.129 in each like panels b and c.
+fsub = gs[1, 2].subgridspec(2, 1, hspace=0.62, height_ratios=[2.75, 1.0])
 ax = fig.add_subplot(fsub[0, 0]); st.head(fig, ax, "f")
 C = CHG.sort_values("rho_mw")
 yy = np.arange(len(C))
 ax.barh(yy - st.grp(2) / 2, C.rho_mw, height=st.grp(2), color=st.LIGHTGREY)
 ax.barh(yy + st.grp(2) / 2, C.rho_charge, height=st.grp(2), color=st.ORANGE)
-ax.set_yticks(yy); ax.set_yticklabels([d.replace("_", " ") for d in C.descriptor], fontsize=st.sz(5))
-ax.set_xlabel("|ρ| with molecular weight (grey)\nand with net charge (rust)", fontsize=st.sz(5.6),
+ax.set_yticks(yy); ax.set_yticklabels([d.replace("_", " ") for d in C.descriptor], fontsize=st.sz(6.3))
+ax.set_xlabel("|ρ| with molecular weight (grey)\nand with net charge (rust)", fontsize=st.sz(6.3),
               linespacing=1.4)
 ax.set_xlim(0, 1.04); ax.set_ylim(-0.8, len(C) - 0.2)
-ax.tick_params(labelsize=st.sz(5))
+ax.tick_params(labelsize=st.sz(6.3))
 for s_ in ("top", "right"): ax.spines[s_].set_visible(False)
 
 ax = fig.add_subplot(fsub[1, 0])
@@ -296,12 +321,12 @@ for i_, (lab, v, c) in enumerate(GRP):
     ax.plot(v, i_ + rgc.normal(0, 0.10, len(v)), "o", ms=2.2, mew=0, color=c)
     ax.plot([np.median(v)] * 2, [i_ - 0.28, i_ + 0.28], color=c, lw=1.6, solid_capstyle="round")
 _REFMAX = float(CHI[CHI.kind == "reflected"].dNPR1.max())
-ax.text(0.013, 0.0, "exactly %g" % _REFMAX, fontsize=st.sz(5.0), color=st.BLUE,
+ax.text(0.013, 0.0, "exactly %g" % _REFMAX, fontsize=st.sz(6.3), color=st.BLUE,
         va="center", ha="left")
-ax.set_yticks(range(3)); ax.set_yticklabels([g[0] for g in GRP], fontsize=st.sz(5))
-ax.set_xlabel("change in NPR1", fontsize=st.sz(5.6))
+ax.set_yticks(range(3)); ax.set_yticklabels([g[0] for g in GRP], fontsize=st.sz(6.3))
+ax.set_xlabel("change in NPR1", fontsize=st.sz(6.3))
 ax.set_xlim(-0.012, 0.33); ax.set_ylim(-0.7, 2.7)
-ax.tick_params(labelsize=st.sz(5))
+ax.tick_params(labelsize=st.sz(6.3))
 for s_ in ("top", "right"): ax.spines[s_].set_visible(False)
 HEAD["f_n_descriptors"] = int(len(CHG))
 HEAD["f_charge_max_abs_rho"] = round(float(CHG.rho_charge.max()), 3)

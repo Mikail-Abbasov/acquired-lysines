@@ -1,7 +1,7 @@
 {
  "script": "fig8_v2.py",
  "stem": "fig8",
- "written": "2026-11-09",
+ "written": "2026-11-10",
  "numbers": {
   "a_measured_residues_within_8A_at_CB": 11.0,
   "a_measured_residues_within_8A_at_NZ": 6.0,

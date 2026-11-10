@@ -59,7 +59,7 @@ R11B = open(find("step11b_report.txt")).read()    # carries the engaged count pa
 R38 = open(find("step38_report.txt")).read()
 
 NICE = lambda f: (f.replace("_8A", " 8Å").replace("_10A", " 10Å").replace("_", " ")
-                   .replace("rsa tien", "exposure").replace("propka pKa", "predicted pKa")
+                   .replace("rsa tien", "exposure").replace("propka pKa", "predicted pK$_a$")
                    .replace("plddt site", "pLDDT").replace("plddt 8Å", "pLDDT 8Å")
                    .replace("nz sasa", "NZ exposure").replace("sasa sidechain", "side-chain exposure")
                    .replace("dist centroid", "distance to centroid").replace("n lys", "nearby lysines")

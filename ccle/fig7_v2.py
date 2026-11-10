@@ -69,7 +69,7 @@ FAM = {**{f:"charge" for f in CHARGE}, **{f:"pocket" for f in POCKET},
 FCOL = {"charge": st.ORANGE, "pocket": st.BLUE, "shape": st.GREY, "context": st.LIGHTGREY}
 
 NICE = lambda f: (f.replace("_8A"," 8Å").replace("_10A"," 10Å").replace("_"," ")
-                   .replace("rsa tien","exposure").replace("propka pKa","predicted pKa")
+                   .replace("rsa tien","exposure").replace("propka pKa","predicted pK$_a$")
                    .replace("nz sasa","NZ exposure").replace("sasa sidechain","side-chain exposure")
                    .replace("dist centroid","distance to centroid").replace("n lys","nearby lysines")
                    .replace("dist nearest pocket","distance to pocket")

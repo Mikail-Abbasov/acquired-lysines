@@ -165,7 +165,8 @@ DATE = datetime.date.today().isoformat()
 # Medicinal Chemistry Tetrahedron Prize special issue honoring Benjamin F. Cravatt; that
 # commitment still needs withdrawing." Thirteen paragraphs of that kind, notes to ourselves
 # about titles to avoid, the section log, what the submission page says, and two reading-copy
-# markers, all sat in the file named Manuscript_main_text.docx. None of it belongs in anything
+# markers, all sat in the submission document, then named Manuscript_main_text.docx and since
+# 10 November named Manuscript.docx. None of it belongs in anything
 # that leaves this folder, for either venue, so the clean document is now what you get by
 # default and the annotated one has to be asked for by name.
 DRAFT = "--draft" in sys.argv
@@ -266,7 +267,11 @@ def _submit_figures():
         _titles["Figure%d" % _s["figno"]] = us("Figure %d. %s." % (_s["figno"],
                                                                   _s["heading"].rstrip(".")))
     for _f in SI.SI_FIGS:
-        _titles["fig%s" % _f["no"]] = fix("Figure %s. %s." % (_f["no"], _f["title"].rstrip(".")))
+        _t = fix("Figure %s. %s." % (_f["no"], _f["title"].rstrip(".")))
+        # Two spellings, because the render in figures/ is named by the SOURCE stem and the
+        # finalized sheet in figures-final/ by the PUBLISHED number. Keyed only as fig<N>, the
+        # ten finalized supplementary sheets were stamped with an author and no title.
+        _titles["fig%s" % _f["no"]] = _titles["Figure%s" % _f["no"]] = _t
     _st = 0
     for f in sorted(os.listdir(dst)):
         if f.lower().endswith((".pdf", ".png")):
@@ -318,14 +323,28 @@ def cite(text):
     return re.sub(r"[ \t]+(?=\u00ab)", "", text)
 
 # ---------------------------------------------------------------- shrink figures for the draft
+def _embed_copy(src, dst, cap=2000):
+    """The copy that goes into the document.
+
+    Never enlarge. Resampling up adds no detail and softens hairlines and 8 pt type, and
+    the graphical abstract is 1200 px native, so a 2000 px cap was upsampling it. cap=None
+    embeds the source resolution unchanged, which is what a finalized sheet gets.
+    """
+    import shutil
+    from PIL import Image
+    w, h = Image.open(src).size
+    if cap is None or w <= cap:
+        shutil.copyfile(src, dst)
+    else:
+        Image.open(src).resize((cap, int(cap * h / w)), Image.LANCZOS).save(dst, optimize=True)
+
+
 def print_copy(name):
-    """A 2000 px-wide copy, about 300 dpi at 6.5 in, so the draft file stays manageable."""
+    """A copy at most 2000 px wide, about 300 dpi at 6.5 in, so the file stays manageable."""
     os.makedirs(PRINT, exist_ok=True)
     src, dst = os.path.join(FIGDIR, name), os.path.join(PRINT, name)
     if not os.path.exists(dst) or os.path.getmtime(dst) < os.path.getmtime(src):
-        from PIL import Image
-        im = Image.open(src); w, h = im.size
-        im.resize((2000, int(2000 * h / w)), Image.LANCZOS).save(dst, optimize=True)
+        _embed_copy(src, dst, 2000)
     return dst
 
 def print_copy_src(src, name):
@@ -338,9 +357,9 @@ def print_copy_src(src, name):
     os.makedirs(PRINT, exist_ok=True)
     dst = os.path.join(PRINT, name)
     if not os.path.exists(dst) or os.path.getmtime(dst) < os.path.getmtime(src):
-        from PIL import Image
-        im = Image.open(src); w, h = im.size
-        im.resize((2000, int(2000 * h / w)), Image.LANCZOS).save(dst, optimize=True)
+        # A finalized sheet goes in at its own resolution. 3601 px at 6.5 in is 554 dpi;
+        # shrinking it to 2000 px threw away what the finalize step was for.
+        _embed_copy(src, dst, None)
     return dst
 
 
@@ -462,12 +481,35 @@ US = [("labelling","labeling"),("Labelling","Labeling"),("labelled","labeled"),
       ("realised","realized"),("generalised","generalized"),("centre","center"),
       ("oesophagus","esophagus"),("analysed","analyzed"),("summarised","summarized")]
 US_HITS = {}
+_FIGWORD = re.compile(r"\b(figure)(s?)(?=\s+S?\d)")
+_FIGRUN  = re.compile(r"(?<=\bFigure )(S?\d{1,2}[A-Za-z]?"
+                      r"(?:\s*(?:,|and|or|to|through|[\u2013\u2014-])\s*S?\d{1,2}[A-Za-z]?)*)")
+_FIGRUNS = re.compile(r"(?<=\bFigures )(S?\d{1,2}[A-Za-z]?"
+                      r"(?:\s*(?:,|and|or|to|through|[\u2013\u2014-])\s*S?\d{1,2}[A-Za-z]?)*)")
+_PANLET  = re.compile(r"(S?\d{1,2})([a-z])\b")
+
+def figcase(text):
+    """One case for a cited panel letter, whatever case the source paragraph used.
+
+    Every sheet letters its panels A, B, C, so a citation to panel c of a figure labelled C
+    is wrong in form, and a group that reads "Figures S8B and S8c" is wrong twice over. The
+    renumberer wrote the letter back in the case it found, which is how one group came to
+    carry both. 80 citations in the main text already read "Figure", 13 read "figure", so
+    the word follows the panel letter up.
+    """
+    text = _FIGWORD.sub(lambda m: "Figure" + m.group(2), text)
+    for rx in (_FIGRUN, _FIGRUNS):
+        text = rx.sub(lambda m: _PANLET.sub(lambda g: g.group(1) + g.group(2).upper(),
+                                            m.group(1)), text)
+    return text
+
+
 def us(text):
     for a, b in US:
         if a in text:
             US_HITS[a] = US_HITS.get(a, 0) + text.count(a)
             text = text.replace(a, b)
-    return text
+    return figcase(text)
 
 
 # ---------------------------------------------------------------- legend arithmetic
@@ -789,7 +831,7 @@ m_out = os.path.join(OUT, ("Reading_copy_%s.docx" if DRAFT
 doc.save(m_out)
 # One clean main text serves both Cell Chemical Biology and bioRxiv: nothing in the apparatus
 # was venue-specific, so there is no second version to keep in step.
-_submit(m_out, "Manuscript_main_text.docx")
+_submit(m_out, "Manuscript.docx")
 MAIN_ORDER = list(ORDER)
 # The manuscript and the Supporting Information carry SEPARATE bibliographies, each numbered
 # from 1. Resetting the counter here is what makes the SI number independently; a source cited
@@ -804,15 +846,66 @@ para(sdoc, S.FRONT["authors"]); blank(sdoc)
 affiliations(sdoc)
 if DRAFT:
     para(sdoc, "Draft assembled %s." % DATE, italic=True); blank(sdoc)
-para(sdoc, "Supplementary figures are numbered sequentially in order of first citation and each "
-           "names its parent figure. Figure 2 has two supplements, which is why one supplement per "
-           "main figure was not used. Supplementary notes carry N-numbers and never S-numbers.",
-     italic=True); blank(sdoc)
+# CONTENTS WITH PAGE NUMBERS. Each line ends in a right-aligned PAGEREF field pointing at a
+# bookmark on the item itself, and the field carries a cached number so it reads correctly on
+# open. si_pages.py fills the cache by paginating the built file; without it every line reads
+# 1 and Word still corrects it on an update-fields.
+_SIPAGES = {}
+try:
+    import json as _j
+    with open(os.path.join(FIGDIR, "results", "panel_data", "si_pages.json")) as _fh:
+        _SIPAGES = _j.load(_fh)
+except Exception:
+    pass
+
+def _toc_label(t, limit=78):
+    """A contents line that wraps puts its page number on the wrapped half, which is worse
+    than a shortened title. Cut at the first clause boundary that fits, never mid-word."""
+    t = " ".join(t.split())
+    if len(t) <= limit:
+        return t
+    # The FIRST clause boundary, not the last that fits: cutting late leaves a title that
+    # reads as though it broke off, "and what limits" without its "detection".
+    best = -1
+    for c in (": ", ", and ", "; ", ", "):
+        i = t.find(c)
+        while 0 <= i <= limit:
+            if i >= 20:
+                best = i if best < 0 else min(best, i)
+                break
+            i = t.find(c, i + 1)
+    cut = best if best >= 20 else t.rfind(" ", 0, limit)
+    return t[:cut].rstrip(" ,;:")
+
+
 para(sdoc, "Contents", bold=True); blank(sdoc)
 for f in SI.SI_FIGS:
-    para(sdoc, fix("Figure %s, support for %s: %s" % (f["no"], f["parent"], f["title"])))
+    _bm = "SIFIG_%s" % f["no"]
+    # "Figure S2 (Figure 2). <title>" rather than the legend's own wording: the parent still
+    # shows and the title survives whole, where "support for Figure 2:" spent the line on it.
+    _p = para(sdoc, _toc_label(fix("Figure %s (%s). %s"
+                                   % (f["no"], f["parent"], f["title"]))),
+              align=WD_ALIGN_PARAGRAPH.LEFT)
+    right_tab(_p); pageref(_p, _bm, _SIPAGES.get(_bm, 1))
 for t_ in getattr(SI, "SI_TABLES", []):
-    para(sdoc, "Table %s. %s" % (t_["no"], t_["title"]))
+    _bm = "SITAB_%s" % t_["no"]
+    _p = para(sdoc, _toc_label("Table %s. %s" % (t_["no"], t_["title"])),
+              align=WD_ALIGN_PARAGRAPH.LEFT)
+    right_tab(_p); pageref(_p, _bm, _SIPAGES.get(_bm, 1))
+
+# EVERYTHING THE DOCUMENT CONTAINS, not only its figures. Table S2, the Extended Results and
+# the eleven supplementary notes were in the file and in no list, so a reader looking for
+# note N7 had to page through the figures to find out it exists.
+def _toc(label, bm, indent=False):
+    _p = para(sdoc, ("    " if indent else "") + _toc_label(label), align=WD_ALIGN_PARAGRAPH.LEFT)
+    right_tab(_p); pageref(_p, bm, _SIPAGES.get(bm, 1))
+
+_toc("Table S2. Panel-level values for the main figures.", "SITAB_S2")
+_toc("Extended Results", "SIEXT")
+_toc("Supplementary notes", "SINOTES")
+for _e in _SI_KEEP:
+    _toc("%s. %s" % (NOTE_MAP[_e[0]], _e[2].rstrip(".")), "SINOTE_%s" % NOTE_MAP[_e[0]], indent=True)
+_toc("References", "SIREFS")
 blank(sdoc)
 _WORD = {9:"Nine",10:"Ten",11:"Eleven",12:"Twelve",13:"Thirteen",16:"sixteen",17:"seventeen",18:"eighteen",19:"nineteen"}
 _surv = [e for e in SI.SI_NOTES if e[1] not in ("cut", "withdraw")]
@@ -823,24 +916,53 @@ if DRAFT:
                "dropped."
                % (_WORD.get(len(_surv), len(_surv)), _WORD.get(len(SI.SI_NOTES), len(SI.SI_NOTES))))
     blank(sdoc)
-_SI_SRC = [os.path.join(FIGDIR, f["fig"]) for f in SI.SI_FIGS
-           if os.path.exists(os.path.join(FIGDIR, f["fig"]))]
+# THE FINALIZED SHEET WINS HERE TOO, and it is named by the PUBLISHED number. Until
+# 10 November this loop reached for FIGDIR's review render through print_copy, whose
+# 2000 px cap shrank a 3598 px finalized sheet by 44 per cent on the way into the
+# document. That is the same defect the main set was moved off on 9 November. The ten
+# finalized sheets now live in figures-final under their published names and enter the
+# document at their own resolution.
+def _si_art(f):
+    return os.path.join(SUBMIT, "figures-final", "Figure%s.png" % f["no"])
+
+_SI_SRC = [_si_art(f) if os.path.exists(_si_art(f)) else os.path.join(FIGDIR, f["fig"])
+           for f in SI.SI_FIGS]
+_SI_SRC = [p for p in _SI_SRC if os.path.exists(p)]
 SPLACE = placer(_SI_SRC)[0] if _SI_SRC else (lambda _p: 6.5)
-for f in SI.SI_FIGS:
-    figure(sdoc, print_copy(f["fig"]), SPLACE(os.path.join(FIGDIR, f["fig"]))); blank(sdoc)
-    para(sdoc, "**%s** %s" % (fix("Figure %s. Support for %s: %s." %
-                                  (f["no"], f["parent"], f["title"].rstrip("."))),
-                              " ".join(legend_entry(cite(fix(_c))) for _c in f["cap"])),
-         size=CAPSIZE)
-    blank(sdoc)
+for _i, f in enumerate(SI.SI_FIGS):
+    _fin = _si_art(f)
+    if os.path.exists(_fin):
+        _art, _meas = print_copy_src(_fin, "Figure%s.png" % f["no"]), _fin
+    else:
+        _art = _meas = print_copy(f["fig"])
+    # ONE SUPPLEMENTARY FIGURE TO A PAGE. Flowed, a long legend pushed the next figure
+    # down its own page: Figure S3 landed under the tail of S2's legend, S7 under S6's,
+    # and S8 and S9 shared a page. The break puts every sheet at the top of a page, and
+    # keep_with_next holds the art to the first line of its own legend.
+    _fp = figure(sdoc, _art, SPLACE(_meas))
+    if _i: _fp.paragraph_format.page_break_before = True
+    _fp.paragraph_format.keep_with_next = True
+    blank(sdoc).paragraph_format.keep_with_next = True
+    _lp = para(sdoc, "**%s** %s" % (fix("Figure %s. Support for %s: %s." %
+                                       (f["no"], f["parent"], f["title"].rstrip("."))),
+                                   " ".join(legend_entry(cite(fix(_c))) for _c in f["cap"])),
+               size=CAPSIZE)
+    bookmark(_lp, "SIFIG_%s" % f["no"])
+    # No separator after a legend that a page break already follows. Left in, the empty
+    # paragraph flowed onto the next page on its own and the break then pushed the figure
+    # past it, which is how page 3 came out blank.
+    if _i == len(SI.SI_FIGS) - 1:
+        blank(sdoc)
 for t_ in getattr(SI, "SI_TABLES", []):
-    para(sdoc, fix("Table %s. %s" % (t_["no"], t_["title"])), bold=True); blank(sdoc)
+    _tp = para(sdoc, fix("Table %s. %s" % (t_["no"], t_["title"])), bold=True)
+    bookmark(_tp, "SITAB_%s" % t_["no"]); blank(sdoc)
     table(sdoc, [t_["head"]] + [tuple(cite(c) for c in r) for r in t_["rows"]])
     blank(sdoc)
     block(sdoc, [fix(_b) for _b in t_["foot"]])
 
 if ARITH_ROWS:
-    para(sdoc, "Table S2. Panel-level values for the main figures.", bold=True); blank(sdoc)
+    _t2 = para(sdoc, "Table S2. Panel-level values for the main figures.", bold=True)
+    bookmark(_t2, "SITAB_S2"); blank(sdoc)
     para(sdoc, "Every value plotted in a main figure panel, moved here so that each main legend "
                "states what is shown, the test, the unit, the replicate structure and the "
                "definition of every measure and error bar without also restating the panel. "
@@ -848,7 +970,7 @@ if ARITH_ROWS:
     table(sdoc, [("Figure", "Panel", "Values")] + [tuple(cite(c) for c in r) for r in ARITH_ROWS])
     blank(sdoc)
 
-para(sdoc, "Extended Results", bold=True); blank(sdoc)
+_ext = para(sdoc, "Extended Results", bold=True); bookmark(_ext, "SIEXT"); blank(sdoc)
 para(sdoc, "Analyses that support the main-text figures and are reported here in full. Panel "
            "letters are those of the source analysis; the main-text figures carry their own "
            "sequential lettering.", italic=True)
@@ -858,7 +980,8 @@ for _f in sorted(MOVED):
     if not _mb and not _ml:
         continue
     _srcs = [_sec["src_figno"]] + ([PN.MERGE_FROM] if _sec.get("merged") else [])
-    _ps = ", ".join("%d%s" % (sf, p) for sf in _srcs for p in PN.CUT.get(sf, []))
+    # Upper case, like every panel letter printed on a sheet and every letter cited in prose.
+    _ps = ", ".join("%d%s" % (sf, p.upper()) for sf in _srcs for p in PN.CUT.get(sf, []))
     # _ps is empty for a figure that lost no panels: these sections carry text moved out,
     # not panels, and the sentence used to read "panels  of the earlier draft".
     _head = ("Supporting main-text Figure %d, panels %s. %s." % (_f, _ps, _sec["heading"])
@@ -877,7 +1000,7 @@ if getattr(SP, "EXTENDED_BACK", None):
          bold=True); blank(sdoc)
     block(sdoc, [fix(p) for p in SP.EXTENDED_BACK])
 
-para(sdoc, "Supplementary notes", bold=True); blank(sdoc)
+_nh = para(sdoc, "Supplementary notes", bold=True); bookmark(_nh, "SINOTES"); blank(sdoc)
 # ONLY THE NOTES THAT ARE SUBMITTED, renumbered sequentially, with no status label and no
 # account of which were cut. The audit that decided them is a working record and belongs in
 # the deposit, not in the document. NOTE_MAP, built above, keeps the three citations to a
@@ -885,10 +1008,11 @@ para(sdoc, "Supplementary notes", bold=True); blank(sdoc)
 if DRAFT:
     para(sdoc, SI.SI_NOTES_HEADER, italic=True); blank(sdoc)
 for e in _SI_KEEP:
-    para(sdoc, fix("%s.  %s" % (NOTE_MAP[e[0]], e[2])), bold=True); blank(sdoc)
+    _np = para(sdoc, fix("%s.  %s" % (NOTE_MAP[e[0]], e[2])), bold=True)
+    bookmark(_np, "SINOTE_%s" % NOTE_MAP[e[0]]); blank(sdoc)
     block(sdoc, [fix(_b) for _b in e[3]])
 if ORDER:
-    para(sdoc, "References", bold=True); blank(sdoc)
+    _rh = para(sdoc, "References", bold=True); bookmark(_rh, "SIREFS"); blank(sdoc)
     para(sdoc, "The Supporting Information is numbered independently of the manuscript.", italic=True)
     blank(sdoc)
     for i, key in enumerate(ORDER, 1):

@@ -1,7 +1,7 @@
 {
  "script": "fig7_v2.py",
  "stem": "fig7",
- "written": "2026-11-09",
+ "written": "2026-11-10",
  "numbers": {
   "a_n_both": 12298,
   "a_n_nasa_only": 5851,

@@ -40,7 +40,7 @@ REFS = {
   "of residues in proteins. PLoS One. 2013;8(11):e80635. doi:10.1371/journal.pone.0080635"),
  "olsson2011": dict(verified="PubMed 26596171", text=
   "Olsson MHM, Søndergaard CR, Rostkowski M, Jensen JH. PROPKA3: consistent treatment of internal "
-  "and surface residues in empirical pKa predictions. J Chem Theory Comput. 2011;7(2):525–537. "
+  "and surface residues in empirical pKₐ predictions. J Chem Theory Comput. 2011;7(2):525–537. "
   "doi:10.1021/ct100578z"),
  "leguilloux2009": dict(verified="PubMed 19486540", text=
   "Le Guilloux V, Schmidtke P, Tuffery P. Fpocket: an open source platform for ligand pocket "
@@ -220,10 +220,10 @@ REFS = {
   "1454–1463. doi:10.1038/s41592-025-02719-x"),
  # --- added 9 Oct 2026: the broad-spectrum lysine ligandability census, and the two
  #     Cell Chemical Biology computational precedents. All verified against PubMed that day.
- "ward2017": dict(verified="PubMed 28445029", text=
-  "Ward CC, Kleinman JI, Nomura DK. NHS-esters as versatile reactivity-based probes for mapping "
-  "proteome-wide ligandable hotspots. ACS Chem Biol. 2017;12(6):1478\u20131483. "
-  "doi:10.1021/acschembio.7b00125"),
+# ward2017 (Ward CC, Kleinman JI, Nomura DK, ACS Chem Biol 2017;12(6):1478-1483,
+# doi:10.1021/acschembio.7b00125) was entered here on 9 Oct 2026 and is cited by the R61,
+# not by this paper. Removed 10 Nov so the database matches the printed list. Restore it
+# here if the NHS-ester precedent is ever cited in the Introduction.
 
  "zhou2025": dict(verified="PubMed 39543955", text=
   "Zhou M, Li S, Tan Y, Huang W, Li Y, Yuan X, Li Z. Global profiling lysine reactivity and "

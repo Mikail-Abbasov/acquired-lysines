@@ -1,7 +1,7 @@
 {
  "script": "fig5_v2.py",
  "stem": "fig5",
- "written": "2026-11-09",
+ "written": "2026-11-10",
  "numbers": {
   "a_best_single_auc": 0.598,
   "a_ceiling_auc": 0.723,

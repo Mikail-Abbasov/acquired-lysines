@@ -198,11 +198,13 @@ def _refs(path):
     ps = _docx.Document(path).paragraphs
     entries, cited = {}, set()
     for p_ in ps:
-        m = re.match(r"\s*(\d{1,3})\.\s+(\S.{0,70})", p_.text)
+        # "[1] " since 10 November; "1. " before that. Accept either, or every citation
+        # reads as pointing at nothing.
+        m = re.match(r"\s*\[?(\d{1,3})[\].]\s+(\S.{0,70})", p_.text)
         if m and len(p_.text) > 60:
             entries[int(m.group(1))] = m.group(2)
     for p_ in ps:
-        if re.match(r"\s*\d{1,3}\.\s", p_.text) and len(p_.text) > 60:
+        if re.match(r"\s*\[?\d{1,3}[\].]\s", p_.text) and len(p_.text) > 60:
             continue
         for r_ in p_.runs:
             if r_.font.superscript and re.search(r"\d", r_.text):

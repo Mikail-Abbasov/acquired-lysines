@@ -512,7 +512,7 @@ SPINE["2.7"] = [
 # panels C, d
 "Bootstrap intervals over proteins separate the reagent's contribution from the site's "
 "(Figure 7C, D). Cationic attraction is the reagent: the neutral probe's interval brackets zero and "
-"excludes the anionic probe's estimate. Acidic avoidance, predicted pKa and salt bridges are the "
+"excludes the anionic probe's estimate. Acidic avoidance, predicted pKₐ and salt bridges are the "
 "site, with the two probes indistinguishable on all three. Net local charge is mixed, and it is the "
 "one feature for which a partial attribution is the honest reading. Reagent attribution is not "
 "inferred from one probe reaching significance while the other does not, because a difference "
@@ -520,8 +520,8 @@ SPINE["2.7"] = [
 "panels show intervals rather than asterisks.",
 # no panel: the interpretive correction
 "This changes how an earlier reading of the same data has to be worded. Labelled lysines sit in "
-"cationic, acid-poor environments with fewer salt bridges and lower predicted pKa, and the natural "
-"reading of that is nucleophilicity. The decomposition says the reading is right for the pKa and "
+"cationic, acid-poor environments with fewer salt bridges and lower predicted pKₐ, and the natural "
+"reading of that is nucleophilicity. The decomposition says the reading is right for the pKₐ and "
 "salt-bridge terms and wrong for cationic attraction, which tracks the reagent. Both effects are "
 "real; they are not the same effect.",
 # panel E
@@ -535,7 +535,7 @@ SPINE["2.7"] = [
 # no panel: the enolization bound
 "One assumption bounds the charge result rather than threatening it. The neutral probe carries "
 "hydrogens α to an electron-withdrawing acylsulfonamide and may enolize at physiological pH, "
-"acquiring partial anionic character; its pKa is not known. If it does, the two probes are less "
+"acquiring partial anionic character; its pKₐ is not known. If it does, the two probes are less "
 "different than assumed, and the measured reagent effect is an underestimate: it rises from the "
 "neutral-assumption value to +0.46 if the probe is substantially ionized, which is a sensitivity "
 "range and not a confidence interval (Figure S8D). The assumption cannot explain the result away.",
@@ -550,7 +550,7 @@ LEGEND[7] = [
 "Two probes sharing a desthiobiotin-hexanoyl core and differing only in the acyl leaving group, "
 "applied to the same HeLa proteome. Twenty-two site features measured on 167,057 lysines at "
 "pLDDT ≥ 70 [[jumper2021,varadi2022]], including relative solvent accessibility [[tien2013]], "
-"predicted pKa [[olsson2011]] and pocket descriptors [[leguilloux2009]]. Labelling is expressed as "
+"predicted pKₐ [[olsson2011]] and pocket descriptors [[leguilloux2009]]. Labelling is expressed as "
 "% occupancy.",
 "(A) The design. dTB-STP, a 4-sulfo-2,3,5,6-tetrafluorophenyl ester and anionic, against a neutral "
 "N-(cyanomethyl)-N-(4-methylbenzenesulfonyl)amide probe. 6,294 sites labelled only by the anionic "
@@ -570,7 +570,7 @@ LEGEND[7] = [
 EXTENDED["2.7"] = [
 "Site environment of labelled lysines, the effect sizes behind the nucleophilicity reading, "
 "measured at pLDDT ≥ 70: fewer acidic neighbors (d = −0.46), more cationic ones (+0.40), fewer salt "
-"bridges (−0.32) and lower predicted pKa (−0.30).",
+"bridges (−0.32) and lower predicted pKₐ (−0.30).",
 ]
 
 # ---------------------------------------------------------------- 2.8 / Figure 8
@@ -688,7 +688,7 @@ SPINE["2.6"] = [
 "compound tested on a different set of lysines cannot manufacture a difference.",
 # panel 6b -> merged b
 "Thirteen of fourteen site features point the same way in every compound: engaged lysines are "
-"consistently more buried, more crowded, more hydrophobically packed and lower in predicted pKa "
+"consistently more buried, more crowded, more hydrophobically packed and lower in predicted pKₐ "
 "(Figure 6B). The single exception is the count of nearby lysines within 8 Å, which is a property "
 "of the neighborhood rather than of the lysine in question. The three charge features clear "
 "significance but are the three smallest of the thirteen that do, and two of them do not strengthen "
@@ -1075,7 +1075,7 @@ def _sub(seq, i, old, new):
 _sub(LEGEND[7], 0,
      "Twenty-two site features measured on 167,057 lysines at pLDDT ≥ 70 "
      "[[jumper2021,varadi2022]], including relative solvent accessibility [[tien2013]], "
-     "predicted pKa [[olsson2011]] and pocket descriptors [[leguilloux2009]].",
+     "predicted pKₐ [[olsson2011]] and pocket descriptors [[leguilloux2009]].",
      "Twenty-two site features measured on 167,057 lysines at pLDDT ≥ 70 "
      "[[jumper2021,varadi2022]], listed with their sources in the Methods.")
 
@@ -1109,7 +1109,7 @@ _sub(SPINE["2.5"], 0,
 METHODS_RELOCATED = (
 "Site features and their sources. Site features were measured on AlphaFold Monomer v2.0 models, "
 "and the twenty-two-feature set comprises relative solvent accessibility on the Tien scale "
-"[[tien2013]], predicted pKa from PROPKA3 [[olsson2011]], pocket descriptors from fpocket "
+"[[tien2013]], predicted pKₐ from PROPKA3 [[olsson2011]], pocket descriptors from fpocket "
 "[[leguilloux2009]] and the neighborhood composition and shape terms listed in the data "
 "deposit. AlphaFold per-residue confidence is excluded from any feature set used inside a "
 "confidence-gated contrast, because there it is the gating variable rather than a property of "

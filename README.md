@@ -1,4 +1,4 @@
-# A mutation-aware search of 375 cancer cell-line proteomes recovers 53 of 8,470 acquired-lysine observations
+# Proteome-wide reanalysis identifies coverage and error-rate limits on acquired lysines in cancer
 
 Code and deposited data for the manuscript. Everything the paper reports is either produced by a
 script here or read from a public source named in `external_inputs.json`.

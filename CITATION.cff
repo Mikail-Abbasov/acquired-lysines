@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this code or data, please cite the paper."
-title: "A mutation-aware search of 375 cancer cell-line proteomes recovers 53 of 8,470 acquired-lysine observations: code and deposited data"
+title: "Proteome-wide reanalysis identifies coverage and error-rate limits on acquired lysines in cancer: code and deposited data"
 abstract: >-
   Analysis code and panel-level deposited data for a study of mutation-created ("acquired")
   lysines as a covalent target class: their catalogue across DepMap, TCGA and COSMIC; a

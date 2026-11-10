@@ -35,6 +35,10 @@ import figure_data as fd
 # One body type size for this figure; every other size is a ratio to it.
 BODY = 7.0
 st.apply(BODY)   # these two scripts imported the style module for its colours but
+# The PNG raster. apply() resets rcParams, so this has to follow it, and every
+# main figure sets it. These ten did not, so they rendered at 600 dpi: twice the
+# pixels for the same canvas, which is not a finer figure, only a bigger file.
+plt.rcParams["savefig.dpi"] = 300
              # never applied it, so their typeface, sizes, spines and DPI were
              # matplotlib defaults while every other figure used the BMC style
 st.slate()         # palette from the supplied ramp; see abbasov_style.SLATE
@@ -56,7 +60,7 @@ RTB  = open(find("test_behaviour_report.txt")).read()
 R38  = open(find("step38_report.txt")).read()
 
 NICE = lambda f: (f.replace("_8A", " 8Å").replace("_10A", " 10Å").replace("_", " ")
-                   .replace("rsa tien", "exposure").replace("propka pKa", "predicted pKa")
+                   .replace("rsa tien", "exposure").replace("propka pKa", "predicted pK$_a$")
                    .replace("nz sasa", "NZ exposure").replace("sasa sidechain", "side-chain exp.")
                    .replace("dist centroid", "dist. to centroid").replace("n lys", "nearby lysines"))
 SHAPE = {"crowding_8A", "atoms_10A", "hydrophobic_8A", "aromatic_8A", "polar_8A",
@@ -66,12 +70,24 @@ COL = lambda f: st.ORANGE if f in SHAPE else st.BLUE
 HEAD = {}   # headline numbers per panel, captured where they are computed
 
 # Third row added 2026-09-02 for the gate panels (f, g).
-fig = plt.figure(figsize=(st.DOUBLE, st.SINGLE * 2.44))
-# wspace 0.40 -> 0.92. At the raised body the in-panel labels of d and e reached back
-# across the gutter into panel b's tick numbers and feature names.
-gs  = fig.add_gridspec(3, 3, hspace=0.54, wspace=0.92,
-                       left=0.075, right=0.985, top=0.940, bottom=0.050,
-                       width_ratios=[1.0, 0.92, 1.0], height_ratios=[1.0, 1.0, 1.18])
+# ALL FOUR MARGINS IN INCHES, AND THE CANVAS SOLVED FROM THE PANEL BLOCK, which is how every
+# main figure is built. The height follows from the y axis, not the other way round: block_h
+# gives the block that puts a unit row on the family's 1.55020 in. Sized by aspect instead,
+# this sheet drew y axes far longer than the family's 483.6 px.
+_ML, _MR = 1.0500, 0.4500      # left and right margins, inches
+_MB, _MT = 0.9800, 0.5200      # bottom and top margins, inches
+_WS, _HS = 0.92, 0.54           # column and row spacing, fractions of the average panel
+_FW = 11.5367                  # 3461 px at 300 dpi, which finalizes to 3600 px and 12.00 in
+# FOUR ROWS, ALL ON THE FAMILY Y AXIS. Panel f's four renders are aspect-locked, so their
+# size is whatever height the cell gives them, and a single row gave them under an inch. f now
+# spans rows 2 and 3, which doubles them, and g comes back to one family row from the 1.18 it
+# was stretched to.
+_FH = st.block_h(4, _HS) + _MB + _MT
+fig = plt.figure(figsize=(_FW, _FH))
+gs = fig.add_gridspec(4, 3, hspace=_HS, wspace=_WS,
+                      width_ratios=[1.0, 0.92, 1.0],
+                      left=_ML / _FW, right=1 - _MR / _FW,
+                      top=1 - _MT / _FH, bottom=_MB / _FH)
 
 # ---------------------------------------------------------------- a: tiering null
 ax = fig.add_subplot(gs[0, 0]); st.head(fig, ax, "a")
@@ -112,16 +128,16 @@ ax.axhline(0, color=st.GREY, lw=0.8)
 for v in (lig_hi, lig_lo):
     ax.axhline(v, color=st.GREEN, lw=1.0, ls="--", zorder=1)
 ax.text(-0.22, lig_hi + 0.035, "where tiering by occupancy takes ligandability: %+.2f" % lig_hi,
-        fontsize=st.sz(5), color=st.GREEN, ha="left", va="bottom")
+        fontsize=st.sz(6.3), color=st.GREEN, ha="left", va="bottom")
 ax.text(-0.22, lig_lo - 0.035, "and %+.2f" % lig_lo,
-        fontsize=st.sz(5), color=st.GREEN, ha="left", va="top")
+        fontsize=st.sz(6.3), color=st.GREEN, ha="left", va="top")
 ax.set_ylim(-0.95, 0.98); ax.set_xlim(-0.3, xs[-1] + 0.3)
-ax.set_xlabel("labeled sites, tiered by detection depth", fontsize=st.sz(6))
-ax.set_ylabel("shift from tier 1, d", fontsize=st.sz(6))
-ax.tick_params(labelsize=st.sz(5.2))
+ax.set_xlabel("labeled sites, tiered by detection depth", fontsize=st.sz(6.3))
+ax.set_ylabel("shift from tier 1, d", fontsize=st.sz(6.3))
+ax.tick_params(labelsize=st.sz(6.3))
 ax.legend(handles=[Line2D([], [], color=st.BLUE, lw=1.4, marker="o", ms=2.6, label="charge features"),
                    Line2D([], [], color=st.ORANGE, lw=1.4, marker="o", ms=2.6, label="shape features")],
-          frameon=False, fontsize=st.sz(5.0), loc="upper left", bbox_to_anchor=(0.0, 0.80),
+          frameon=False, fontsize=st.sz(6.3), loc="upper left", bbox_to_anchor=(0.0, 0.80),
           handlelength=1.6)
 # The ratio was the word "six" typed into the panel. It is lig_slope / rea_slope and is now
 # computed, so it cannot drift away from the traces the panel draws.
@@ -156,15 +172,15 @@ for k, (f, r_) in enumerate(tab.iterrows()):
     ax.scatter(r_.gated,  k, s=17, color=c, zorder=3)
     if abs(r_.gated - r_.no_gate) < 0.02:
         ax.annotate("no movement", (r_.gated, k), xytext=(-9, 0), textcoords="offset points",
-                    fontsize=st.sz(5), color=st.GREY, va="center", ha="right")
+                    fontsize=st.sz(6.3), color=st.GREY, va="center", ha="right")
 ax.axvline(0, color=st.GREY, lw=0.9)
-ax.set_yticks(y); ax.set_yticklabels([NICE(f) for f in tab.index], fontsize=st.sz(5.2))
+ax.set_yticks(y); ax.set_yticklabels([NICE(f) for f in tab.index], fontsize=st.sz(6.3))
 for t, f in zip(ax.get_yticklabels(), tab.index): t.set_color(COL(f))
-ax.set_xlabel("effect on being labeled, d", fontsize=st.sz(6))
+ax.set_xlabel("effect on being labeled, d", fontsize=st.sz(6.3))
 ax.set_xlim(-0.56, 0.52); ax.set_ylim(-1.9, len(tab) - 0.4)
-ax.tick_params(axis="x", labelsize=st.sz(5.2))
+ax.tick_params(axis="x", labelsize=st.sz(6.3))
 ax.text(0.985, 0.02, "open  no gate\nfilled  pLDDT ≥ %d" % gates[-1], transform=ax.transAxes,
-        ha="right", va="bottom", fontsize=st.sz(5.0), color=st.GREY, linespacing=1.7)
+        ha="right", va="bottom", fontsize=st.sz(6.3), color=st.GREY, linespacing=1.7)
 for s in ("top", "right"): ax.spines[s].set_visible(False)
 HEAD["b_n_features"] = int(len(tab))
 HEAD["b_gate_plddt"] = int(gates[-1])
@@ -200,15 +216,15 @@ for yy, kind in enumerate(("shape", "charge")):
     ax.scatter(vals, [yy]*len(vals), s=15, color=c, zorder=3, lw=0.5, edgecolor=st.PAPER)
     ax.scatter([full], [yy], s=70, marker="|", color=c, zorder=4, lw=1.7)
     ax.text(np.mean([min(vals), max(vals)]), yy + 0.13, "%.2f – %.2f" % (min(vals), max(vals)),
-            ha="center", fontsize=st.sz(5.4), color=c)
+            ha="center", fontsize=st.sz(6.3), color=c)
     if yy == 1:
         ax.annotate("all %d" % _NK[kind], (full, yy), xytext=(0, -13),
-                    textcoords="offset points", ha="center", fontsize=st.sz(5), color=c)
-ax.set_yticks([0, 1]); ax.set_yticklabels([_CLAB("shape"), _CLAB("charge")], fontsize=st.sz(5.6))
+                    textcoords="offset points", ha="center", fontsize=st.sz(6.3), color=c)
+ax.set_yticks([0, 1]); ax.set_yticklabels([_CLAB("shape"), _CLAB("charge")], fontsize=st.sz(6.3))
 ax.set_ylim(-0.75, 1.85); ax.set_xlim(-0.04, 1.06)
-ax.tick_params(axis="x", labelsize=st.sz(5.2))
+ax.tick_params(axis="x", labelsize=st.sz(6.3))
 ax.set_xlabel("how closely labeling tracks ligandability\n(pLDDT ≥ 90), leaving each feature out in turn",
-              fontsize=st.sz(6), linespacing=1.6)
+              fontsize=st.sz(6.3), linespacing=1.6)
 # the alternative grouping: by how large the ungated effect is, rather than by chemistry
 F["absd"] = F.react.abs()
 big = F.nlargest(int((F.kind == "charge").sum()), "absd").index
@@ -246,10 +262,12 @@ for vals, c, lab, mk, key in (
     n80 = int(np.searchsorted(cum, 80) + 1)
     _N80[key] = n80
     ax.scatter([n80], [cum[n80 - 1]], s=52, facecolor="none", edgecolor=c, lw=1.2, zorder=4)
-    ax.text(len(cum) + 0.12, cum[-1], "  " + lab, color=c, fontsize=st.sz(5), va="center",
+    ax.text(len(cum) + 0.12, cum[-1], "  " + lab, color=c, fontsize=st.sz(6.3), va="center",
             linespacing=1.5)
 ax.axhline(80, color=st.GREY, lw=0.9, ls="--")
-ax.text(8.5, 80.5, "80%", fontsize=st.sz(5.0), color=st.GREY, ha="right", va="bottom")
+# At the left end of the line it labels. On the right it shared a band with the two series
+# labels, which hang off the end of their own curves.
+ax.text(1.0, 80.5, "80%", fontsize=st.sz(6.3), color=st.GREY, ha="left", va="bottom")
 HEAD["d_n_reactivity_features"] = int(len(pc12))
 HEAD["d_n_ligandability_features"] = _NLIG
 HEAD["d_reactivity_pc_pct"] = [float(v) for v in pc12]
@@ -264,11 +282,11 @@ fd.panel("figS5", "d",
           for _s, _vals in (("reactivity", pc12), ("ligandability", pc10[:6]))
           for _i, _v in enumerate(_vals)],
          note="one row per principal component of each feature set")
-ax.set_xlabel("number of components kept", fontsize=st.sz(6))
-ax.set_ylabel("variance explained (%)", fontsize=st.sz(6))
+ax.set_xlabel("number of components kept", fontsize=st.sz(6.3))
+ax.set_ylabel("variance explained (%)", fontsize=st.sz(6.3))
 ax.set_ylim(35, 108); ax.set_xlim(0.6, 8.6); ax.set_xticks(range(1, 7))
 ax.set_yticks(range(40, 101, 10))
-ax.tick_params(labelsize=st.sz(5.2))
+ax.tick_params(labelsize=st.sz(6.3))
 for s in ("top", "right"): ax.spines[s].set_visible(False)
 
 # ---------------------------------------------------------------- e: mutual adjustment
@@ -277,16 +295,16 @@ d12 = D12.sort_values("uni_coef"); yy = np.arange(len(d12)); w = st.grp(2)
 ax.barh(yy - w/2, d12.uni_coef,  w, color=st.LIGHTGREY, label="on its own")
 ax.barh(yy + w/2, d12.multi_coef, w, color=st.BLUE, label="adjusted for the others")
 ax.axvline(0, color=st.GREY, lw=0.9)
-ax.set_yticks(yy); ax.set_yticklabels([NICE(f) for f in d12.feature], fontsize=st.sz(5.2))
-ax.set_xlabel("effect on being labeled", fontsize=st.sz(6))
+ax.set_yticks(yy); ax.set_yticklabels([NICE(f) for f in d12.feature], fontsize=st.sz(6.3))
+ax.set_xlabel("effect on being labeled", fontsize=st.sz(6.3))
 ax.set_xlim(-0.30, 0.22); ax.set_ylim(-2.7, len(d12) - 0.4)
-ax.tick_params(axis="x", labelsize=st.sz(5.2))
+ax.tick_params(axis="x", labelsize=st.sz(6.3))
 for k, r in zip(yy, d12.itertuples()):
     kept = abs(r.multi_coef) > abs(r.uni_coef) / 3
     ax.text(r.multi_coef + (-0.007 if r.multi_coef < 0 else 0.007), k + w/2, "%.3f" % r.multi_coef,
-            va="center", fontsize=st.sz(5), ha="right" if r.multi_coef < 0 else "left",
+            va="center", fontsize=st.sz(6.3), ha="right" if r.multi_coef < 0 else "left",
             color=st.BLUE if kept else st.ORANGE)
-ax.legend(frameon=False, fontsize=st.sz(5), loc="lower left", bbox_to_anchor=(-0.02, -0.01),
+ax.legend(frameon=False, fontsize=st.sz(6.3), loc="lower left", bbox_to_anchor=(-0.02, -0.01),
           handlelength=1.0, handletextpad=0.5, labelspacing=0.5)
 for s in ("top", "right"): ax.spines[s].set_visible(False)
 HEAD["e_n_features"] = int(len(d12))
@@ -322,8 +340,11 @@ _pf = _pf.iloc[0]
 _ly = _MSF[(_MSF.uniprot == "Q6MZR2") & (_MSF.position == 72)]
 assert len(_ly) == 1, "LYSMD4 K72 (Q6MZR2) not uniquely in master_sites (%d rows)" % len(_ly)
 _ly = _ly.iloc[0]
-_SUB = gs[2, 0:2].subgridspec(2, 2, hspace=0.40, wspace=0.04)
-_axl = fig.add_subplot(gs[2, 0:2]); _axl.set_axis_off()
+# hspace 0.40 -> 0.06 and a wider block: the four renders are aspect-locked, so every inch
+# the gutters take comes straight off the picture. The gap was costing them a third of their
+# height for white space between two rows that belong to the same panel.
+_SUB = gs[2:4, 0:2].subgridspec(2, 2, hspace=0.10, wspace=0.02)
+_axl = fig.add_subplot(gs[2:4, 0:2]); _axl.set_axis_off()
 st.head(fig, _axl, "f")
 
 def _shot(cell, name, title=None):
@@ -333,31 +354,40 @@ def _shot(cell, name, title=None):
         a.imshow(_mpimg.imread(p))
     else:
         a.text(0.5, 0.5, "missing struct/" + name, ha="center", va="center",
-               transform=a.transAxes, fontsize=st.sz(5.5), color=st.ORANGE)
+               transform=a.transAxes, fontsize=st.sz(6.3), color=st.ORANGE)
     a.set_xticks([]); a.set_yticks([])
+    # Left justified to the cell: an image axes is aspect-locked, and the default anchor
+    # centres it, which put these two 310 and 274 px right of the column beside them.
+    a.set_anchor("W")
     for _sp in ("top", "right", "bottom", "left"): a.spines[_sp].set_visible(False)
-    if title: a.set_title(title, fontsize=st.sz(5.4), color=st.GREY, pad=1.5)
+    if title: a.set_title(title, fontsize=st.sz(6.3), color=st.GREY, pad=1.5)
     return a
 
 _a = _shot(_SUB[0, 0], "pfkl_whole.png", "whole protein")
 _shot(_SUB[0, 1], "pfkl_site.png", "the lysine and everything within 8 \u00c5")
-_a.text(0.0, -0.10, "PFKL K677   pLDDT %.0f   %d compounds, %.0f%% occupancy   KEPT"
+# ACROSS AXES THE AXES ZORDER DECIDES, not the text's. This line hangs below _a's box and
+# into _b's cell, and _b is created second, so at equal zorder _b's white background painted
+# over it. Raising _a above _b draws it last. The two boxes do not overlap, so nothing of _b
+# is covered in return.
+_a.set_zorder(10)
+_a.text(0.0, -0.13, "PFKL K677   pLDDT %.0f   %d compounds, %.0f%% occupancy   kept"
         % (_pf.plddt_site, int(_pf.n_engaged_60), _pf.max_occupancy),
-        transform=_a.transAxes, fontsize=st.sz(5.4), color=st.BLUE, fontweight="bold")
+        transform=_a.transAxes, fontsize=st.sz(6.3), color=st.BLUE, fontweight="bold",
+        zorder=6, bbox=dict(facecolor=st.PAPER, edgecolor="none", pad=1.2))
 HEAD["f_pfkl_plddt"] = float(_pf.plddt_site)
 HEAD["f_pfkl_n_compounds_engaged"] = int(_pf.n_engaged_60)
 HEAD["f_pfkl_max_occupancy_pct"] = float(_pf.max_occupancy)
 _b = _shot(_SUB[1, 0], "lysmd4_whole.png")
 _shot(_SUB[1, 1], "lysmd4_site.png")
-_b.text(0.0, -0.10, "LYSMD4 K72   pLDDT %.0f   %d compounds, %.0f%% occupancy   DISCARDED"
+_b.set_zorder(5)
+_b.text(0.0, -0.13, "LYSMD4 K72   pLDDT %.0f   %d compounds, %.0f%% occupancy   discarded"
         % (_ly.plddt_site, int(_ly.n_engaged_60), _ly.max_occupancy),
-        transform=_b.transAxes, fontsize=st.sz(5.4), color=st.ORANGE, fontweight="bold")
+        transform=_b.transAxes, fontsize=st.sz(6.3), color=st.ORANGE, fontweight="bold",
+        zorder=6, bbox=dict(facecolor=st.PAPER, edgecolor="none", pad=1.2))
 HEAD["f_lysmd4_plddt"] = float(_ly.plddt_site)
 HEAD["f_lysmd4_n_compounds_engaged"] = int(_ly.n_engaged_60)
 HEAD["f_lysmd4_max_occupancy_pct"] = float(_ly.max_occupancy)
 HEAD["f_lysmd4_uniprot"] = "Q6MZR2"
-_b.text(0.0, -0.21, "the same 8 \u00c5 sphere, in one of them there is no structure to measure",
-        transform=_b.transAxes, fontsize=st.sz(5.0), color=st.GREY)
 
 # ---------------------------------------------------------------- g: not a strength filter
 ax = fig.add_subplot(gs[2, 2]); st.head(fig, ax, "g")
@@ -380,20 +410,20 @@ _med = _D.groupby(_bins, observed=True).max_occupancy.median()
 _cnt = _D.groupby(_bins, observed=True).size()
 ax.plot([i.mid for i in _med.index], _med.values, "-o", color=st.GREEN, lw=1.2, ms=2.8,
         mew=0, zorder=5)
-ax.text(0.03, 0.60, "median occupancy is flat from 20 to 100 (%.0f%% in the\nlowest band, "
-        "%.0f%% in the highest): the gate removes sites\nwhose features cannot be measured, "
-        "not sites that are\nweakly engaged" % (_med.iloc[0], _med.iloc[-1]),
-        transform=ax.transAxes, fontsize=st.sz(5), color=st.GREEN, linespacing=1.5, va="top",
-        bbox=dict(facecolor=st.PAPER, edgecolor="none", pad=1.6))
-ax.text(_GATE - 1, 57.4, "gate %d" % _GATE, ha="right", va="bottom", fontsize=st.sz(5.2),
-        color=st.ORANGE)
-ax.text(0.5, 1.005, "%s discarded (%.0f%%)   \u00b7   %s kept (%.0f%%)"
+# y in AXES fraction. 57.4 was a point under the lowest engaged site, and the axis now
+# ends on 60, which put the label off the panel.
+ax.text(_GATE - 1, 0.02, "gate %d" % _GATE, ha="right", va="bottom", fontsize=st.sz(6.3),
+        color=st.ORANGE, transform=ax.get_xaxis_transform())
+# Inside the panel, not above it. At the house rung this line is as wide as the panel, and
+# above the axes it shares a band with the letter whichever way it is aligned. The y axis
+# ends on 110 and no site reaches past 100, so the strip under the top spine is empty.
+ax.text(0.03, 0.985, "%s discarded (%.0f%%)   \u00b7   %s kept (%.0f%%)"
         % (f"{(~_K).sum():,}", 100*(~_K).mean(), f"{_K.sum():,}", 100*_K.mean()),
-        transform=ax.transAxes, ha="center", fontsize=st.sz(5.4), color=st.GREY)
-ax.set_xlabel("AlphaFold confidence at the lysine (pLDDT)", fontsize=st.sz(6))
-ax.set_ylabel("highest occupancy reached by any compound (%)", fontsize=st.sz(6))
+        transform=ax.transAxes, ha="left", va="top", fontsize=st.sz(6.3), color=st.GREY)
+ax.set_xlabel("AlphaFold confidence at the lysine (pLDDT)", fontsize=st.sz(6.3))
+ax.set_ylabel("highest occupancy reached by any compound (%)", fontsize=st.sz(6.3))
 ax.set_xlim(20, 100); ax.set_ylim(55, 104)
-ax.legend(frameon=False, fontsize=st.sz(5.2), loc="lower left", markerscale=2.6,
+ax.legend(frameon=False, fontsize=st.sz(6.3), loc="lower left", markerscale=2.6,
           handletextpad=0.3, borderaxespad=0.4)
 for _sp in ("top", "right"): ax.spines[_sp].set_visible(False)
 HEAD["g_gate_plddt"] = _GATE

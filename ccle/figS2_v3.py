@@ -49,6 +49,10 @@ _TOP = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # One body type size for this figure; every other size is a ratio to it.
 BODY = 7.0
 st.apply(BODY)
+# The PNG raster. apply() resets rcParams, so this has to follow it, and every
+# main figure sets it. These ten did not, so they rendered at 600 dpi: twice the
+# pixels for the same canvas, which is not a finer figure, only a bigger file.
+plt.rcParams["savefig.dpi"] = 300
 
 HEAD = {}       # headline numbers per panel, captured where they are computed
 MARGIN = 10     # score-margin threshold -- one definition for the axis line, the label and the count
@@ -70,13 +74,29 @@ P = pd.read_csv(find("region_compare_pep.tsv"), sep="\t")
 P["kgain"] = [is_kgain(c, s) for c, s in zip(P.change, P.site)]
 K = P[P.kgain]; N = P[~P.kgain]
 
-fig = plt.figure(figsize=(st.DOUBLE, st.SINGLE * 2.76))
-gs = fig.add_gridspec(5, 12, hspace=0.46, wspace=2.3,
-                      height_ratios=[1, 1, 1, 0.18, 0.85],
-                      left=0.065, right=0.985, top=0.972, bottom=0.070)
+# ALL FOUR MARGINS IN INCHES, AND THE CANVAS SOLVED FROM THE PANEL BLOCK, which is how every
+# main figure is built. The height follows from the y axis, not the other way round: block_h
+# gives the block that puts a unit row on the family's 1.55020 in. Sized by aspect instead,
+# this sheet drew y axes far longer than the family's 483.6 px.
+_ML, _MR = 0.7499, 0.1731      # left and right margins, inches
+_MB, _MT = 0.9500, 0.4200      # bottom and top margins, inches
+_WS, _HS = 2.3, 0.46           # column and row spacing, fractions of the average panel
+_FW = 11.5367                  # 3461 px at 300 dpi, which finalizes to 3600 px and 12.00 in
+_FH = st.block_h(5, _HS, [1, 1, 1, 0.18, 2.25]) + _MB + _MT
+fig = plt.figure(figsize=(_FW, _FH))
+gs = fig.add_gridspec(5, 12, hspace=_HS, wspace=_WS,
+                      # The spectrum row goes 0.85 -> 2.00. The trace runs the width of the sheet, so at one row
+                      # it was 10.6 x 1.8 in, an aspect of 6.0; the height is what the
+                      # annotated b and y ions need anyway.
+                      height_ratios=[1, 1, 1, 0.18, 2.25],
+                      left=_ML / _FW, right=1 - _MR / _FW,
+                      top=1 - _MT / _FH, bottom=_MB / _FH)
 
 # ---------------------------------------------------------------- a: the two gates, both classes
-ax = fig.add_subplot(gs[0, 0:6]); st.head(fig, ax, "a")
+# 0:6 -> 0:4. Four bars do not need half the sheet, and panel b is a distribution that uses
+# every column it is given. The category labels come down to match, with their counts in the
+# caption where the n belongs.
+ax = fig.add_subplot(gs[0, 0:4]); st.head(fig, ax, "a")
 g1 = [100 * K.wt_detected.mean(), 100 * N.wt_detected.mean()]
 cov_k = K[K.wt_detected == 1]; cov_n = N[N.wt_detected == 1]
 g2 = [100 * cov_k.mut_detected.mean() if len(cov_k) else np.nan,
@@ -85,18 +105,17 @@ x = np.arange(2); w = st.grp(2)
 ax.bar(x - w/2, g1, w, color=st.BLUE, label="gate 1: region covered")
 ax.bar(x + w/2, g2, w, color=st.GREEN, label="gate 2: mutant recovered\nwhere covered")
 for i in range(2):
-    ax.text(i - w/2, g1[i] + 0.15, "%.1f%%" % g1[i], ha="center", fontsize=st.sz(5.6))
+    ax.text(i - w/2, g1[i] + 0.15, "%.1f%%" % g1[i], ha="center", fontsize=st.sz(6.3))
     if not np.isnan(g2[i]):
-        ax.text(i + w/2, g2[i] + 0.15, "%.1f%%" % g2[i], ha="center", fontsize=st.sz(5.6))
+        ax.text(i + w/2, g2[i] + 0.15, "%.1f%%" % g2[i], ha="center", fontsize=st.sz(6.3))
 ax.set_xticks(x)
-ax.set_xticklabels(["acquired lysine\n(%s sites)" % f"{len(K):,}",
-                    "other variant\n(%s sites)" % f"{len(N):,}"], fontsize=st.sz(5.6))
-ax.set_ylabel("% of sites (note: the two bars\nhave different denominators)", fontsize=st.sz(5.6),
+ax.set_xticklabels(["acquired lysine", "other variant"], fontsize=st.sz(6.3))
+ax.set_ylabel("% of sites (note: the two bars\nhave different denominators)", fontsize=st.sz(6.3),
               linespacing=1.5)
 # 1.35 -> 1.58: the key sits in the upper right and at the raised body the "6.9%" bar
 # value reached it. The headroom is cheaper than moving the key onto the bars.
 ax.set_ylim(0, max(g1 + [v for v in g2 if not np.isnan(v)]) * 1.58)
-ax.legend(frameon=False, fontsize=st.sz(5.0), loc="upper right", handlelength=1.0, labelspacing=0.5)
+ax.legend(frameon=False, fontsize=st.sz(6.3), loc="upper right", handlelength=1.0, labelspacing=0.5)
 HEAD["a_n_acquired_lysine_observations"] = int(len(K))
 HEAD["a_n_other_variant_observations"] = int(len(N))
 HEAD["a_gate1_covered_pct_acquired_lysine"] = round(float(g1[0]), 1)
@@ -121,7 +140,9 @@ fd.panel("figS2", "a", [
 # produces a different peptide. This control demonstrates the mechanism the figure is about.
 
 # ---------------------------------------------------------------- b: peptide length, both classes
-ax = fig.add_subplot(gs[0, 7:12]); st.head(fig, ax, "b")
+# 5:12 -> 5:11. Six columns puts this density at aspect 3.1 against the main figures' 0.7
+# to 2.8; seven put it at 3.8.
+ax = fig.add_subplot(gs[0, 5:10]); st.head(fig, ax, "b")
 bins = np.arange(4, 42, 2)
 _brows = []
 for d, lab, col in ((K, "acquired lysine", st.BLUE), (N, "other variant", st.ORANGE)):
@@ -136,9 +157,9 @@ for d, lab, col in ((K, "acquired lysine", st.BLUE), (N, "other variant", st.ORA
                     density=float(_dn[_i]), n=int(_ct[_i])) for _i in range(len(bins) - 1)]
 fd.panel("figS2", "b", _brows,
          note="one row per histogram bin per class; shortest wild-type tryptic peptide, clipped at 40 aa")
-ax.set_xlabel("shortest tryptic peptide (residues)", fontsize=st.sz(6))
-ax.set_ylabel("density", fontsize=st.sz(6))
-ax.legend(frameon=False, fontsize=st.sz(5.0), loc="upper right", handlelength=1.1)
+ax.set_xlabel("shortest tryptic peptide (residues)", fontsize=st.sz(6.3))
+ax.set_ylabel("density", fontsize=st.sz(6.3))
+ax.legend(frameon=False, fontsize=st.sz(6.3), loc="upper right", handlelength=1.1)
 
 # Panel c of the previous version repeated Figure 2b exactly — the same two bars, 7.56%
 # conventional against 7.28% mutation-aware, from the same file. One of the two had to go, and
@@ -168,20 +189,22 @@ if rep:
         if len(_pp) > 2 and _pp[:2] == ["acquired", "lysine"] and _pp[2][:1].isdigit():
             n_acq = int(_pp[2].replace(",", ""))
 
-ax = fig.add_subplot(gs[1, 0:5]); st.head(fig, ax, "c")
+# 0:5 -> 0:4, the same four columns panel a holds, because it holds the same four bars.
+ax = fig.add_subplot(gs[1, 0:4]); st.head(fig, ax, "c")
 if psm:
     x = np.arange(2); w = st.grp(2)
     ax.bar(x - w/2, [psm["K"], psm["R"]], w, color=st.BLUE, label="PSM-weighted")
     ax.bar(x + w/2, [seq["K"], seq["R"]], w, color=st.LIGHTGREY, label="distinct sequences")
     for i, r in enumerate(("K", "R")):
-        ax.text(i - w/2, psm[r] + 0.7, "%.1f%%" % psm[r], ha="center", fontsize=st.sz(5.8), color=st.BLUE)
-        ax.text(i + w/2, seq[r] + 0.7, "%.1f%%" % seq[r], ha="center", fontsize=st.sz(5.8),
+        ax.text(i - w/2, psm[r] + 0.7, "%.1f%%" % psm[r], ha="center", fontsize=st.sz(6.3), color=st.BLUE)
+        ax.text(i + w/2, seq[r] + 0.7, "%.1f%%" % seq[r], ha="center", fontsize=st.sz(6.3),
                 color=st.GREY)
     ax.set_xticks(x)
-    ax.set_xticklabels(["first basic residue is K", "first basic residue is R"], fontsize=st.sz(5.8))
-    ax.set_ylabel("peptides carrying a missed\ncleavage at that site (%)", fontsize=st.sz(6))
+    ax.set_xticklabels(["K", "R"], fontsize=st.sz(6.3))
+    ax.set_xlabel("first basic residue at the site", fontsize=st.sz(6.3))
+    ax.set_ylabel("peptides carrying a missed\ncleavage at that site (%)", fontsize=st.sz(6.3))
     ax.set_ylim(0, 44)
-    ax.legend(frameon=False, fontsize=st.sz(5.4), loc="upper left", handlelength=1.0)
+    ax.legend(frameon=False, fontsize=st.sz(6.3), loc="upper left", handlelength=1.0)
     for _r in ("K", "R"):
         HEAD["c_missed_cleavage_first_basic_%s_psm_pct" % _r.lower()] = float(psm[_r])
         HEAD["c_missed_cleavage_first_basic_%s_seq_pct" % _r.lower()] = float(seq[_r])
@@ -192,18 +215,15 @@ if psm:
                            ("distinct sequences", seq[_r], nseq.get(_r)))],
         note="missed / (missed + cleaved) among identified peptides, split by first basic residue")
 
-ax = fig.add_subplot(gs[1, 6:12]); st.head(fig, ax, "d")
+ax = fig.add_subplot(gs[1, 5:8]); st.head(fig, ax, "d")
 if not np.isnan(acq):
     ax.bar([0, 1], [bg, acq], st.BARW, color=[st.LIGHTGREY, st.BLUE])
     for i, v in enumerate([bg, acq]):
         ax.text(i, v + 0.6, "%.1f%%" % v, ha="center", fontsize=st.sz(6.2))
     ax.set_xticks([0, 1])
-    ax.set_xticklabels(["all identified peptides",
-                        "peptides carrying an acquired lysine"], fontsize=st.sz(5.8))
-    ax.set_ylabel("peptides carrying a missed\ncleavage (%)", fontsize=st.sz(6))
+    ax.set_xticklabels(["all peptides", "acquired-lysine"], fontsize=st.sz(6.3))
+    ax.set_ylabel("peptides carrying a missed\ncleavage (%)", fontsize=st.sz(6.3))
     ax.set_ylim(0, max(acq, bg) * 1.42)
-    ax.text(0.5, 0.90, "acquired-lysine peptides are digested like any other",
-            transform=ax.transAxes, ha="center", fontsize=st.sz(5.6), color=st.GREY)
     HEAD["d_missed_cleavage_acquired_lysine_pct"] = float(acq)
     HEAD["d_missed_cleavage_background_pct"] = float(bg)
     fd.panel("figS2", "d", [
@@ -221,7 +241,9 @@ if not np.isnan(acq):
 # what a legend is for.
 
 # ---------------------------------------------------------------- d: score margin
-ax = fig.add_subplot(gs[2, 0:5]); st.head(fig, ax, "e")
+# Up into row 1 beside c and d. Two small bar panels alone left four columns of white at
+# the right of the row; the score-margin histogram uses them.
+ax = fig.add_subplot(gs[1, 8:12]); st.head(fig, ax, "e")
 H = find("hits62.tsv")
 if H:
     h = pd.read_csv(H, sep="\t")
@@ -234,13 +256,13 @@ if H:
     ax.axvline(MARGIN, color=st.ORANGE, lw=1.2, ls="--")
     ax.text(0.97, 0.97, "margin \u2265 %d retained" % MARGIN,
             transform=ax.transAxes, ha="right",
-            va="top", fontsize=st.sz(5.2), color=st.ORANGE)
-    ax.set_xlabel("hyperscore \u2212 nextscore", fontsize=st.sz(6))
-    ax.set_ylabel("PSMs", fontsize=st.sz(6))
+            va="top", fontsize=st.sz(6.3), color=st.ORANGE)
+    ax.set_xlabel("hyperscore \u2212 nextscore", fontsize=st.sz(6.3))
+    ax.set_ylabel("PSMs", fontsize=st.sz(6.3))
     nsite = h.groupby(["gene", "change", "line", "site"]).ngroups
     ax.text(0.97, 0.80, "%d of %d PSMs clear the threshold,\nacross %d sites"
             % (int((d >= MARGIN).sum()), len(d), nsite), transform=ax.transAxes, ha="right",
-            va="top", fontsize=st.sz(5.2), color=st.GREY, linespacing=1.4)
+            va="top", fontsize=st.sz(6.3), color=st.GREY, linespacing=1.4)
     HEAD["e_margin_threshold"] = int(MARGIN)
     HEAD["e_n_psms_total"] = int(len(d))
     HEAD["e_n_psms_above_margin"] = int((d >= MARGIN).sum())
@@ -253,7 +275,10 @@ if H:
              note="one row per acquired-lysine PSM; margin = hyperscore - nextscore, the binned quantity")
 
 # ---------------------------------------------------------------- e: spectrum quality
-ax = fig.add_subplot(gs[2, 6:12]); st.head(fig, ax, "f")
+# 0:12 -> 0:7. A density strip 10.6 in long and 1.55 in tall is an aspect of 6.9, and the
+# main figures run 0.7 to 2.8. Seven columns puts it at 4.0, which is as far as it goes
+# without a second row.
+ax = fig.add_subplot(gs[2, 0:5]); st.head(fig, ax, "f")
 # Are variant identifications supported by worse spectra than ordinary ones? If so, the
 # detections would be suspect regardless of FDR.
 import glob as _g
@@ -280,10 +305,10 @@ if vh and bh:
             label="variant (%d)" % len(V))
     ax.axvline(B.median(), color=st.GREY, lw=0.9, ls="--")
     ax.axvline(V.median(), color=st.BLUE, lw=0.9, ls="--")
-    ax.set_xlabel("hyperscore", fontsize=st.sz(6)); ax.set_ylabel("density", fontsize=st.sz(6))
-    ax.legend(frameon=False, fontsize=st.sz(5.0), loc="upper right", handlelength=1.1)
+    ax.set_xlabel("hyperscore", fontsize=st.sz(6.3)); ax.set_ylabel("density", fontsize=st.sz(6.3))
+    ax.legend(frameon=False, fontsize=st.sz(6.3), loc="upper right", handlelength=1.1)
     ax.text(0.97, 0.55, "medians %.1f vs %.1f" % (V.median(), B.median()),
-            transform=ax.transAxes, ha="right", fontsize=st.sz(5.2), color=st.GREY)
+            transform=ax.transAxes, ha="right", fontsize=st.sz(6.3), color=st.GREY)
     HEAD["f_median_hyperscore_variant"] = round(float(V.median()), 1)
     HEAD["f_median_hyperscore_background"] = round(float(B.median()), 1)
     HEAD["f_n_variant_psms"] = int(len(V))
@@ -325,7 +350,7 @@ try:
 except Exception as e:
     ax = fig.add_subplot(gs[3:5, 0:12]); ax.set_axis_off()
     ax.text(.5, .5, "spectrum panel unavailable: %s" % str(e)[:70], ha="center",
-            transform=ax.transAxes, fontsize=st.sz(6))
+            transform=ax.transAxes, fontsize=st.sz(6.3))
 
 # headline numbers per panel, printed so no legend holds a number the script does not report
 try:

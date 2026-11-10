@@ -32,6 +32,10 @@ _TOP = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # One body type size for this figure; every other size is a ratio to it.
 BODY = 7.0
 st.apply(BODY)
+# The PNG raster. apply() resets rcParams, so this has to follow it, and every
+# main figure sets it. These ten did not, so they rendered at 600 dpi: twice the
+# pixels for the same canvas, which is not a finer figure, only a bigger file.
+plt.rcParams["savefig.dpi"] = 300
 
 def find(n):
     # ligand_rebuild added 2026-09-04: the two panels consolidated in from figS2 read their
@@ -61,11 +65,27 @@ AA = list("ACDEFGHIKLMNPQRSTVWY")
 CLASSES = ["C>A", "C>G", "C>T", "T>A", "T>C", "T>G"]
 SP = pd.read_csv(find("step48_spectra.csv")).set_index("set")
 CT = pd.read_csv(find("step48c_by_cancer_type.csv")).sort_values("bg_CT")
-fig = plt.figure(figsize=(st.DOUBLE, st.DOUBLE * 1.30))
+# ALL FOUR MARGINS IN INCHES, AND THE CANVAS SOLVED FROM THE PANEL BLOCK, which is how every
+# main figure is built. The height follows from the y axis, not the other way round: four rows
+# at the family's 1.55020 in, three row gaps, then the margins. Sized by aspect instead, this
+# sheet drew its y axes 704.4 px long against the family's 483.6 and ran 15.00 in deep.
+_ML, _MR = 0.6920, 0.1730      # left and right margins, inches
+_MB, _MT = 0.8250, 0.6750      # bottom and top margins, inches
+_WS, _HS = 4.0, 0.66           # column and row spacing, fractions of the average panel
 # wspace 2.4 -> 4.0: at the raised body panel e's y-axis label was drawn 91% inside panel
 # d's plot frame. Same defect as Figure 1's three, and the only one left in the set.
-gs = fig.add_gridspec(4, 12, hspace=0.66, wspace=4.0,
-                      left=0.06, right=0.985, top=0.955, bottom=0.055)
+_YAX = 1.55020                 # the family y axis, 483.6 px at the 311.96 raster
+_FW = 11.5367                  # 3461 px at 300 dpi, which finalizes to 3600 px and 12.00 in
+# THREE ROWS, AND ROW 0 SIZED BY THE MATRIX. Twenty residue labels need 20 x 0.129 = 2.58 in,
+# which is 1.66 family rows, and the matrix is aspect-locked so it squares up to match. Panel
+# h comes up beside f and g rather than taking a row of its own 10.6 in wide, which was an
+# aspect of 6.9 against the main figures' 0.7 to 2.8.
+_FH = st.block_h(3, _HS, [1.66, 1.0, 1.0]) + _MB + _MT
+fig = plt.figure(figsize=(_FW, _FH))
+gs = fig.add_gridspec(3, 12, hspace=_HS, wspace=_WS,
+                      height_ratios=[1.66, 1.0, 1.0],
+                      left=_ML / _FW, right=1 - _MR / _FW,
+                      top=1 - _MT / _FH, bottom=_MB / _FH)
 
 # HEADLINE NUMBERS, added 2026-09-04, for the same reason as fig1: this printed only its panel
 # count, so its legend would have been written from prose rather than from the build.
@@ -99,9 +119,14 @@ pct = 100 * grid / np.nansum(grid)
 # outside it, just less obviously.
 _CMAP = st.seq_cmap()
 im = ax.imshow(pct, cmap=_CMAP, aspect="equal", vmin=0, vmax=np.nanmax(pct))
-ax.set_xticks(range(20)); ax.set_xticklabels(AA, fontsize=st.sz(5))
-ax.set_yticks(range(20)); ax.set_yticklabels(AA, fontsize=st.sz(5))
-ax.set_xlabel("becomes", fontsize=st.sz(6)); ax.set_ylabel("from", fontsize=st.sz(6))
+# LEFT JUSTIFIED TO THE CELL, not centred in it. An aspect-equal axes is shrunk to fit and
+# then centred, because matplotlib anchors at "C", so this matrix started 396 px right of the
+# column D, F and H start at, and the letter, which place_heads puts at the panel's own ink,
+# followed it there.
+ax.set_anchor("W")
+ax.set_xticks(range(20)); ax.set_xticklabels(AA, fontsize=st.sz(6.3))
+ax.set_yticks(range(20)); ax.set_yticklabels(AA, fontsize=st.sz(6.3))
+ax.set_xlabel("becomes", fontsize=st.sz(6.3)); ax.set_ylabel("from", fontsize=st.sz(6.3))
 ei, ki = AA.index("E"), AA.index("K")
 HEAD["a_EK_sites"] = int(grid[ei, ki]); HEAD["a_total_subs"] = int(np.nansum(grid))
 HEAD["a_EK_share_pct"] = round(100.0 * grid[ei, ki] / np.nansum(grid), 2)
@@ -110,12 +135,14 @@ ax.add_patch(plt.Rectangle((ki - 0.5, ei - 0.5), 1, 1, fill=False, edgecolor=st.
 flat = pct[~np.isnan(pct)]
 rank = int((flat > pct[ei, ki]).sum()) + 1
 ax.text(ki + 0.9, ei - 0.1, "E\u2192K\n%.2f%%, rank %d" % (pct[ei, ki], rank),
-        fontsize=st.sz(5), color=st.ORANGE, va="center", linespacing=1.3)
+        fontsize=st.sz(6.3), color=st.ORANGE, va="center", linespacing=1.3)
 cb = fig.colorbar(im, ax=ax, fraction=0.045, pad=0.03)
-cb.set_label("% of all missense sites", fontsize=st.sz(5.2))
-cb.ax.tick_params(labelsize=st.sz(5))
-ax.text(0.5, -0.34, "whole matrix sums to 100%; white = never observed",
-        transform=ax.transAxes, ha="center", fontsize=st.sz(5), color=st.GREY)
+# AFTER the colorbar, not before. make_axes() sets the parent's anchor to "E" when it takes
+# its slice off the right, which silently undid the W set above and left the matrix centred
+# in the column, 396 px right of where D, F and H start.
+ax.set_anchor("W")
+cb.set_label("% of all missense sites", fontsize=st.sz(6.3))
+cb.ax.tick_params(labelsize=st.sz(6.3))
 
 # ---------------------------------------------------------------- b: codon context
 ax = fig.add_subplot(gs[0, 5:8]); st.head(fig, ax, "b")
@@ -128,8 +155,8 @@ if C:
     ax.barh(y, D.ratio, height=st.BARW, color=cols)
     ax.axvline(1, color=st.GREY, lw=0.9)
     ax.set_yticks(y)
-    ax.set_yticklabels(["%s\u2192%s" % (r.ref, r.alt) for r in D.itertuples()], fontsize=st.sz(5.0))
-    ax.set_xlabel("observed / expected", fontsize=st.sz(5.8))
+    ax.set_yticklabels(["%s\u2192%s" % (r.ref, r.alt) for r in D.itertuples()], fontsize=st.sz(6.3))
+    ax.set_xlabel("observed / expected", fontsize=st.sz(6.3))
     ax.set_xlim(0, 4.0)
     HEAD["b_top12"] = {"%s->%s" % (r.ref, r.alt): round(float(r.ratio), 3) for r in D.itertuples()}
     ek = D[(D.ref == "E") & (D.alt == "K")]
@@ -137,11 +164,8 @@ if C:
         HEAD["b_EK_obs_over_exp"] = round(float(ek.ratio.iloc[0]), 3)
     if len(ek):
         ax.text(1.25, y[list(D.index).index(ek.index[0])], "E\u2192K = %.2f" % ek.ratio.iloc[0],
-                fontsize=st.sz(5.2), color=st.ORANGE, va="center")
+                fontsize=st.sz(6.3), color=st.ORANGE, va="center")
     # below the axes entirely: every interior region is occupied by a bar or its label
-    ax.text(0.5, -0.30, "expectation from trinucleotide context and codon usage; "
-            "R\u2192Q/H/C are the CpG hotspots",
-            transform=ax.transAxes, ha="center", va="top", fontsize=st.sz(5), color=st.GREY)
 
 # ---------------------------------------------------------------- c: gnomAD
 ax = fig.add_subplot(gs[0, 9:12]); st.head(fig, ax, "c")
@@ -155,15 +179,19 @@ if G:
     vals = [100 * b[k] / b.sum() for k in order]
     cols = [st.BLUE if k in ("absent", "<1e-5") else
             (st.LIGHTGREY if "assess" not in str(k) else st.GREY) for k in order]
-    PRETTY = {"absent": "absent", "lt_1e-5": "< 10$^{-5}$", "1e-5_1e-4": "10$^{-5}$\u201310$^{-4}$",
-              "1e-4_1e-3": "10$^{-4}$\u201310$^{-3}$", "gt_1e-3": "> 10$^{-3}$",
+    # A RANGE BETWEEN TWO EXPONENTS READS AS SUBTRACTION. "10 to the minus five, dash, ten to
+    # the minus four" is a subtraction on sight, and the dash is one glyph away from the minus
+    # signs on either side of it. The word carries the range and nothing else can be misread.
+    PRETTY = {"absent": "absent", "lt_1e-5": "< 10$^{-5}$",
+              "1e-5_1e-4": "10$^{-5}$ to 10$^{-4}$",
+              "1e-4_1e-3": "10$^{-4}$ to 10$^{-3}$", "gt_1e-3": "> 10$^{-3}$",
               "not_assessed": "not assessed"}
     ax.barh(range(len(order))[::-1], vals, height=st.BARW, color=cols)
     ax.set_yticks(range(len(order))[::-1])
-    ax.set_yticklabels([PRETTY.get(str(k), str(k)) for k in order], fontsize=st.sz(5.0))
+    ax.set_yticklabels([PRETTY.get(str(k), str(k)) for k in order], fontsize=st.sz(6.3))
     for i, v in enumerate(vals):
-        ax.text(v + 1, len(order) - 1 - i, "%.1f%%" % v, va="center", fontsize=st.sz(5.0))
-    ax.set_xlabel("% of acquired-lysine sites", fontsize=st.sz(5.8))
+        ax.text(v + 1, len(order) - 1 - i, "%.1f%%" % v, va="center", fontsize=st.sz(6.3))
+    ax.set_xlabel("% of acquired-lysine sites", fontsize=st.sz(6.3))
     ax.set_xlim(0, max(vals) * 1.34)
     # the two low bands as a fraction of ASSESSED sites, which is how the figure is quoted
     HEAD["c_band_pct"] = {str(k): round(float(v), 2) for k, v in zip(order, vals)}
@@ -184,7 +212,7 @@ if G:
 # The two panels below are relettered d and e and moved up into the vacated row.
 
 # ---------------------------------------------------------------- d: which residues are gained
-ax = fig.add_subplot(gs[1, 0:6]); st.head(fig, ax, "d")
+ax = fig.add_subplot(gs[1, 0:5]); st.head(fig, ax, "d")
 # Lysine is 4th, not 1st. Stating that plainly is better than inviting the question: the
 # argument was never that lysine is uniquely acquired, but that it is the most-acquired residue
 # covalent chemistry can address. Leucine, serine and valine gains are as numerous and inert.
@@ -197,20 +225,15 @@ HEAD["d_K_rank"] = int(list(o.index).index("K") + 1)
 HEAD["d_C_rank"] = int(list(o.index).index("C") + 1)
 cols = [st.ORANGE if a == "K" else (st.GREEN if a == "C" else st.LIGHTGREY) for a in o.index]
 ax.bar(range(20), o.values / 1000, color=cols, width=st.BARW)
-ax.set_xticks(range(20)); ax.set_xticklabels(o.index, fontsize=st.sz(5.0))
-ax.set_ylabel("sites gained (thousands)", fontsize=st.sz(5.8))
+ax.set_xticks(range(20)); ax.set_xticklabels(o.index, fontsize=st.sz(6.3))
+ax.set_ylabel("sites gained (thousands)", fontsize=st.sz(6.3))
 ax.set_ylim(0, o.max() / 1000 * 1.22)
 for a, c in (("K", st.ORANGE), ("C", st.GREEN)):
     i = list(o.index).index(a)
-    ax.text(i, o[a] / 1000 + 8, a, ha="center", fontsize=st.sz(6), color=c)
-ax.text(0.98, 0.95, "lysine 4th at %sk; cysteine 11th at %sk\n"
-        ", %.2f-fold more acquired lysines than cysteines"
-        % (int(gain['K'] / 1000), int(gain['C'] / 1000), gain['K'] / gain['C']),
-        transform=ax.transAxes, ha="right", va="top", fontsize=st.sz(5.2), color=st.GREY,
-        linespacing=1.5)
+    ax.text(i, o[a] / 1000 + 8, a, ha="center", fontsize=st.sz(6.3), color=c)
 
 # ---------------------------------------------------------------- g: net flux
-ax = fig.add_subplot(gs[1, 6:12]); st.head(fig, ax, "e")
+ax = fig.add_subplot(gs[1, 6:11]); st.head(fig, ax, "e")
 net = (gain - lost).sort_values(ascending=False)
 HEAD["e_K_lost"] = int(lost.get("K", 0)); HEAD["e_C_lost"] = int(lost.get("C", 0))
 HEAD["e_K_net"] = int(net.get("K", 0)); HEAD["e_C_net"] = int(net.get("C", 0))
@@ -219,20 +242,15 @@ cols = [st.ORANGE if a == "K" else (st.GREEN if a == "C" else
         (st.BLUE if v > 0 else st.LIGHTGREY)) for a, v in net.items()]
 ax.bar(range(20), net.values / 1000, color=cols, width=st.BARW)
 ax.axhline(0, color=st.GREY, lw=0.8)
-ax.set_xticks(range(20)); ax.set_xticklabels(net.index, fontsize=st.sz(5.0))
-ax.set_ylabel("gained \u2212 lost (thousands)", fontsize=st.sz(5.8))
-ax.text(0.98, 0.95, "cysteine is rarely LOST (%sk vs %sk), so it nets\n"
-        "higher on far smaller numbers. Lysine turns over more."
-        % (int(lost['C'] / 1000), int(lost['K'] / 1000)),
-        transform=ax.transAxes, ha="right", va="top", fontsize=st.sz(5.2), color=st.GREY,
-        linespacing=1.5)
+ax.set_xticks(range(20)); ax.set_xticklabels(net.index, fontsize=st.sz(6.3))
+ax.set_ylabel("gained \u2212 lost (thousands)", fontsize=st.sz(6.3))
 
 # ---------------------------------------------------------------- f: the six classes
 # From the retired figS2. The evidence behind Figure 1b's claim: gains are one substitution
 # class, losses are every other one.
 ax = fig.add_subplot(gs[2, 0:4]); # Title shortened to fit panel f. The full statement is legend (F)'s opening sentence,
 # so nothing is lost; the long form overran into panel g's letter.
-st.head(fig, ax, "f", "gains are one class")
+st.head(fig, ax, "f")
 HEAD["f_gain_by_class"] = {c: round(float(SP.loc["gain", c]), 2) for c in CLASSES}
 HEAD["f_loss_by_class"] = {c: round(float(SP.loc["loss", c]), 2) for c in CLASSES}
 HEAD["f_allmis_by_class"] = {c: round(float(SP.loc["all missense", c]), 2) for c in CLASSES}
@@ -241,27 +259,24 @@ ax.bar(x - w, [SP.loc["all missense", c] for c in CLASSES], w, color=st.LIGHTGRE
        label="all missense")
 ax.bar(x, [SP.loc["gain", c] for c in CLASSES], w, color=st.ORANGE, label="lysine gained")
 ax.bar(x + w, [SP.loc["loss", c] for c in CLASSES], w, color=st.BLUE, label="lysine lost")
-ax.set_xticks(x); ax.set_xticklabels(CLASSES, fontsize=st.sz(5.0))
-ax.set_ylabel("share of substitutions (%)", fontsize=st.sz(5.8))
-ax.set_ylim(0, 118); ax.tick_params(labelsize=st.sz(5.4))
-ax.legend(fontsize=st.sz(5), loc="upper left", frameon=False, handlelength=0.8,
-          handletextpad=0.3, borderpad=0.12, bbox_to_anchor=(-0.03, 1.04))
+ax.set_xticks(x); ax.set_xticklabels(CLASSES, fontsize=st.sz(6.3))
+ax.set_ylabel("share of substitutions (%)", fontsize=st.sz(6.3))
+ax.set_ylim(0, 118); ax.tick_params(labelsize=st.sz(6.3))
+ax.legend(fontsize=st.sz(6.3), loc="upper left", frameon=False, handlelength=0.8,
+          handletextpad=0.3, borderpad=0.12, bbox_to_anchor=(0.10, 1.04))
 ax.annotate("", xy=(2.0, 89.0), xytext=(2.0, 106.0),
             arrowprops=dict(arrowstyle="-|>", color=st.ORANGE, lw=0.9, mutation_scale=5))
-ax.text(2.20, 107.0, "85.5%", fontsize=st.sz(5.4), color=st.ORANGE, va="top")
+ax.text(2.20, 107.0, "85.5%", fontsize=st.sz(6.3), color=st.ORANGE, va="top")
 ax.annotate("", xy=(2.30, 5.0), xytext=(3.05, 30.0),
             arrowprops=dict(arrowstyle="-|>", color=st.BLUE, lw=0.9, mutation_scale=5))
-ax.text(3.12, 32.0, "0 of\n60,240", fontsize=st.sz(5.2), color=st.BLUE,
+ax.text(3.12, 32.0, "0 of\n60,240", fontsize=st.sz(6.3), color=st.BLUE,
         va="bottom", linespacing=1.4)
-ax.text(0.5, -0.26, "missense only, so the three sets are like for like;\nnonsense adds 3,020 "
-        "further losses, all T>A", transform=ax.transAxes, ha="center", va="top", fontsize=st.sz(5),
-        color=st.GREY, linespacing=1.5)
 
 # ---------------------------------------------------------------- g: the signature control
 # From the retired figS2. The control that separates the codon explanation from the cheaper
 # one — that C>T simply dominates cancer mutation, so the gain figure is inherited from the
 # background. That predicts the asymmetry should weaken where C>T is not dominant. It does not.
-ax = fig.add_subplot(gs[2, 4:12]); st.head(fig, ax, "g", "the asymmetry is not inherited from the background spectrum")
+ax = fig.add_subplot(gs[2, 4:8]); st.head(fig, ax, "g")
 xx = np.arange(len(CT))
 ax.plot(xx, CT.bg_CT, "-", color=st.LIGHTGREY, lw=1.1, zorder=1)
 ax.plot(xx, CT.bg_CT, "s", ms=2.2, color=st.GREY, zorder=3, label="all mutations")
@@ -269,17 +284,14 @@ ax.plot(xx, CT.gain_CT, "-", color=st.ORANGE, lw=0.9, zorder=2)
 ax.plot(xx, CT.gain_CT, "o", ms=2.6, color=st.ORANGE, zorder=4, label="K gained")
 ax.plot(xx, CT.loss_CT, "o", ms=2.6, color=st.BLUE, zorder=4, label="K lost")
 ax.set_xticks(xx)
-ax.set_xticklabels(CT.cancer, fontsize=st.sz(5), rotation=45, ha="right", rotation_mode="anchor")
-ax.set_ylabel("C>T share (%)", fontsize=st.sz(5.8))
-ax.set_ylim(-6, 120); ax.tick_params(axis="y", labelsize=st.sz(5.4))
-ax.legend(fontsize=st.sz(5), loc="upper left", frameon=False, handlelength=0.9, handletextpad=0.3,
-          borderpad=0.12, ncol=3, bbox_to_anchor=(-0.012, 1.05), columnspacing=0.6)
-ax.text(len(CT)/2 - 0.5, 13.0, "lysine lost: 0.0% in every type", fontsize=st.sz(5.0), color=st.BLUE,
+ax.set_xticklabels(CT.cancer, fontsize=st.sz(6.3), rotation=45, ha="right", rotation_mode="anchor")
+ax.set_ylabel("C>T share (%)", fontsize=st.sz(6.3))
+ax.set_ylim(-6, 120); ax.tick_params(axis="y", labelsize=st.sz(6.3))
+ax.legend(fontsize=st.sz(6.3), loc="upper left", frameon=False, handlelength=0.9,
+          handletextpad=0.3, borderpad=0.12, ncol=3, bbox_to_anchor=(0.11, 1.05),
+          columnspacing=0.6)
+ax.text(len(CT)/2 - 0.5, 13.0, "lysine lost: 0.0% in every type", fontsize=st.sz(6.3), color=st.BLUE,
         ha="center", va="center", fontweight="bold")
-ax.text(0.5, -0.40, "Ordered by each cancer's own C>T content, tobacco-driven lung (LUAD, 22%) "
-        "to ultraviolet melanoma (SKCM, 86%).\nGains follow it; losses do not.",
-        transform=ax.transAxes, ha="center", va="top", fontsize=st.sz(5), color=st.GREY,
-        linespacing=1.5)
 
 # ============================================ h  added 2026-09-07
 # Figure 1g reports one residue's somatic:germline ratio. This panel reports all twenty, computed
@@ -299,7 +311,7 @@ ax.text(0.5, -0.40, "Ordered by each cancer's own C>T content, tobacco-driven lu
 # are purged from inherited variation and score high here for a reason unrelated to cancer -- which
 # is the most likely reading of F, Y and W at the top. Selection is Figure 1d's odds ratio of 1.68,
 # and the context-corrected enrichment is panel b's 1.12-fold.
-ax = fig.add_subplot(gs[3, 0:12]); st.head(fig, ax, "h")
+ax = fig.add_subplot(gs[2, 8:12]); st.head(fig, ax, "h")
 _R = find("germline_by_residue.csv")
 if _R:
     RB = pd.read_csv(_R).sort_values("ratio", ascending=False).reset_index(drop=True)
@@ -308,16 +320,17 @@ if _R:
     x = np.arange(len(RB))
     ax.bar(x, RB.ratio, color=cols, width=st.BARW)
     ax.axhline(1.0, color=st.GREY, lw=0.9, ls="--")
-    ax.text(len(RB) - 0.4, 1.05, "created just as often by inheritance", fontsize=st.sz(5.2),
+    ax.text(len(RB) - 0.4, 1.05, "created just as often by inheritance", fontsize=st.sz(6.3),
             color=st.GREY, ha="right", va="bottom")
     for i, r in enumerate(RB.itertuples()):
         if r.res in COL:
-            ax.text(i, r.ratio + 0.05, "%.2f" % r.ratio, ha="center", fontsize=st.sz(6), color=COL[r.res])
-            ax.text(i, -0.16, {"K": "lysine", "C": "cysteine"}[r.res], ha="center", fontsize=st.sz(5.4),
-                    color=COL[r.res])
-    ax.set_xticks(x); ax.set_xticklabels(RB.res, fontsize=st.sz(6))
-    ax.set_xlabel("residue the mutation creates", fontsize=st.sz(6))
-    ax.set_ylabel("times more often created by cancer\nthan by inherited variation", fontsize=st.sz(6))
+            ax.text(i, r.ratio + 0.05, "%.2f" % r.ratio, ha="center", fontsize=st.sz(6.3), color=COL[r.res])
+            # The second label row is gone. At three columns the twenty residues sit 0.15 in apart and
+            # 'lysine' is 0.4 in wide, so the two words ran into each other. Rust and teal carry it,
+            # and the caption names them.
+    ax.set_xticks(x); ax.set_xticklabels(RB.res, fontsize=st.sz(6.3))
+    ax.set_xlabel("residue the mutation creates", fontsize=st.sz(6.3))
+    ax.set_ylabel("times more often created by cancer\nthan by inherited variation", fontsize=st.sz(6.3))
     ax.set_ylim(-0.28, max(RB.ratio) * 1.16)
     for sp in ("top", "right"): ax.spines[sp].set_visible(False)
     _k = RB[RB.res == "K"].iloc[0]; _c = RB[RB.res == "C"].iloc[0]
@@ -337,7 +350,7 @@ if _R:
 else:
     ax.set_axis_off()
     ax.text(0.5, 0.5, "germline_by_residue.csv not found, run step54_germline_by_residue.py",
-            ha="center", va="center", fontsize=st.sz(6), color=st.GREY)
+            ha="center", va="center", fontsize=st.sz(6.3), color=st.GREY)
 
 st.save(fig, "figS1")
 fd.head("figS1", HEAD)

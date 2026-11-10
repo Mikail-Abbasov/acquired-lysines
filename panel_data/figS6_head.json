@@ -1,7 +1,7 @@
 {
  "script": "figS6_v1.py",
  "stem": "figS6",
- "written": "2026-11-09",
+ "written": "2026-11-10",
  "numbers": {
   "a_model_auc": 0.617,
   "a_n_half_splits": 50,
@@ -29,6 +29,11 @@
   "d_train_auc": 0.619,
   "e_n_breadth_features": 21,
   "e_n_features_sign_flipped": 3,
+  "f_most_divergent": [
+   "net charge 8\u00c5",
+   "anionic 8\u00c5",
+   "hydrophobic 8\u00c5"
+  ],
   "f_n_chemotype_features": 13,
   "f_n_differing_significantly": 0,
   "f_n_opposite_direction": 6,

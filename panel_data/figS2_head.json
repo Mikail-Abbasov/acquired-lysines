@@ -1,7 +1,7 @@
 {
  "script": "figS2_v3.py",
  "stem": "figS2",
- "written": "2026-11-05",
+ "written": "2026-11-10",
  "numbers": {
   "a_gate1_covered_pct_acquired_lysine": 7.3,
   "a_gate1_covered_pct_other_variant": 4.6,

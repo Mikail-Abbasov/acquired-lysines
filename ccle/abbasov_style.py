@@ -33,6 +33,37 @@ MM = 1/25.4
 SINGLE = 89*MM      # 3.50 in
 ONEHALF = 120*MM    # 4.72 in   (136 mm is the other permitted 1.5-column width)
 DOUBLE = 183*MM     # 7.20 in
+
+# THE FAMILY SHEET. Every main figure is built on an 11.5400 in canvas and rendered at
+# 300 x 12.00 / 11.5400 = 311.96 dpi, so its body type prints 9.213 pt. A sheet built on the
+# 7.20 in DOUBLE canvas carries the same source type on a canvas 1.6 times smaller, so once
+# both are placed at the text width that type prints 1.6 times LARGER. The supplementary
+# sheets were left on DOUBLE when the main set moved to the family canvas on 4 November, and
+# the SI has been printing 8.0 pt body type against the main text's 5.0 pt ever since.
+# sheet() brings a DOUBLE-based figsize onto the family canvas without touching its aspect.
+FAMILY = 11.5400
+FAMK   = FAMILY / DOUBLE          # 1.60176
+
+
+YAX = 1.55020   # the family y axis: 483.6 px at the 311.96 dpi raster
+
+
+def block_h(rows, hspace, ratios=None, yax=YAX):
+    """Height of the panel block, in inches, for a gridspec whose unit row is one y axis.
+
+    A figure's height follows from its y axis, never the other way round. matplotlib spends
+    the block on rows in proportion to height_ratios and on gaps of hspace x the MEAN row, so
+    a row of ratio 1.0 lands on yax when the block is this tall. With no ratios this is the
+    (rows + hspace x gaps) x yax that every main figure uses.
+    """
+    r = [1.0] * int(rows) if ratios is None else [float(x) for x in ratios]
+    mean = sum(r) / len(r)
+    return yax * (sum(r) + hspace * (len(r) - 1) * mean)
+
+
+def sheet(w, h):
+    """A DOUBLE-based figsize brought to the family canvas, aspect unchanged."""
+    return (w * FAMK, h * FAMK)
 MAX_DEPTH = 247*MM  # the full depth of a Nature page
 
 # THE FIVE COLOURS. Supplied by M.A. on 2026-09-01 and used as given, with nothing added:
@@ -272,6 +303,7 @@ def fit_bars(fig, verbose=False):
                     for q in ps:
                         w_new = thick(q) * scale
                         c_old = centre(q)
+                        c_orig, w_orig = c_old, thick(q)
                         if n > 1 and slot_pt:
                             # re-centre the group: the slot centre is this bar's centre with
                             # its old offset removed, and the new offset is set from w_new
@@ -279,6 +311,29 @@ def fit_bars(fig, verbose=False):
                             slot_c = c_old - off_old
                             c_old = slot_c + (k - (n - 1) / 2.0) * w_new
                         place(q, c_old, w_new)
+                        # THE VALUE LABEL GOES WITH ITS BAR. Re-centring a group moves the
+                        # bars and nothing else, so "7.3%" stayed where the wide bar used to
+                        # be and ended up over the gap beside the narrow one. figS2 a and c
+                        # had all four labels adrift that way.
+                        _dx = c_old - c_orig
+                        if abs(_dx) > 1e-9:
+                            # ONCE PER LABEL. The tolerance has to be wide enough to catch a
+                            # label sitting over its bar and narrow enough to miss the next
+                            # group's, and with two groups a quarter of a slot apart there is
+                            # no such width: figS2 c moved 15.0% onto its bar on the first
+                            # stack's pass and the second stack's pass moved it straight back.
+                            _tol = max(abs(w_orig), abs(w_new)) * 0.75
+                            for _t in ax.texts:
+                                if getattr(_t, "_bar_label_moved", False):
+                                    continue
+                                if _t.get_transform() is not ax.transData:
+                                    continue
+                                _x, _y = _t.get_position()
+                                _v = _x if axis == "v" else _y
+                                if abs(_v - c_orig) <= _tol:
+                                    _t.set_position((_x + _dx, _y) if axis == "v"
+                                                    else (_x, _y + _dx))
+                                    _t._bar_label_moved = True
                 changed.append((getattr(ax, "_panel_letter", "?"), axis,
                                 round(max(cur), 2), round(max(cur) * scale, 2),
                                 "grouped/%d" % n if n > 1 else
@@ -383,13 +438,28 @@ def missing_glyphs(fig):
     return sorted(bad)
 
 
-def check_depth(fig, stem=""):
-    """Nature caps a figure at the full depth of the page, 247 mm. Say so rather than let
-    a 280 mm figure reach the production desk to be scaled down by a quarter."""
-    h = fig.get_size_inches()[1]
-    if h > MAX_DEPTH + 1e-6:
-        print("OVER DEPTH: %s is %.1f mm tall against Nature's %.0f mm page"
-              % (stem or "figure", h / MM, MAX_DEPTH / MM))
+# The page a sheet has to sit on, in inches: the width it is placed at and the depth of the
+# text block it shares with its legend.
+TEXT_W, TEXT_H = 6.5, 9.0
+
+
+def check_depth(fig, stem="", width_in=None, cap_in=None):
+    """Depth as the READER gets it, not as the canvas is built.
+
+    This compared the canvas height against Nature's 247 mm page, which only tested anything
+    while a sheet was built at its printed size. The main set moved to the 11.54 in family
+    canvas on 4 November and has been silently exempt ever since: fig1 is 5.01 in tall at
+    face value and passes a 9.72 in cap without ever being measured. What matters is the
+    depth the sheet prints at once it is placed at the text width, legend still to come.
+    """
+    width_in = TEXT_W if width_in is None else width_in
+    cap_in = TEXT_H if cap_in is None else cap_in
+    w, h = fig.get_size_inches()
+    placed = width_in * h / w
+    if placed > cap_in + 1e-6:
+        print("OVER DEPTH: %s prints %.2f in deep at the %.1f in text width, against a "
+              "%.1f in text block, and its legend has to fit under it"
+              % (stem or "figure", placed, width_in, cap_in))
         return False
     return True
 
@@ -1321,7 +1391,7 @@ def end_on_tick(fig, verbose=False):
     the locator already chose and relabel to match. Axes that already end on a tick, and
     anything not linear, are left alone.
     """
-    out = []
+    out, bot = [], []
     for ax in fig.axes:
         if not ax.get_visible() or not getattr(ax, "axison", True):
             continue
@@ -1359,10 +1429,80 @@ def end_on_tick(fig, verbose=False):
         ax.set_ylim(y0, top)
         ax.set_yticks(ticks)
         out.append((getattr(ax, "_panel_letter", "?"), round(y1, 4), round(top, 4)))
+
+    # THE BOTTOM IS AN END OF THE AXIS TOO. The pass above finishes the top and leaves the
+    # bottom wherever the data margin put it, so thirteen supplementary panels had a spine
+    # running past its own lowest label: figS5 d started at 35 under a first tick of 40.
+    # Two ways to finish it, and which one is right depends on the data, not on the number:
+    # raise the bottom onto the tick when nothing is drawn below that tick, and only extend
+    # downward when something is.
+    for ax in fig.axes:
+        if not ax.get_visible() or not getattr(ax, "axison", True):
+            continue
+        if ax.get_yscale() != "linear" or not ax.yaxis.get_visible() or _categorical_y(ax):
+            continue
+        try:
+            y0, y1 = ax.get_ylim()
+            locs = [float(t) for t in ax.get_yticks()]
+            dlo = float(ax.dataLim.y0)
+        except Exception:
+            continue
+        inside = [t for t in locs if y0 - 1e-9 <= t <= y1 + 1e-9]
+        if len(inside) < 2 or y1 <= y0:
+            continue
+        gaps = [b - a for a, b in zip(inside, inside[1:])]
+        step = min(gaps)
+        if step <= 0 or max(gaps) - step > step * 1e-6:
+            continue
+        low = inside[0]
+        if abs(y0 - low) <= step * 1e-6:
+            continue                                  # already ends on a tick
+        if not (dlo == dlo) or abs(dlo) == float("inf"):
+            continue                                  # no usable data limit, leave it alone
+        if dlo >= low - step * 1e-6:
+            ax.set_ylim(low, y1)                      # nothing below the tick: close the gap
+            new_lo = low
+        else:
+            import math as _m
+            m = _m.ceil((low - dlo) / step - 1e-9)
+            if m > 2:
+                continue                              # redesigning the axis, not finishing it
+            new_lo = low - m * step
+            ax.set_ylim(new_lo, y1)
+            ax.set_yticks([new_lo + i * step
+                           for i in range(int(round((y1 - new_lo) / step)) + 1)])
+        bot.append((getattr(ax, "_panel_letter", "?"), round(y0, 4), round(new_lo, 4)))
+
     if verbose and out:
         for L, was, now in out:
             print("   y axis  panel %s   top %g -> %g, now a labelled tick" % (L, was, now))
+    if verbose and bot:
+        for L, was, now in bot:
+            print("   y axis  panel %s   bottom %g -> %g, now a labelled tick" % (L, was, now))
     return fig
+
+
+def final_sheet(fig, stem, trim=None, ref="fig1.pdf"):
+    """The finalized file, written at the raster the whole family shares.
+
+    THE FAMILY SHARES A RASTER, NOT A WIDTH. Figure 1 at 12.00 in fixes it at
+    300 x 12.00 / 11.5400 = 311.96 dpi; every sheet renders at that raster and is declared
+    300 dpi, so all of them print 9.213 pt body type whatever their width. Each main figure
+    carries its own copy of this block. The ten supplementary sheets share this one, so the
+    raster cannot drift between them.
+    """
+    import PIL.Image as _PI, pymupdf as _mu
+    _ref = _mu.open(ref)[0].rect.width / 72.0
+    dpi = 300.0 * 12.0 / _ref
+    out = "%s_final.png" % stem
+    fig.savefig(out, dpi=dpi, **({"bbox_inches": trim} if trim is not None else {}))
+    im = _PI.open(out)
+    im.save(out, dpi=(300, 300))
+    print("final: %s at the shared %.2f dpi raster -> %d x %d px declared 300 dpi "
+          "(%.3f x %.3f in), body type %.3f pt"
+          % (out, dpi, im.size[0], im.size[1], im.size[0] / 300.0, im.size[1] / 300.0,
+             8.860 * dpi / 300.0))
+    return out
 
 
 def save(fig, stem):
@@ -1438,6 +1578,10 @@ def save(fig, stem):
                                              sorted(tally.items()))))
     fig.savefig(f"{stem}.pdf")
     fig.savefig(f"{stem}.png")
+    # The finalized sheet comes off the SAME settled figure, so it cannot differ from the
+    # reviewed one by a layout pass. Main figures run their own block after their trim.
+    if _os.environ.get("FINAL_SHEET"):
+        final_sheet(fig, stem)
     return f"{stem}.pdf", f"{stem}.png"
 
 

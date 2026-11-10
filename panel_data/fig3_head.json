@@ -1,7 +1,7 @@
 {
  "script": "fig3_v3.py",
  "stem": "fig3",
- "written": "2026-11-08",
+ "written": "2026-11-10",
  "numbers": {
   "b_fdp_margin0_pct": 4.7,
   "b_fdp_margin10_pct": 0.83,

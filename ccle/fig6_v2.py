@@ -74,7 +74,7 @@ SLOP = pd.read_csv(find("step38_tiers.csv"))
 CONF = pd.read_csv(find("step41_confound_strength.csv"))
 
 NICE = lambda f: (f.replace("_8A", " 8Å").replace("_10A", " 10Å").replace("_", " ")
-                   .replace("rsa tien", "exposure").replace("propka pKa", "predicted pKa")
+                   .replace("rsa tien", "exposure").replace("propka pKa", "predicted pK$_a$")
                    .replace("nz sasa", "NZ exposure").replace("sasa sidechain", "side-chain exposure")
                    .replace("dist centroid", "distance to centroid").replace("n lys", "nearby lysines"))
 

@@ -39,6 +39,10 @@ _TOP = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # One body type size for this figure; every other size is a ratio to it.
 BODY = 7.0
 st.apply(BODY)
+# The PNG raster. apply() resets rcParams, so this has to follow it, and every
+# main figure sets it. These ten did not, so they rendered at 600 dpi: twice the
+# pixels for the same canvas, which is not a finer figure, only a bigger file.
+plt.rcParams["savefig.dpi"] = 300
 
 def find(n):
     for d in (".", "..", os.path.join(_TOP, 'ccle_plex05'),
@@ -76,12 +80,19 @@ SITES= find("sites_covalent_residues.csv")
 FLUX = find("residue_flux_by_line.csv")
 notes = []
 
-fig = plt.figure(figsize=(st.DOUBLE, st.DOUBLE * 0.90))
-# A 12-column grid rather than 3, so panels can take the width their content needs. The bar
-# charts (b, c, f, i) carry two or three bars each and were given a full third of the figure;
-# they are narrowed to 3 columns, which leaves room for panel j without stretching it.
-gs = fig.add_gridspec(3, 12, hspace=0.52, wspace=1.6,
-                      left=0.055, right=0.985, top=0.958, bottom=0.055)
+# ALL FOUR MARGINS IN INCHES, AND THE CANVAS SOLVED FROM THE PANEL BLOCK, which is how every
+# main figure is built. The height follows from the y axis, not the other way round: block_h
+# gives the block that puts a unit row on the family's 1.55020 in. Sized by aspect instead,
+# this sheet drew y axes far longer than the family's 483.6 px.
+_ML, _MR = 0.9500, 0.4500      # left and right margins, inches
+_MB, _MT = 0.8800, 0.5000      # bottom and top margins, inches
+_WS, _HS = 1.6, 0.52           # column and row spacing, fractions of the average panel
+_FW = 11.5367                  # 3461 px at 300 dpi, which finalizes to 3600 px and 12.00 in
+_FH = st.block_h(3, _HS, None) + _MB + _MT
+fig = plt.figure(figsize=(_FW, _FH))
+gs = fig.add_gridspec(3, 12, hspace=_HS, wspace=_WS,
+                      left=_ML / _FW, right=1 - _MR / _FW,
+                      top=1 - _MT / _FH, bottom=_MB / _FH)
 
 p_all = pd.read_csv(PEP, sep="\t") if PEP else None
 p = acquired_lysine_only(p_all) if p_all is not None else None
@@ -97,7 +108,13 @@ if p_all is not None:
 HEAD = {}   # headline numbers per panel, captured where they are computed
 
 
-ax = fig.add_subplot(gs[0, 0:4]); st.head(fig, ax, "a")
+# 0:4 -> 0:3. Two bars were using 16% of a four-column panel, the figS2 a shape.
+ax = fig.add_subplot(gs[0, 0:3]); st.head(fig, ax, "a")
+# LEFT JUSTIFIED TO THE PAGE. The three panels in this column carry y-label blocks of very
+# different widths, so sharing a gridspec column left their leftmost ink 480 px apart and the
+# sheet with a ragged left edge. Figure 1 holds its two left panels within 2 px of each other
+# by shifting the whole axes, which takes the plot, its labels and its letter together.
+ax._axes_dx_in = -1.6905
 if PEP and SITES and FLUX:
     import re as _re
     d = pd.read_csv(SITES, low_memory=False); nm = pd.read_csv(FLUX, low_memory=False)[["ModelID", "CellLine"]]
@@ -117,10 +134,13 @@ if PEP and SITES and FLUX:
     ax.bar([0, 1], vals, color=[st.LIGHTGREY, st.BLUE], width=st.BARW)
     for i, (v, (lab, g)) in enumerate(zip(vals, grp)):
         ax.text(i, v + 0.6, "%.0f%%" % v, ha="center", fontsize=st.sz(6.2))
-        ax.text(i, -2.4, "n = %d" % len(g), ha="center", fontsize=st.sz(5.4), color=st.GREY)
+        # y in AXES fraction: see figS1. A second label row under the tick labels cannot be
+        # anchored to a y value the axis is free to change.
+        ax.text(i, -0.34, "n = %d" % len(g), ha="center", fontsize=st.sz(6.3), color=st.GREY,
+                transform=ax.get_xaxis_transform())
     ax.axhline(11, color=st.ORANGE, ls="--", lw=0.8)
-    ax.text(1.45, 11.8, "background 11%", fontsize=st.sz(5.4), color=st.ORANGE, ha="right")
-    ax.set_xticks([0, 1]); ax.set_xticklabels([g[0] for g in grp], fontsize=st.sz(5.8))
+    ax.text(1.45, 11.8, "background 11%", fontsize=st.sz(6.3), color=st.ORANGE, ha="right")
+    ax.set_xticks([0, 1]); ax.set_xticklabels([g[0] for g in grp], fontsize=st.sz(6.3))
     ax.set_ylabel("clonal, AF \u2265 0.7 (%)"); ax.set_ylim(-4, max(vals) * 1.5)
     # Keyed scalars beside the readable string: verify.py cannot diff a sentence.
     HEAD["a clonality"] = "%s clonal (AF>=0.7), background 11%%; n = %s" % (
@@ -135,7 +155,7 @@ if PEP and SITES and FLUX:
              n=int(len(_g))) for (_l, _g), _v in zip(grp, vals)], note="clonality control")
 
 # ------------------------------------------------------------------ a
-ax = fig.add_subplot(gs[0, 5:8]); st.head(fig, ax, "b")
+ax = fig.add_subplot(gs[0, 4:8]); st.head(fig, ax, "b")
 # Protein abundance from the CCLE quantification itself (Nusinow et al.), not a proxy. The file
 # is cell lines x UniProt accessions, so each site is looked up at its own protein IN ITS OWN
 # CELL LINE — the quantity that determines whether that protein was observable in that run.
@@ -161,18 +181,21 @@ if PEP and MS and GMAP and FLUX:
         pc.set_facecolor(col); pc.set_alpha(1.0); pc.set_edgecolor(col); pc.set_linewidth(0.5)
     for i2, (lab, v, col) in enumerate(grp, 1):
         ax.plot([i2 - 0.18, i2 + 0.18], [v.median()] * 2, color=st.GREY, lw=1.0, zorder=5)
-        ax.text(i2, ax.get_ylim()[0], "n=%d" % len(v), ha="center", va="bottom",
-                fontsize=st.sz(5.0), color=st.GREY)
+        # Under the axis, not on the violin. Anchored at the axis floor these counts were
+        # drawn over the widest part of the distribution they count.
+        ax.text(i2, -0.26, "n=%d" % len(v), ha="center", va="top",
+                transform=ax.get_xaxis_transform(),
+                fontsize=st.sz(6.3), color=st.GREY)
     ax.set_xticks(range(1, len(grp) + 1))
-    ax.set_xticklabels([g_[0] for g_ in grp], fontsize=st.sz(5.6))
+    ax.set_xticklabels([g_[0] for g_ in grp], fontsize=st.sz(6.3))
     ax.set_ylabel("protein abundance in that cell line\n(log$_2$, CCLE quantification)",
-                  fontsize=st.sz(5.8))
+                  fontsize=st.sz(6.3))
     if len(grp) == 3:
         from scipy import stats as _st
         a_, b_ = grp[2][1].values, grp[0][1].values
         cd = ((a_[:, None] > b_[None, :]).mean() - (a_[:, None] < b_[None, :]).mean())
-        ax.text(0.97, 0.05, "Cliff's \u03b4 = %.2f" % cd, transform=ax.transAxes,
-                ha="right", va="bottom", fontsize=st.sz(5.6), color=st.GREY)
+        ax.text(0.97, 0.97, "Cliff's \u03b4 = %.2f" % cd, transform=ax.transAxes, va="top",
+                ha="right", fontsize=st.sz(6.3), color=st.GREY)
         HEAD["b_cliffs_delta"] = round(float(cd), 2)
         for _g in grp:
             HEAD["b_n_" + str(_g[0]).replace(chr(10), " ").strip().lower().replace(" ", "_")] = int(len(_g[1]))
@@ -188,16 +211,17 @@ if SITES and FLUX:
             label="all acquired lysines")
     if HITS:
         ax.axvline(0.48, color=st.BLUE, lw=1.3)
-        ax.text(0.52, ax.get_ylim()[1] * 0.86, "detected\nmedian 0.48", fontsize=st.sz(5.6),
+        ax.text(0.52, ax.get_ylim()[1] * 0.86, "detected\nmedian 0.48", fontsize=st.sz(6.3),
                 color=st.BLUE, linespacing=1.4)
     ax.axvline(float(allaf.median()), color=st.GREY, lw=1.0, ls="--")
-    ax.text(float(allaf.median()) - 0.02, ax.get_ylim()[1] * 0.45, "all sites\nmedian %.2f"
-            % allaf.median(), fontsize=st.sz(5.6), color=st.GREY, ha="right", linespacing=1.4)
+    ax.text(float(allaf.median()) - 0.03, ax.get_ylim()[1] * 0.985, "all sites\nmedian %.2f"
+            % allaf.median(), fontsize=st.sz(6.3), color=st.GREY, ha="right", linespacing=1.4)
     ax.set_xlabel("allele fraction"); ax.set_ylabel("density")
     HEAD["c_allsites_median_af"] = round(float(allaf.median()), 2)
     HEAD["c_detected_median_af"] = 0.48
     HEAD["c allele fraction"] = "detected median 0.48 vs all sites median %.2f" % float(allaf.median())
-    ax = fig.add_subplot(gs[1, 0:7]); st.head(fig, ax, "d")
+    ax = fig.add_subplot(gs[1, 0:6]); st.head(fig, ax, "d")
+    ax._axes_dx_in = -0.5655
     # WHAT THIS PANEL USED TO SAY, AND WHY IT WAS WRONG.
     # The first version reported that only LENGTH separates identified peptides from missing
     # ones, from peptide_properties.csv — a calculation on UNLABELLED peptides that also
@@ -241,8 +265,8 @@ if SITES and FLUX:
         y = np.arange(len(labs))
         ax.barh(y, vals, height=st.BARW, color=cols)
         ax.axvline(0, color=st.GREY, lw=0.9)
-        ax.set_yticks(y); ax.set_yticklabels(labs, fontsize=st.sz(5.8), linespacing=1.4)
-        ax.set_xlabel("effect on identification (standardized)", fontsize=st.sz(6))
+        ax.set_yticks(y); ax.set_yticklabels(labs, fontsize=st.sz(6.3), linespacing=1.4)
+        ax.set_xlabel("effect on identification (standardized)", fontsize=st.sz(6.3))
         for _l, _v in zip(labs, vals):
             HEAD["d_effect_" + _l.replace(chr(10), " ").strip().lower().replace(" ", "_")
                  .replace("/", "_").replace("(", "").replace(")", "").replace(",", "")] = round(float(_v), 3)
@@ -251,7 +275,7 @@ if SITES and FLUX:
                  for _l, _v in zip(labs, vals)], note="effect on identification")
         ax.set_xlim(min(min(vals) * 1.35, -0.1), 0.12)
         for yy, v in zip(y, vals):
-            ax.text(v - 0.02, yy, "%.3f" % v, ha="right", va="center", fontsize=st.sz(5.4),
+            ax.text(v - 0.02, yy, "%.3f" % v, ha="right", va="center", fontsize=st.sz(6.3),
                     fontweight="bold" if abs(v) > 0.3 else "normal")
         # The 45-word block that stood here said nothing legend (D) does not already say,
         # number for number: C-terminal K/R -0.004, internal K/R as missed cleavages, histidine
@@ -269,8 +293,8 @@ if HITS:
             int((g2.plexes > 1).sum())]
     ax.bar(range(4), vals, color=[st.BLUE, st.BLUE, st.BLUE, st.ORANGE], width=st.BARW)
     for i3, v in enumerate(vals):
-        ax.text(i3, v + n2 * 0.03, "%d" % v, ha="center", fontsize=st.sz(6))
-    ax.set_xticks(range(4)); ax.set_xticklabels(cats, fontsize=st.sz(5.4))
+        ax.text(i3, v + n2 * 0.03, "%d" % v, ha="center", fontsize=st.sz(6.3))
+    ax.set_xticks(range(4)); ax.set_xticklabels(cats, fontsize=st.sz(6.3))
     ax.set_ylabel("acquired-lysine sites")
     ax.set_ylim(0, n2 * 1.22)
     HEAD["e evidence depth"] = ", ".join("%s %d" % (c.replace(chr(10), " "), v) for c, v in zip(cats, vals))
@@ -314,7 +338,8 @@ for _c in ("mutant_peptide_lengths.csv", "../results/mutant_peptide_lengths.csv"
     if os.path.exists(_c):
         LEN = pd.read_csv(_c); break
 
-ax = fig.add_subplot(gs[2, 0:8]); st.head(fig, ax, "f")
+ax = fig.add_subplot(gs[2, 0:6]); st.head(fig, ax, "f")
+ax._axes_dx_in = 0.0590
 if LEN is not None:
     LO, HI = 7, 50
     # Row order puts the two dark fills apart, so no two neighbours read as the same series.
@@ -331,14 +356,14 @@ if LEN is not None:
         ax.barh(y, short, color=col, height=st.BARW)
         ax.barh(y, good, left=short, color=st.LIGHTGREY, height=st.BARW)
         ax.barh(y, longp, left=short + good, color=st.GREY, height=st.BARW)
-        ax.text(short / 2, y, "%.0f%%" % short, ha="center", va="center", fontsize=st.sz(6),
+        ax.text(short / 2, y, "%.0f%%" % short, ha="center", va="center", fontsize=st.sz(6.3),
                 color=st.PAPER)
         ax.text(short + good / 2, y, "%.0f%% searchable" % good, ha="center", va="center",
-                fontsize=st.sz(5.6), color=st.GREY)
-        ax.text(102, y, "median %.0f aa" % np.median(v), va="center", fontsize=st.sz(5.6), color=st.GREY)
-    ax.set_yticks(ypos); ax.set_yticklabels([l for _, l, _ in SPECIES], fontsize=st.sz(6))
+                fontsize=st.sz(6.3), color=st.GREY)
+        ax.text(102, y, "median %.0f aa" % np.median(v), va="center", fontsize=st.sz(6.3), color=st.GREY)
+    ax.set_yticks(ypos); ax.set_yticklabels([l for _, l, _ in SPECIES], fontsize=st.sz(6.3))
     ax.set_xlim(0, 126); ax.set_xticks([0, 25, 50, 75, 100])
-    ax.set_xlabel("share of the 8,020 acquired-lysine sites (%), by peptide length", fontsize=st.sz(6))
+    ax.set_xlabel("share of the 8,020 acquired-lysine sites (%), by peptide length", fontsize=st.sz(6.3))
     # The band key lives in the caption, not the artwork: it collided with panel d's footer,
     # and the bars already carry their own labels.
     for sp in ("top", "right", "left"): ax.spines[sp].set_visible(False)
@@ -359,6 +384,11 @@ if p is not None:
         % (int((p.n_cleaved > 0).sum()), len(p), 100 * (p.n_cleaved > 0).mean(),
            int((_cov.n_cleaved == 0).sum()), len(_cov)))
 
+# LEFT JUSTIFIED TO THE CELL. matplotlib anchors an axes at "C", so any panel the fit pass
+# or an aspect shrinks is re-centred in its column and starts somewhere in the middle of it.
+# Anchoring west holds every panel against the same left edge.
+for _a in fig.axes:
+    _a.set_anchor("W")
 st.save(fig, "figS3")
 fd.head("figS3", HEAD)
 for _e in (".png", ".pdf"):          # review copies alongside fig4_v2 / figS_react_v2

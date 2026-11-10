@@ -2,8 +2,8 @@
 feature,label,probe,family,row,d,q,n_proteins,significant
 anionic_8A,anionic 8Å,anionic (STP),charge,0,-0.3496377795735846,1.7605539334721407e-26,1026,True
 anionic_8A,anionic 8Å,neutral (NASA),charge,0,-0.3086691647508106,2.4452741582080816e-20,1007,True
-propka_pKa,predicted pKa,anionic (STP),charge,1,-0.1574207409736464,2.4212930250692704e-06,1026,True
-propka_pKa,predicted pKa,neutral (NASA),charge,1,-0.1508560016638884,1.4430503554498411e-05,1007,True
+propka_pKa,predicted pK$_a$,anionic (STP),charge,1,-0.1574207409736464,2.4212930250692704e-06,1026,True
+propka_pKa,predicted pK$_a$,neutral (NASA),charge,1,-0.1508560016638884,1.4430503554498411e-05,1007,True
 salt_bridge,salt bridge,anionic (STP),charge,2,-0.150384324905769,6.220114967694114e-06,1026,True
 salt_bridge,salt bridge,neutral (NASA),charge,2,-0.1349645559935704,0.0001122450146307,1007,True
 dist_nearest_pocket,dist. to pocket,anionic (STP),pocket,3,-0.0981793749663398,0.0054016040857282,1026,True

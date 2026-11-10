@@ -32,6 +32,10 @@ import figure_data as fd
 # One body type size for this figure; every other size is a ratio to it.
 BODY = 7.0
 A.slate(); A.apply(BODY)
+# The PNG raster. apply() resets rcParams, so this has to follow it, and every
+# main figure sets it. These ten did not, so they rendered at 600 dpi: twice the
+# pixels for the same canvas, which is not a finer figure, only a bigger file.
+plt.rcParams["savefig.dpi"] = 300
 
 D = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 log = []
@@ -230,12 +234,37 @@ say("    engaged >=60%%: %s | median |sep| %d residues (%d to %d)"
     % (", ".join(R[R.eng60 > 0].gene) or "none", R.sep.median(), R.sep.min(), R.sep.max()))
 
 # ================================================================== figure
-fig = plt.figure(figsize=(A.DOUBLE, A.MAX_DEPTH))
+# THE PAGE BINDS BEFORE THE ASPECT BAND DOES, and on this sheet only. Three of its five
+# panels are full width because their content is a long series: 24 lineages, 1,954 ranked cell
+# lines, 11 sites. Giving each the height its width asks for, 2.9 in, took the sheet to 21.4 in
+# and 11.6 in deep on the page, which leaves nothing for a legend. These three stay wide and
+# flat at about 5, and the sheet comes back under the page.
+#
+# THE CANVAS SOLVED FROM THE PANEL BLOCK, not pinned to a maximum depth. Pinned, the height
+# ratios only redistribute a fixed total, so deepening a row shortened its neighbours and the
+# three full-width panels stayed five times as wide as they were tall.
+_ML, _MR = 1.5500, 0.2500      # left and right margins, inches
+_MB, _MT = 0.9000, 0.3500      # bottom and top margins, inches
+_HS, _WS = 0.95, 0.70
+_FW = 11.5367
+_FH = A.block_h(4, _HS, [1.20, 1.20, 1.0, 1.20]) + _MB + _MT
+fig = plt.figure(figsize=(_FW, _FH))
 # wspace 0.42 -> 0.70: panel c's in-plot labels reached across into panel d's gene names.
-gs = fig.add_gridspec(4, 2, height_ratios=[0.90, 1.00, 0.95, 0.95], hspace=0.95, wspace=0.70)
+# THE THREE FULL-WIDTH ROWS GET THEIR HEIGHT FROM THEIR WIDTH. At 8.5 x 1.7 in they were
+# five times as wide as they were tall, where the main figures run 0.7 to 2.8.
+gs = fig.add_gridspec(4, 2, height_ratios=[1.20, 1.20, 1.0, 1.20], hspace=_HS, wspace=_WS,
+                      left=_ML / _FW, right=1 - _MR / _FW,
+                      top=1 - _MT / _FH, bottom=_MB / _FH)
 ax1 = fig.add_subplot(gs[0, :]); ax2 = fig.add_subplot(gs[1, :])
 ax5 = fig.add_subplot(gs[2, 0]); ax3 = fig.add_subplot(gs[2, 1])
 ax4 = fig.add_subplot(gs[3, :])
+# LEFT JUSTIFIED TO THE PAGE. The four full-width panels carry y-label blocks of very
+# different widths, so sharing a column left their leftmost ink 477 px apart. Shifting the
+# whole axes takes the plot, its labels and its letter together, as Figure 1 does.
+ax1._axes_dx_in = -1.5278
+ax2._axes_dx_in = -1.3236
+ax5._axes_dx_in = -1.2723
+ax4._axes_dx_in = 0.1535
 
 order = list(L.OncotreeLineage)
 bp = ax1.boxplot([B[B.OncotreeLineage == l].acqK.values for l in order],
@@ -254,11 +283,11 @@ SHORT = {"Bladder/Urinary Tract": "Bladder/Urinary", "Peripheral Nervous System"
          "Ovary/Fallopian Tube": "Ovary/Fallopian", "Esophagus/Stomach": "Esoph./Stomach"}
 ax1.set_yscale("log"); A.plain_log(ax1); ax1.set_ylabel("acquired lysines")
 ax1.set_xticks(np.arange(len(order)))
-ax1.set_xticklabels([SHORT.get(l, l) for l in order], rotation=90, fontsize=A.sz(5.6))
+ax1.set_xticklabels([SHORT.get(l, l) for l in order], rotation=90, fontsize=A.sz(6.3))
 for t in ax1.get_xticklabels():
     if t.get_text() in {SHORT.get(x, x) for x in scr_lin}: t.set_color(A.ORANGE)
 ax1.set_xlim(-0.7, len(order) - 0.3)
-A.head(fig, ax1, "a", "burden by lineage, ordered by median, with rust marking the lineages the screens sampled")
+A.head(fig, ax1, "a")
 
 AB = B.sort_values("net", ascending=False).reset_index(drop=True)
 xr = np.arange(len(AB))
@@ -286,8 +315,12 @@ for nm, band in CALL:
     ax2.plot([i], [v], marker="o", ms=2.6, color=col, zorder=6)
     ty = [900, 380, 150, 60][band] if nm not in SCRN else [-40, -120, -330, -820][band]
     tx = i + (len(AB) * 0.055 if nm not in SCRN else len(AB) * 0.045)
+    # THE PAPER GOES BEHIND THE WORDS. These seven labels sit inside a panel of 1,954
+    # vertical lines, and a leader line is no help when the name itself is crossed by the
+    # data it points at. zorder above the bars, and the label clears its own ground.
     ax2.annotate("%s  +%d / \u2212%d" % (nm, v, lo), xy=(i, v), xytext=(tx, ty),
-                 ha="left", va="center", fontsize=A.sz(5.8), color=col,
+                 ha="left", va="center", fontsize=A.sz(6.3), color=col, zorder=8,
+                 bbox=dict(facecolor=A.PAPER, edgecolor="none", pad=1.1),
                  arrowprops=dict(arrowstyle="-", color=col, lw=0.6, shrinkA=0, shrinkB=1))
 fd.panel("figS10", "b",
          AB[["ModelID", "StrippedCellLineName", "OncotreeLineage", "acqK", "lost", "net"]]
@@ -298,7 +331,7 @@ ax2.set_xlabel("all %d DepMap models with at least one missense lysine change, r
                % len(AB))
 ax2.set_ylabel("lysines gained (above)\nand lost (below)", fontsize=A.sz(6.8))
 ax2.set_xlim(-15, len(AB) + 15)
-A.head(fig, ax2, "b", "every cell line in DepMap, gained above the line and lost below, ranked by net gain, symlog scale")
+A.head(fig, ax2, "b")
 for s_ in ("top", "right"): ax2.spines[s_].set_visible(False)
 
 # (c) the gates, on the 308 models that carry all three data types
@@ -308,13 +341,13 @@ ax5.barh(yg, Fg.total, color=A.LIGHTGREY, edgecolor=A.GREY, lw=0.4, height=A.BAR
 ax5.barh(yg, Fg.expressed, color=A.BLUE, edgecolor=A.GREY, lw=0.3, height=A.BARW)
 ax5.barh(yg, Fg.detected, color=A.GREEN, edgecolor=A.GREY, lw=0.3, height=A.BARW)
 ax5.barh(yg, Fg.depend, color=A.ORANGE, edgecolor=A.GREY, lw=0.3, height=A.BARW)
-ax5.set_yticks(yg); ax5.set_yticklabels(Fg.StrippedCellLineName, fontsize=A.sz(6))
+ax5.set_yticks(yg); ax5.set_yticklabels(Fg.StrippedCellLineName, fontsize=A.sz(6.3))
 ax5.set_xlabel("acquired lysines")
 ax5.legend(handles=[Patch(facecolor=A.LIGHTGREY, edgecolor=A.GREY, label="acquired"),
                     Patch(facecolor=A.BLUE, label="expressed"),
                     Patch(facecolor=A.GREEN, label="protein detected"),
                     Patch(facecolor=A.ORANGE, label="dependency")],
-           loc="lower right", fontsize=A.sz(5.6))
+           loc="lower right", fontsize=A.sz(6.3))
 fd.panel("figS10", "c",
          [dict(cell_line=r.StrippedCellLineName, lineage=r.OncotreeLineage, gate=_g,
                sites=int(getattr(r, _c)))
@@ -334,7 +367,7 @@ dd = DD.head(12)[::-1]
 yv = np.arange(len(dd))
 ax3.barh(yv, dd.models, color=[A.ORANGE if l in IN_F8 else A.LIGHTGREY for l in dd.label],
          edgecolor=A.GREY, lw=0.4, height=0.68)
-ax3.set_yticks(yv); ax3.set_yticklabels(dd.label, fontsize=A.sz(6))
+ax3.set_yticks(yv); ax3.set_yticklabels(dd.label, fontsize=A.sz(6.3))
 ax3.set_xlabel("cell lines carrying it")
 fd.panel("figS10", "d",
          [dict(label=r.label, gene=r.HugoSymbol, change=r.ProteinChange.replace("p.", ""),
@@ -343,7 +376,7 @@ fd.panel("figS10", "d",
 # Panel d sits in the right half, so its header title runs from mid-page. The full
 # sentence reached 1.6 pt past the right trim, so the rust clause goes inside the panel
 # where there is room, which is how the other panels carry that kind of note.
-A.head(fig, ax3, "d", "recurrent driver-flagged acquired lysines")
+A.head(fig, ax3, "d")
 # This key used to be drawn inside the panel. The panel is a column of gene labels down
 # the y axis and the note is wider than the free space beside them, so at the raised body
 # it printed through "BRAF V600K" along the bottom and through "NRAS Q61K" along the top.
@@ -360,13 +393,13 @@ ax4.set_yticks(yv)
 # trim to accommodate them, leaving no margin on either side. 5.4 is the density figS8
 # already uses for labels of this kind.
 ax4.set_yticklabels(["%s K%d (%s \u00b7 %s)" % (r.gene, r.labelled_K, r.acquired, r.line)
-                     for r in R.itertuples()], fontsize=A.sz(5.4))
+                     for r in R.itertuples()], fontsize=A.sz(6.3))
 ax4.set_xlim(0, 100); ax4.set_xlabel("occupancy of the probe-labeled lysine (%), not of the acquired lysine")
 fd.panel("figS10", "e", R,
          note="acquired lysines in the four screen lines that sit on a protein the matching screen "
               "labels; occ is the best-engaged PROBE-LABELLED lysine, not the acquired one")
 # "11" was typed into this title. It is len(R) and always was.
-A.head(fig, ax4, "e", "the %d reachable sites in the screen lines, the lysine the screens did measure, acquired mutation in parentheses" % len(R))
+A.head(fig, ax4, "e")
 for s_ in ("top", "right"): ax4.spines[s_].set_visible(False)
 
 _top = {r.label: int(r.models) for r in DD.head(14).itertuples()}
@@ -445,6 +478,11 @@ HEAD = {
 # missing on the first pass of the restyle. save() writes {stem}.pdf and {stem}.png relative
 # to the working directory, which build_figures sets to this one, so the files land where
 # they always did.
+# LEFT JUSTIFIED TO THE CELL. matplotlib anchors an axes at "C", so any panel the fit pass
+# or an aspect shrinks is re-centred in its column and starts somewhere in the middle of it.
+# Anchoring west holds every panel against the same left edge.
+for _a in fig.axes:
+    _a.set_anchor("W")
 A.save(fig, "figS10")
 fd.head("figS10", HEAD)
 open(os.path.join(D, "ccle_plex05", "figS10_report.txt"), "w").write("\n".join(log) + "\n")

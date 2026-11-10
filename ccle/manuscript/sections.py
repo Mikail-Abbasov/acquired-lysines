@@ -27,7 +27,8 @@ RESOURCE_AVAIL = dict(status="draft", body=[
  "v103; sequences are MANE v1.2 and GENCODE v38; population frequencies are gnomAD v4.1 and the "
  "gnomAD v2.1.1 non-cancer exome subset; structures are AlphaFold DB. All derived site tables, "
  "the mutation-aware database construction, the entrapment analysis and every figure script are "
- "deposited at [REPOSITORY DOI] and are sufficient to reproduce every number reported here. Any "
+ "deposited at github.com/Mikail-Abbasov/acquired-lysines and are sufficient to reproduce every "
+ "number reported here. Any "
  "additional information required to reanalyze the data reported in this paper is available from "
  "the lead contact on request.",
 ])

@@ -30,6 +30,10 @@ import figure_data as fd
 # One body type size for this figure; every other size is a ratio to it.
 BODY = 7.0
 st.apply(BODY)
+# The PNG raster. apply() resets rcParams, so this has to follow it, and every
+# main figure sets it. These ten did not, so they rendered at 600 dpi: twice the
+# pixels for the same canvas, which is not a finer figure, only a bigger file.
+plt.rcParams["savefig.dpi"] = 300
 ORANGE, BLUE, GREY, LIGHT, INK = st.ORANGE, st.BLUE, st.GREEN, st.LIGHTGREY, st.GREY
 
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
@@ -42,7 +46,7 @@ TXT = open(os.path.join(LR, "step28b_report.txt")).read()
 
 SHORT = {"A  both sides at CB (the plan)": "CB\nboth sides",
          "B  both sides modelled, at NZ": "modeled NZ\nboth sides",
-         "C  MISMATCHED: union CB vs measured NZ": "MISMATCHED\nCB vs NZ",
+         "C  MISMATCHED: union CB vs measured NZ": "mismatched\nCB vs NZ",
          "D  both sides at CB, symmetric convention": "CB\nsymmetric"}
 SLUG = {"A": "cb", "B": "nz", "C": "mismatched", "D": "cb_symmetric"}
 R["slug"] = R.arm.str[0].map(SLUG)
@@ -51,9 +55,19 @@ R["art"] = R.arm.str.startswith("C")
 R = R.iloc[[0, 1, 3, 2]].reset_index(drop=True)
 x = np.arange(len(R))
 
-fig = plt.figure(figsize=(st.DOUBLE, st.DOUBLE * 0.80))
-gs = fig.add_gridspec(2, 3, hspace=0.62, wspace=0.42,
-                      left=0.075, right=0.985, top=0.96, bottom=0.085)
+# ALL FOUR MARGINS IN INCHES, AND THE CANVAS SOLVED FROM THE PANEL BLOCK, which is how every
+# main figure is built. The height follows from the y axis, not the other way round: block_h
+# gives the block that puts a unit row on the family's 1.55020 in. Sized by aspect instead,
+# this sheet drew y axes far longer than the family's 483.6 px.
+_ML, _MR = 0.8653, 0.1731      # left and right margins, inches
+_MB, _MT = 0.8157, 0.3839      # bottom and top margins, inches
+_WS, _HS = 0.42, 0.62           # column and row spacing, fractions of the average panel
+_FW = 11.5367                  # 3461 px at 300 dpi, which finalizes to 3600 px and 12.00 in
+_FH = st.block_h(2, _HS, None) + _MB + _MT
+fig = plt.figure(figsize=(_FW, _FH))
+gs = fig.add_gridspec(2, 3, hspace=_HS, wspace=_WS,
+                      left=_ML / _FW, right=1 - _MR / _FW,
+                      top=1 - _MT / _FH, bottom=_MB / _FH)
 
 # ------------------------------------------------------------------ a
 ax = fig.add_subplot(gs[0, 0]); st.head(fig, ax, "a", "distances, four ways")
@@ -69,13 +83,13 @@ fd.panel("figS9", "a",
                           ("acquired vs unengaged", "d_union_not"),
                           ("engaged vs unengaged (control)", "d_control"))],
          note="distance between group averages, four anchorings x three comparisons")
-ax.set_xticks(x); ax.set_xticklabels(R.short, fontsize=st.sz(5.9), linespacing=1.3)
+ax.set_xticks(x); ax.set_xticklabels(R.short, fontsize=st.sz(6.3), linespacing=1.3)
 ax.set_ylabel("distance between group averages", fontsize=st.sz(6.7))
 ax.set_ylim(0, 3.05)
 for lab, col, yy in (("acquired vs engaged", ORANGE, 2.92),
                      ("acquired vs unengaged", GREY, 2.72),
                      ("engaged vs unengaged (control)", BLUE, 2.52)):
-    ax.text(-0.42, yy, lab, color=col, fontsize=st.sz(5.9), ha="left", va="center")
+    ax.text(-0.42, yy, lab, color=col, fontsize=st.sz(6.3), ha="left", va="center")
 
 # ------------------------------------------------------------------ b
 ax = fig.add_subplot(gs[0, 1]); st.head(fig, ax, "b", "measured against the control")
@@ -89,7 +103,7 @@ fd.panel("figS9", "b",
                d_union_engaged=float(r.d_union_eng), d_control=float(r.d_control),
                ratio_to_control=float(r.ratio_to_control)) for r in R.itertuples()],
          note="each arm's acquired-vs-engaged distance divided by its own control")
-ax.set_xticks(x); ax.set_xticklabels(R.short, fontsize=st.sz(5.9), linespacing=1.3)
+ax.set_xticks(x); ax.set_xticklabels(R.short, fontsize=st.sz(6.3), linespacing=1.3)
 ax.set_ylabel("multiple of the control", fontsize=st.sz(6.7))
 ax.set_ylim(0, 8.0)
 
@@ -105,12 +119,12 @@ fd.panel("figS9", "c",
           for nm, col in (("acquired union", "overlap_union"),
                           ("labelled, not engaged", "overlap_not"))],
          note="fraction of each population inside the region holding 90% of engaged lysines")
-ax.set_xticks(x); ax.set_xticklabels(R.short, fontsize=st.sz(5.9), linespacing=1.3)
+ax.set_xticks(x); ax.set_xticklabels(R.short, fontsize=st.sz(6.3), linespacing=1.3)
 ax.set_ylabel("inside the 90% engaged region (%)", fontsize=st.sz(6.7))
 ax.set_ylim(0, 118)
-ax.text(-0.42, 112, "acquired", color=ORANGE, fontsize=st.sz(5.9), ha="left", va="center")
-ax.text(0.85, 112, "labeled, not engaged", color=GREY, fontsize=st.sz(5.9), ha="left", va="center")
-ax.text(3.45, 90, "engaged", color=BLUE, fontsize=st.sz(5.9), ha="right", va="bottom")
+ax.text(-0.42, 112, "acquired", color=ORANGE, fontsize=st.sz(6.3), ha="left", va="center")
+ax.text(0.85, 112, "labeled, not engaged", color=GREY, fontsize=st.sz(6.3), ha="left", va="center")
+ax.text(3.45, 90, "engaged", color=BLUE, fontsize=st.sz(6.3), ha="right", va="bottom")
 
 # ------------------------------------------------------------------ d
 ax = fig.add_subplot(gs[1, 0]); st.head(fig, ax, "d", "one site per protein")
@@ -127,11 +141,11 @@ fd.panel("figS9", "d",
           for nm, col in (("every site", "ratio_site"), ("one site per protein", "ratio_prot"))],
          note="what one-site-per-protein does to the excess; 20 draws, step 28b")
 ax.set_xticks(xx); ax.set_xticklabels(["CB\nboth sides", "modeled NZ\nboth sides"],
-                                      fontsize=st.sz(5.9), linespacing=1.3)
+                                      fontsize=st.sz(6.3), linespacing=1.3)
 ax.set_ylabel("multiple of the control", fontsize=st.sz(6.7))
 ax.set_ylim(0, 2.1); ax.set_xlim(-0.62, 1.62)
-ax.text(-0.55, 1.95, "every site", color=GREY, fontsize=st.sz(5.9), ha="left", va="center")
-ax.text(0.42, 1.95, "one per protein", color=BLUE, fontsize=st.sz(5.9), ha="left", va="center")
+ax.text(-0.55, 1.95, "every site", color=GREY, fontsize=st.sz(6.3), ha="left", va="center")
+ax.text(0.42, 1.95, "one per protein", color=BLUE, fontsize=st.sz(6.3), ha="left", va="center")
 
 # ------------------------------------------------------------------ e
 ax = fig.add_subplot(gs[1, 1]); st.head(fig, ax, "e", "the built side chain, checked")
@@ -148,7 +162,7 @@ fd.panel("figS9", "e",
          note=("modelled all-trans amine vs real amine, %s lysines, %d bins; median %.4f A, "
                "CB-to-NZ reference %.1f A" % (format(len(v), ","), len(_cnt), med, 6.4)))
 ax.axvline(CB_NZ, color=BLUE, lw=1.0, ls=(0, (3, 2)))
-ax.text(6.25, ax.get_ylim()[1] * 0.62, "CB\u2192NZ\n%.1f \u00c5" % CB_NZ, color=BLUE, fontsize=st.sz(6.0),
+ax.text(6.25, ax.get_ylim()[1] * 0.62, "CB\u2192NZ\n%.1f \u00c5" % CB_NZ, color=BLUE, fontsize=st.sz(6.3),
         ha="right", va="top", linespacing=1.3)
 ax.set_xlabel("modeled amine vs real amine (Å)", fontsize=st.sz(6.7))
 ax.set_ylabel("measured lysines (n = %s)" % format(len(v), ","), fontsize=st.sz(6.7))
@@ -173,9 +187,9 @@ ax.plot(qs, qs, linestyle=":", color=BLUE, lw=1.0)
 ax.set_xticks(qs); ax.set_xlabel("size of the engaged region (%)", fontsize=st.sz(6.7))
 ax.set_ylabel("sites inside it (%)", fontsize=st.sz(6.7))
 ax.set_ylim(35, 102)
-ax.text(50, 99, "acquired", color=ORANGE, fontsize=st.sz(5.9), ha="left", va="top")
-ax.text(50, 93, "labeled, not engaged", color=GREY, fontsize=st.sz(5.9), ha="left", va="top")
-ax.text(95, 96, "engaged", color=BLUE, fontsize=st.sz(5.9), ha="right", va="bottom")
+ax.text(50, 99, "acquired", color=ORANGE, fontsize=st.sz(6.3), ha="left", va="top")
+ax.text(50, 93, "labeled, not engaged", color=GREY, fontsize=st.sz(6.3), ha="left", va="top")
+ax.text(95, 96, "engaged", color=BLUE, fontsize=st.sz(6.3), ha="right", va="bottom")
 _F_ROWS = dict(rows)   # panel f, printed so the legend does not have to hold unprinted numbers
 for _k in (("A", "acquired union"), ("B", "acquired union"),
            ("A", "labelled, not engaged"), ("B", "labelled, not engaged")):
