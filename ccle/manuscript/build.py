@@ -1072,7 +1072,8 @@ for _i, f in enumerate(SI.SI_FIGS):
     _fp = figure(sdoc, _art, SPLACE(_meas))
     if _i: _fp.paragraph_format.page_break_before = True
     _fp.paragraph_format.keep_with_next = True
-    blank(sdoc).paragraph_format.keep_with_next = True
+    # NO GAP BETWEEN A FIGURE AND ITS OWN CAPTION. keep_with_next already holds the two
+    # together, and the blank line only pushed the legend away from the sheet it describes.
     _lp = para(sdoc, "**%s** %s" % (fix("Figure %s. Support for %s: %s." %
                                        (f["no"], f["parent"], f["title"].rstrip("."))),
                                    " ".join(legend_entry(cite(fix(_c))) for _c in f["cap"])),
@@ -1188,7 +1189,6 @@ for _k, e in enumerate(_SI_KEEP):
     block(sdoc, [fix(_b) for _b in e[3]])
 if ORDER:
     _rh = _starts_page(para(sdoc, "References", bold=True)); bookmark(_rh, "SIREFS"); blank(sdoc)
-    blank(sdoc)
     for i, key in enumerate(ORDER, 1):
         para(sdoc, "[%d] %s" % (i, REFMOD.REFS[key]["text"])); blank(sdoc)
 s_out = os.path.join(OUT, "Supporting_Information_draft_%s.docx" % DATE)

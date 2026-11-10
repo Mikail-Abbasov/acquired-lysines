@@ -60,7 +60,8 @@ SPINE["2.1"] = [
 "(Figure 1B). Lysine is fourth of twenty residues by sites gained. What distinguishes it is the "
 "asymmetry of the routes: lysine is gained overwhelmingly by C>T and never lost by C>T, so a "
 "C>T-dominated process creates it and does not destroy it. The class is abundant for a mechanistic "
-"and unremarkable reason.",
+"and unremarkable reason. The matrix in full, the gains and net flux residue by residue, and the "
+"signature control behind the asymmetry are in Figure S1.",
 # panel C
 "The sites are somatic rather than common polymorphism. More than nine in ten assessed sites are "
 "absent from gnomAD v4.1 [[karczewski2020]] or below an allele frequency of 10\u207b\u2075 "
@@ -948,6 +949,8 @@ DISCUSSION = [
 "The limitations are specific, and several of them bound results this paper otherwise leans on. "
 "Everything measured in cells is measured in cell lines, 375 in the proteomic re-search and four "
 "across the three chemistry screens, and no result is a statement about a tumor or a patient. "
+"Which lines carry the class, and what a re-search of the three screens could reach, are in "
+"Figure S10. "
 "Figure 1 is a census of reported variants and a population frequency comparison rather than a "
 "measurement in any cell. "
 "The screens are not saturated, so every ligandability figure is a lower bound: a site recorded "
