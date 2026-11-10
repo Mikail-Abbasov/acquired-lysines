@@ -1083,6 +1083,16 @@ for _i, f in enumerate(SI.SI_FIGS):
     # past it, which is how page 3 came out blank.
     if _i == len(SI.SI_FIGS) - 1:
         blank(sdoc)
+def _no_self_ref(t):
+    """Inside Extended Results, a pointer to Extended Results points at itself.
+
+    These paragraphs were written for the main text and cite the panels they came from. The
+    renumberer rewrites a citation to a cut panel as "(Extended Results)", which is right in
+    the main text and circular here, where the reader is already in that section.
+    """
+    return re.sub(r"\s*\(Extended Results\)", "", t)
+
+
 def _starts_page(par):
     """EVERY LINE IN THE CONTENTS POINTS AT A PAGE OF ITS OWN.
 
@@ -1145,10 +1155,15 @@ for _f in sorted(MOVED):
     # fix(), not us(). The moved paragraphs were getting the US spelling pass and nothing
     # else, so a figure or note citation inside one kept its pre-merge number: "(note N18)"
     # survived into a document whose notes stop at N11. fix() is us() plus both renumbers.
-    block(sdoc, [fix(p[0] if isinstance(p, tuple) else p) for p in _mb])
-    if _ml:
-        para(sdoc, "Legend, moved panels.", bold=True); blank(sdoc)
-        block(sdoc, [fix(e[0] if isinstance(e, tuple) else e) for e in _ml], italic=True)
+    # A CAPTION NEEDS A PICTURE. This used to print the original legends of the panels that
+    # were cut, under "Legend, moved panels.", and not one of those panels is printed in the
+    # paper: six entries lettered (B), (D), (F), (C), (E), (F), two of them F because they
+    # came from two source sheets, describing a key, a reference line drawn across, a left
+    # and a right half, and "panel a therefore cannot be dismissed". What they carried that
+    # the prose did not, the band cut points, the denominators, the unit of the standardised
+    # shift, the feature count behind the average and the TPSA exception, is now in the
+    # paragraphs themselves. The rest described artwork that does not exist.
+    block(sdoc, [_no_self_ref(fix(p[0] if isinstance(p, tuple) else p)) for p in _mb])
 
 if getattr(SP, "EXTENDED_BACK", None):
     para(sdoc, "From the Discussion: the prospective screen this paper does not run.",
