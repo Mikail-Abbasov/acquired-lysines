@@ -95,7 +95,7 @@ DECLARATIONS = [
   "**Ayan Mukherjee:** Visualization, Writing \u2013 review & editing. "
   "**Md Khaled Hossain:** Investigation, Writing \u2013 review & editing. "
   "**Mikail E. Abbasov:** Conceptualization, Methodology, Software, Formal analysis, Validation, "
-  "Visualization, Writing \u2013 original draft, Writing \u2013 review & editing, Supervision, "
+  "Visualization, Writing \u2013 original draft, Supervision, "
   "Project administration, Funding acquisition.",
   # The attribution rationale was printed under the CRediT statement. It is addressed to the
   # co-authors, to be confirmed before submission, and it is not a statement for a reader.

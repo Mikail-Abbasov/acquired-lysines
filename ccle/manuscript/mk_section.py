@@ -64,6 +64,19 @@ def _rfonts(run):
     for a in ('w:ascii', 'w:hAnsi', 'w:cs', 'w:eastAsia'):
         rf.set(qn(a), FONT)
 
+def tab_stop(doc, inches=0.25):
+    """Set the document's default tab interval.
+
+    Word's default is 0.5 in, so a tab at the head of a paragraph indents half an inch. The
+    value lives in settings.xml as w:defaultTabStop, in twips, 1440 to the inch.
+    """
+    st = doc.settings.element
+    el = st.find(qn("w:defaultTabStop"))
+    if el is None:
+        el = st.makeelement(qn("w:defaultTabStop"), {}); st.append(el)
+    el.set(qn("w:val"), str(int(round(inches * 1440))))
+
+
 def style(doc):
     for name in ("Normal",):
         st = doc.styles[name]

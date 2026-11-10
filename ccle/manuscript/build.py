@@ -387,6 +387,7 @@ def newdoc():
     cp = doc.core_properties
     cp.author = cp.last_modified_by = "Mikail E. Abbasov"
     cp.title = S.FRONT["title"]
+    tab_stop(doc, 0.25)          # Word defaults to 0.5 in
     for s in doc.sections:
         s.top_margin = s.bottom_margin = Inches(1); s.left_margin = s.right_margin = Inches(1)
     style(doc); return doc
@@ -406,6 +407,24 @@ def affiliations(doc):
     blank(doc)
 
 
+_RUNIN = re.compile(r"^\*\*(.+?)\*\*")
+
+
+def prose_bold(t):
+    """Keep a paragraph's run-in label bold and strip every other bold in it.
+
+    In running prose bold marked two things: the run-in label that opens a Methods or
+    back-matter paragraph, and a sentence warning against misreading a number, such as the
+    one naming the unit behind Figures 2 and 3. The second reads as emphasis rather than as
+    a warning, and the legends carry no mid-sentence bold at all, so the two conventions did
+    not match. The sentences stand on their own now. Panel letters inside a legend are set
+    by legend_entry() and are untouched by this.
+    """
+    m = _RUNIN.match(t)
+    head, rest = (m.group(0), t[m.end():]) if m else ("", t)
+    return head + re.sub(r"\*\*(.+?)\*\*", r"\1", rest, flags=re.S)
+
+
 def block(doc, paras, italic=False):
     """A run of paragraphs with NO blank line between them.
 
@@ -413,10 +432,11 @@ def block(doc, paras, italic=False):
     Blank lines are kept where they mark a boundary: between sections, and around a figure
     and its legend. Inside a section the paragraphs run on, and one blank closes the block.
     """
-    for t in paras:
-        # A TAB OPENS EACH ONE. With the blank lines gone, the indent is what marks where one
-        # paragraph ends and the next begins.
-        para(doc, "\t" + cite(t), italic=italic)
+    for i, t in enumerate(paras):
+        # A TAB OPENS EACH ONE EXCEPT THE FIRST. With the blank lines gone, the indent is what
+        # marks where one paragraph ends and the next begins, and the paragraph that opens a
+        # section does not need it because the heading above has already marked the break.
+        para(doc, ("" if i == 0 else "\t") + prose_bold(cite(t)), italic=italic)
     if paras:
         blank(doc)
 
@@ -763,7 +783,7 @@ for name, st_, spec in S.DECLARATIONS:
 para(doc, "References", bold=True); blank(doc)
 # The verification note is a standing rule of this lab, not a statement for a reader.
 for i, key in enumerate(ORDER, 1):
-    para(doc, "%d.  %s" % (i, REFMOD.REFS[key]["text"])); blank(doc)
+    para(doc, "[%d] %s" % (i, REFMOD.REFS[key]["text"])); blank(doc)
 m_out = os.path.join(OUT, ("Reading_copy_%s.docx" if DRAFT
                            else "Manuscript_%s.docx") % DATE)
 doc.save(m_out)
@@ -872,7 +892,7 @@ if ORDER:
     para(sdoc, "The Supporting Information is numbered independently of the manuscript.", italic=True)
     blank(sdoc)
     for i, key in enumerate(ORDER, 1):
-        para(sdoc, "%d. %s" % (i, REFMOD.REFS[key]["text"])); blank(sdoc)
+        para(sdoc, "[%d] %s" % (i, REFMOD.REFS[key]["text"])); blank(sdoc)
 s_out = os.path.join(OUT, "Supporting_Information_draft_%s.docx" % DATE)
 sdoc.save(s_out)
 _submit(s_out, "Supporting_Information.docx")

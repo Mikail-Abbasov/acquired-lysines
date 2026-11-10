@@ -37,7 +37,7 @@ P_2_8 = [
 "**On a common anchor, the three populations are difficult to tell apart.** Of the nine features, four have identical medians across acquired, engaged and unengaged lysines: aromatic contacts, polar contacts, acidic residues and other lysines. A fifth, neighbour count, is identical between acquired and engaged sites at twelve (Figure 8B). Where the populations do differ, they differ by less than one standard deviation of the acquired distribution: basic residues by −0.73, net local charge by −0.56, hydrophobic contacts by +0.33. Reported without a threshold, the probability that a randomly chosen acquired lysine lies closer to the centre of the engaged population than a randomly chosen engaged lysine does is 0.443, against 0.5 for populations that cannot be distinguished at all (Figure 8C). The reading does not depend on where a boundary is drawn: acquired lysines fall inside the 50, 75, 90 and 95% engaged regions at 42, 69, 82 and 88% under one anchoring and 45, 67, 83 and 89% under another (marginally short of the labelled-but-unengaged control at every cut, which runs 47, 73, 89 and 95%, and 50, 78, 92 and 96%), so the ordering holds at every cut and acquired lysines sit below both comparators rather than between them (Figure S9F).",
 "**Six of these sites have crystal structures, and they behave the same way.** For each we measured local Cα displacement in a co-local shell and normalised it to that protein's own wild-type-versus-wild-type floor, so the comparison asks whether the acquired lysine moves its environment more than two structures of the same wild-type protein move relative to each other (Figure 8D). Five of the six are at that floor: NRAS Q61K at 1.07, AKT1 E17K at 1.12, PI3Kα E542K at 1.02, PI3Kα E545K at 1.22 and p53 R280K at 0.89. SHP2 E76K is the exception at 3.53, and it is the one site with a substitution series, where other substitutions at the same position give 3.21. Where an acquired lysine does perturb its surroundings, then, it does so no more than a different substitution at the same position would. Three of the six comparisons carry a caveat that belongs in the open: the PI3Kα mutant structures 8GUA and 8GUD are cryo-EM, so those pairs cross a method boundary the crystal-versus-crystal pairs do not, and the NRAS floor rests on a single pair because the wild-type set was deliberately restricted to one nucleotide state; residue 61 sits in switch II, and an earlier run that mixed GDP and GTP structures inflated that floor to 4.25 Å and flattered the mutant. These are mutation sites taken from variant calling rather than chemoproteomic assignments, so the provisional-assignment caveat that applies elsewhere in this work does not apply here.",
 "**What follows from this, and what does not.** Acquired lysines are not structurally unusual, which removes the cheapest reason to expect the engagement rules measured in Figures 4 to 7 not to reach them. It does not establish that they can be engaged. Eight of the nine features compared here are among the fourteen from which the composite model of Figure 5 was built, every one except the count of neighbouring lysines, and that model reaches an AUC of 0.617 against a measured reproducibility ceiling of at least 0.72, recovering 11% of engaged sites at a 5% false-positive rate. Features that predict engagement that poorly cannot be turned around and used to infer engageability from similarity. The engaged and unengaged comparators come from the three chemoproteomic screens (the fragment screen in Ramos and MDA-MB-231, meroterpenoids in MDA-MB-231 and MDA-MB-436, CyMPSA in HeLa), and describe those cells, not a tumour and not a patient. What this comparison supports is narrower and, for the purposes of this paper, more useful: nothing about the chemistry of these sites explains why they are absent from the record. The barrier is detection.",
-"One acquired lysine makes that concrete. AKT1 E17K, the transforming pleckstrin-homology-domain mutation identified in breast, colorectal and ovarian cancer [[carpten2007]], has since been engaged selectively in cells through lysine targeting and neo-zinc chelation, and its geometry is available from PDB 8UVY, 54 atoms in the local shell (Figure 8E) [[craven2025]]. The search databases carried it as three peptides, two spanning the new lysine and one immediately downstream of it, and it returns zero spectra. That negative rests on a single experiment: five DepMap models carry AKT1 E17K, one of them, KU-19-19 (RRID:CVCL_1344), is in the 375-line proteomic set, and its plex is therefore the only one of the 42 in which the mutation was present to be found. It is one informative observation, not a survey. It is worth stating anyway, because the one acquired lysine that has been drugged is the one this workflow did not see.",
+"One acquired lysine makes that concrete. AKT1 E17K, the transforming pleckstrin-homology-domain mutation identified in breast, colorectal and ovarian cancer [[carpten2007]], has since been engaged selectively in cells through lysine targeting and neo-zinc chelation, and its geometry is available from PDB 8UVY, 54 atoms in the local shell (Figure 8E) [[craven2025]]. The search databases carried it as three peptides, two spanning the new lysine and one immediately downstream of it, and it returns zero spectra. That negative rests on a single experiment: five DepMap models carry AKT1 E17K, one of them, KU-19-19 (RRID:CVCL_1344), is in the 375-line proteomic set, and its plex is therefore the only one of the 42 in which the mutation was present to be found. It is one informative observation, not a survey. The one acquired lysine that has been drugged is the one this workflow did not see.",
 ]
 
 CAP_2_8 = [
@@ -416,7 +416,7 @@ P_2_3 = [
 "gives 0.83%. Figure 3C and figure S4e count **identifications**, and give six entrapment among "
 "1,039 identifications, **0.58% pooled**, with entrapment appearing in four of 42 plexes "
 "(Figure 3C). Six in 1,039 is 0.58% and seven in 839 is 0.83%; both are correct, and neither "
-"number should be quoted with the other's counts.",
+"",
 
 "**Decoys do not see this, which is why the margin is applied rather than the reported q-value "
 "trusted.** On plex 2, where 79,365 identifications are available to compare, the nominal q-value "
@@ -507,7 +507,7 @@ CAP_2_3 = [
 "1,039 in four of 42 plexes (figure S4). Panel b's 0.83% is seven among 839 distinct peptides, "
 "in five plexes. The difference is one peptide at a margin of 10.53, which clears the threshold "
 "in the recomputed margins behind panel B and not in the per-plex summary behind panel C. "
-"Neither number should be quoted with the other's counts.*",
+"*",
 ]
 
 
@@ -672,8 +672,7 @@ CAP_2_2 = [
 "(0.33%), by the mutant-only route, 53 sites in all, 0.63% of the class, at the "
 "search\u2019s reported 1% false-discovery rate. **Thirty of those 53 also clear the score "
 "margin \u2265 10 of Figure 3B**: 16 of 617 covered and 14 of 7,853 uncovered, 0.35% of "
-"the class. The panel is drawn at the reported filter; both counts are correct and neither "
-"should be quoted with the other\u2019s denominators. Under the "
+"the class. The panel is drawn at the reported filter, and both counts are correct. Under the "
 "conventional search the mutant count is zero: a passed control, not a failure, since that database "
 "contains no variant sequences and can speak only to coverage. Detection is by a cleaved species, a "
 "missed-cleavage species, or both.",
@@ -1260,8 +1259,8 @@ P_METHODS = [
 "position that carries no lysine in the model it is built as an all-trans rotamer, which "
 "reproduces measured amine positions to a median 4.26 \u00c5 and is an upper bound rather than a "
 "placement. Relative solvent accessibility follows Tien et al. [[tien2013]], predicted pKa is from "
-"PROPKA3 [[olsson2011]] and pocket descriptors from fpocket [[leguilloux2009]]. **Four feature "
-"sets are used and must not be conflated.** Figure 4 pairs 15 features across both contrasts, 6 "
+"PROPKA3 [[olsson2011]] and pocket descriptors from fpocket [[leguilloux2009]]. **Four distinct "
+"feature sets are used.** Figure 4 pairs 15 features across both contrasts, 6 "
 "charge and 9 shape, and excludes the AlphaFold terms, because confidence is the gating "
 "variable there rather than a site property. Figure 5's composite is 14 features: 13 environment "
 "features plus model confidence, and the composite is reported both with it (AUC 0.617) and "

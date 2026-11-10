@@ -172,8 +172,8 @@ SPINE["2.2"] = [
 "Gate 2: where the region is covered, the mutant peptide is still usually missed. Fifty-three "
 "detections across the two routes are 0.63% of the class, and 30 of them also clear the score "
 "margin at which section 2.3 measures the realized error rate, 0.35% (Figure 2C). The two "
-"thresholds are not interchangeable and neither should be quoted with the other's counts: the "
-"larger is the census of what the searches returned, the smaller the subset over which the "
+"thresholds are not interchangeable. The larger is the census of what the searches returned, "
+"the smaller the subset over which the "
 "false-discovery proportion is 0.83% rather than 4.70% (section 2.3). The acquired-lysine class "
 "contributes zero entrapment peptides against 38 variant peptides at that margin, so its own "
 "proportion is bounded at 7.89% by the rule of three rather than measured at zero. "
@@ -325,8 +325,8 @@ EXTENDED["2.3"] = [
 
 "Two denominators are in use and they are not interchangeable. Figure 3B counts distinct "
 "peptides, one best spectrum each, which is the unit the entrapment pairing is defined over; "
-"Extended Results counts identifications. Both are correct, and neither number should be quoted "
-"with the other's counts. Decoys do not see any of this, which is why the margin is applied "
+"Extended Results counts identifications. Both are correct. Decoys do not see any of this, "
+"which is why the margin is applied "
 "rather than the reported q-value trusted (Extended Results).",
 
 "The surviving identifications are ordinary spectra, not marginal ones. Judged on properties of "
@@ -376,7 +376,7 @@ LEGEND[3] = [
 "1,039 and appearing in four of 42 plexes (Extended Results). Panel b's 0.83% is seven among 839 "
 "distinct peptides, in five plexes. The difference is one peptide at a margin of 10.53, which "
 "clears the threshold in the recomputed margins behind panel B and not in the per-plex summary "
-"behind panel C. Neither number should be quoted with the other's counts.*",
+"behind panel C.*",
 ]
 
 
@@ -630,8 +630,8 @@ SPINE["2.8"] = [
 "negative "
 "rests on a single experiment: of the five DepMap models carrying the mutation, one is in the "
 "375-line proteomic set, so its plex is the only one of the 42 in which the mutation was present to "
-"be found. It is one informative observation, not a survey. It is worth stating anyway, because the "
-"one acquired lysine that has been drugged is the one this workflow did not see.",
+"be found. It is one informative observation, not a survey. The one acquired lysine that has "
+"been drugged is the one this workflow did not see.",
 ]
 
 LEGEND[8] = [
@@ -749,7 +749,8 @@ SPINE["2.5"] = [
 "[[sauer2003]] (Figure S7F). Engagement is a property of the lysine over the descriptors tested, "
 "and the analysis is silent on exactly the two axes this paper goes on to test, charge in Figure 7 "
 "and chirality in the enantiomer pairs of Extended Results, both of which show molecular properties "
-"that do matter. It must not be read as a claim that no property of the molecule matters.",
+"that do matter. The claim is about which site a compound prefers, not about whether a molecule's "
+"properties matter at all.",
 ]
 
 LEGEND[5] = [
@@ -904,8 +905,8 @@ DISCUSSION = [
 "argues otherwise: acquired lysines carry the driver-hotspot flag at an odds ratio of 1.68 "
 "against other substitutions, and that flag is conservative by construction, since the method "
 "behind it exists to strip recurrent passenger sites from hotspot lists [[hess2019]]. The "
-"signature composition of those hotspots is not independent support and should not be offered as "
-"such: it compares lysine-creating hotspots against other hotspots, and since lysine is made "
+"signature composition of those hotspots is not independent support. It compares "
+"lysine-creating hotspots against other hotspots, and since lysine is made "
 "85.5% by C>T and never by T>C, any lysine-creating set would show the same enrichment whether "
 "or not it were under selection. The test that would separate the two, acquired-lysine hotspots "
 "against acquired-lysine non-hotspots, is not in this paper. What the odds ratio establishes is "
@@ -1231,7 +1232,7 @@ SPINE["2.3"].insert(4,
 
 # 4d: what the gate costs, which is a bound and belongs in the main text
 SPINE["2.4"].insert(4,
-    "Gating costs sites, and the price is worth stating. 30,805 labelled lysines fall to roughly "
+    "Gating costs sites. 30,805 labelled lysines fall to roughly "
     "17,000 at a confidence of 90 or above (Figure 4D), and some of the discarded sites are "
     "engaged, so this is a real cost rather than a free cleanup.")
 
