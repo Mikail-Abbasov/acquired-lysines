@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Supplementary figure for Figure 2 — controls and supporting detail for the detection analysis.
+Supplementary figure for Figure 2, controls and supporting detail for the detection analysis.
 
 a,b  THE NON-LYSINE CONTROL. 1,902 of the 10,372 region_compare rows are variant sites that do
-     NOT create a lysine — they come from multi-mutation records, one row per position. They
+     NOT create a lysine, they come from multi-mutation records, one row per position. They
      went through the identical pipeline: same database construction, same search, same FDR,
      same filters.
 
@@ -22,7 +22,7 @@ g    Spectrum quality: are variant identifications supported by worse spectra th
 h    An annotated spectrum for one named site.
 
      THE DOWNSTREAM BOUNDARY CONTROL IS NOT A PANEL. Across 42 experiments it gave 25
-     downstream identifications, ZERO boundary controls and ZERO entrapment hits — three
+     downstream identifications, ZERO boundary controls and ZERO entrapment hits, three
      numbers, two of them zero, which is a sentence rather than a figure. It belongs in the
      text.
 
@@ -46,13 +46,15 @@ import figure_data as fd
 # different user account). On the original machine the two are identical.
 _TOP = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-st.apply()
+# One body type size for this figure; every other size is a ratio to it.
+BODY = 7.0
+st.apply(BODY)
 
 HEAD = {}       # headline numbers per panel, captured where they are computed
 MARGIN = 10     # score-margin threshold -- one definition for the axis line, the label and the count
 
 def find(n):
-    for d in (".", "..", os.path.join(_TOP, 'ccle')):
+    for d in (".", "..", os.path.join(_TOP, 'ccle_plex05')):
         p = os.path.join(d, n)
         if os.path.exists(p): return p
     return None
@@ -68,32 +70,33 @@ P = pd.read_csv(find("region_compare_pep.tsv"), sep="\t")
 P["kgain"] = [is_kgain(c, s) for c, s in zip(P.change, P.site)]
 K = P[P.kgain]; N = P[~P.kgain]
 
-fig = plt.figure(figsize=(st.DOUBLE, st.SINGLE * 3.15))
+fig = plt.figure(figsize=(st.DOUBLE, st.SINGLE * 2.76))
 gs = fig.add_gridspec(5, 12, hspace=0.46, wspace=2.3,
                       height_ratios=[1, 1, 1, 0.18, 0.85],
                       left=0.065, right=0.985, top=0.972, bottom=0.070)
 
 # ---------------------------------------------------------------- a: the two gates, both classes
-ax = fig.add_subplot(gs[0, 0:6]); st.panel_label(ax, "a", dx=-0.17, dy=1.09)
+ax = fig.add_subplot(gs[0, 0:6]); st.head(fig, ax, "a")
 g1 = [100 * K.wt_detected.mean(), 100 * N.wt_detected.mean()]
 cov_k = K[K.wt_detected == 1]; cov_n = N[N.wt_detected == 1]
 g2 = [100 * cov_k.mut_detected.mean() if len(cov_k) else np.nan,
       100 * cov_n.mut_detected.mean() if len(cov_n) else np.nan]
-x = np.arange(2); w = 0.34
+x = np.arange(2); w = st.grp(2)
 ax.bar(x - w/2, g1, w, color=st.BLUE, label="gate 1: region covered")
 ax.bar(x + w/2, g2, w, color=st.GREEN, label="gate 2: mutant recovered\nwhere covered")
 for i in range(2):
-    ax.text(i - w/2, g1[i] + 0.15, "%.1f%%" % g1[i], ha="center", fontsize=5.6,
-            fontweight="bold")
+    ax.text(i - w/2, g1[i] + 0.15, "%.1f%%" % g1[i], ha="center", fontsize=st.sz(5.6))
     if not np.isnan(g2[i]):
-        ax.text(i + w/2, g2[i] + 0.15, "%.1f%%" % g2[i], ha="center", fontsize=5.6)
+        ax.text(i + w/2, g2[i] + 0.15, "%.1f%%" % g2[i], ha="center", fontsize=st.sz(5.6))
 ax.set_xticks(x)
 ax.set_xticklabels(["acquired lysine\n(%s sites)" % f"{len(K):,}",
-                    "other variant\n(%s sites)" % f"{len(N):,}"], fontsize=5.6)
-ax.set_ylabel("% of sites (note: the two bars\nhave different denominators)", fontsize=5.6,
+                    "other variant\n(%s sites)" % f"{len(N):,}"], fontsize=st.sz(5.6))
+ax.set_ylabel("% of sites (note: the two bars\nhave different denominators)", fontsize=st.sz(5.6),
               linespacing=1.5)
-ax.set_ylim(0, max(g1 + [v for v in g2 if not np.isnan(v)]) * 1.35)
-ax.legend(frameon=False, fontsize=5.0, loc="upper right", handlelength=1.0, labelspacing=0.5)
+# 1.35 -> 1.58: the key sits in the upper right and at the raised body the "6.9%" bar
+# value reached it. The headroom is cheaper than moving the key onto the bars.
+ax.set_ylim(0, max(g1 + [v for v in g2 if not np.isnan(v)]) * 1.58)
+ax.legend(frameon=False, fontsize=st.sz(5.0), loc="upper right", handlelength=1.0, labelspacing=0.5)
 HEAD["a_n_acquired_lysine_observations"] = int(len(K))
 HEAD["a_n_other_variant_observations"] = int(len(N))
 HEAD["a_gate1_covered_pct_acquired_lysine"] = round(float(g1[0]), 1)
@@ -118,7 +121,7 @@ fd.panel("figS2", "a", [
 # produces a different peptide. This control demonstrates the mechanism the figure is about.
 
 # ---------------------------------------------------------------- b: peptide length, both classes
-ax = fig.add_subplot(gs[0, 7:12]); st.panel_label(ax, "b", dx=-0.19, dy=1.09)
+ax = fig.add_subplot(gs[0, 7:12]); st.head(fig, ax, "b")
 bins = np.arange(4, 42, 2)
 _brows = []
 for d, lab, col in ((K, "acquired lysine", st.BLUE), (N, "other variant", st.ORANGE)):
@@ -133,9 +136,9 @@ for d, lab, col in ((K, "acquired lysine", st.BLUE), (N, "other variant", st.ORA
                     density=float(_dn[_i]), n=int(_ct[_i])) for _i in range(len(bins) - 1)]
 fd.panel("figS2", "b", _brows,
          note="one row per histogram bin per class; shortest wild-type tryptic peptide, clipped at 40 aa")
-ax.set_xlabel("shortest tryptic peptide (residues)", fontsize=6)
-ax.set_ylabel("density", fontsize=6)
-ax.legend(frameon=False, fontsize=5.0, loc="upper right", handlelength=1.1)
+ax.set_xlabel("shortest tryptic peptide (residues)", fontsize=st.sz(6))
+ax.set_ylabel("density", fontsize=st.sz(6))
+ax.legend(frameon=False, fontsize=st.sz(5.0), loc="upper right", handlelength=1.1)
 
 # Panel c of the previous version repeated Figure 2b exactly — the same two bars, 7.56%
 # conventional against 7.28% mutation-aware, from the same file. One of the two had to go, and
@@ -165,21 +168,20 @@ if rep:
         if len(_pp) > 2 and _pp[:2] == ["acquired", "lysine"] and _pp[2][:1].isdigit():
             n_acq = int(_pp[2].replace(",", ""))
 
-ax = fig.add_subplot(gs[1, 0:5]); st.panel_label(ax, "c", dx=-0.19, dy=1.09)
+ax = fig.add_subplot(gs[1, 0:5]); st.head(fig, ax, "c")
 if psm:
-    x = np.arange(2); w = 0.34
+    x = np.arange(2); w = st.grp(2)
     ax.bar(x - w/2, [psm["K"], psm["R"]], w, color=st.BLUE, label="PSM-weighted")
     ax.bar(x + w/2, [seq["K"], seq["R"]], w, color=st.LIGHTGREY, label="distinct sequences")
     for i, r in enumerate(("K", "R")):
-        ax.text(i - w/2, psm[r] + 0.7, "%.1f%%" % psm[r], ha="center", fontsize=5.8,
-                fontweight="bold", color=st.BLUE)
-        ax.text(i + w/2, seq[r] + 0.7, "%.1f%%" % seq[r], ha="center", fontsize=5.8,
+        ax.text(i - w/2, psm[r] + 0.7, "%.1f%%" % psm[r], ha="center", fontsize=st.sz(5.8), color=st.BLUE)
+        ax.text(i + w/2, seq[r] + 0.7, "%.1f%%" % seq[r], ha="center", fontsize=st.sz(5.8),
                 color=st.GREY)
     ax.set_xticks(x)
-    ax.set_xticklabels(["first basic residue is K", "first basic residue is R"], fontsize=5.8)
-    ax.set_ylabel("peptides carrying a missed\ncleavage at that site (%)", fontsize=6)
+    ax.set_xticklabels(["first basic residue is K", "first basic residue is R"], fontsize=st.sz(5.8))
+    ax.set_ylabel("peptides carrying a missed\ncleavage at that site (%)", fontsize=st.sz(6))
     ax.set_ylim(0, 44)
-    ax.legend(frameon=False, fontsize=5.4, loc="upper left", handlelength=1.0)
+    ax.legend(frameon=False, fontsize=st.sz(5.4), loc="upper left", handlelength=1.0)
     for _r in ("K", "R"):
         HEAD["c_missed_cleavage_first_basic_%s_psm_pct" % _r.lower()] = float(psm[_r])
         HEAD["c_missed_cleavage_first_basic_%s_seq_pct" % _r.lower()] = float(seq[_r])
@@ -190,18 +192,18 @@ if psm:
                            ("distinct sequences", seq[_r], nseq.get(_r)))],
         note="missed / (missed + cleaved) among identified peptides, split by first basic residue")
 
-ax = fig.add_subplot(gs[1, 6:12]); st.panel_label(ax, "d", dx=-0.16, dy=1.09)
+ax = fig.add_subplot(gs[1, 6:12]); st.head(fig, ax, "d")
 if not np.isnan(acq):
-    ax.bar([0, 1], [bg, acq], 0.5, color=[st.LIGHTGREY, st.BLUE])
+    ax.bar([0, 1], [bg, acq], st.BARW, color=[st.LIGHTGREY, st.BLUE])
     for i, v in enumerate([bg, acq]):
-        ax.text(i, v + 0.6, "%.1f%%" % v, ha="center", fontsize=6.2, fontweight="bold")
+        ax.text(i, v + 0.6, "%.1f%%" % v, ha="center", fontsize=st.sz(6.2))
     ax.set_xticks([0, 1])
     ax.set_xticklabels(["all identified peptides",
-                        "peptides carrying an acquired lysine"], fontsize=5.8)
-    ax.set_ylabel("peptides carrying a missed\ncleavage (%)", fontsize=6)
+                        "peptides carrying an acquired lysine"], fontsize=st.sz(5.8))
+    ax.set_ylabel("peptides carrying a missed\ncleavage (%)", fontsize=st.sz(6))
     ax.set_ylim(0, max(acq, bg) * 1.42)
     ax.text(0.5, 0.90, "acquired-lysine peptides are digested like any other",
-            transform=ax.transAxes, ha="center", fontsize=5.6, color=st.GREY)
+            transform=ax.transAxes, ha="center", fontsize=st.sz(5.6), color=st.GREY)
     HEAD["d_missed_cleavage_acquired_lysine_pct"] = float(acq)
     HEAD["d_missed_cleavage_background_pct"] = float(bg)
     fd.panel("figS2", "d", [
@@ -209,15 +211,17 @@ if not np.isnan(acq):
         dict(group="peptides carrying an acquired lysine", missed_cleavage_pct=float(acq),
              n_psms=n_acq)], note="PSM-weighted, the comparable pair")
 
-# the note belongs directly under panels d and e; 0.415 put it across f and g
-fig.text(0.5, 0.548,
-         "Missed cleavage (c, d) is missed / (missed + cleaved) among IDENTIFIED peptides, as "
-         "the field reports it. A cleavage site that produced no\nobservable peptide appears in "
-         "neither term, so this is not a digestion efficiency in the absolute sense.",
-         ha="center", fontsize=5.0, color=st.GREY, linespacing=1.5)
+# the note belongs directly under panels d and e. 0.415 put it across f and g; 0.560 pushed
+# it into the x tick labels of c and d at 83%, far worse than the 21% clip of panel f's
+# letter that it was meant to fix. The gap between these two rows is not tall enough for a
+# two-line note, so this is the least-bad position until the note is shortened.
+# The 30-word definition that sat here is in the legend now. There was never a good place
+# for it: the gap between these two rows is not tall enough for a two-line note, and both
+# positions tried put it through the x tick labels of c and d. It is a definition, which is
+# what a legend is for.
 
 # ---------------------------------------------------------------- d: score margin
-ax = fig.add_subplot(gs[2, 0:5]); st.panel_label(ax, "e", dx=-0.28, dy=1.09)
+ax = fig.add_subplot(gs[2, 0:5]); st.head(fig, ax, "e")
 H = find("hits62.tsv")
 if H:
     h = pd.read_csv(H, sep="\t")
@@ -230,13 +234,13 @@ if H:
     ax.axvline(MARGIN, color=st.ORANGE, lw=1.2, ls="--")
     ax.text(0.97, 0.97, "margin \u2265 %d retained" % MARGIN,
             transform=ax.transAxes, ha="right",
-            va="top", fontsize=5.2, color=st.ORANGE)
-    ax.set_xlabel("hyperscore \u2212 nextscore", fontsize=6)
-    ax.set_ylabel("PSMs", fontsize=6)
+            va="top", fontsize=st.sz(5.2), color=st.ORANGE)
+    ax.set_xlabel("hyperscore \u2212 nextscore", fontsize=st.sz(6))
+    ax.set_ylabel("PSMs", fontsize=st.sz(6))
     nsite = h.groupby(["gene", "change", "line", "site"]).ngroups
     ax.text(0.97, 0.80, "%d of %d PSMs clear the threshold,\nacross %d sites"
             % (int((d >= MARGIN).sum()), len(d), nsite), transform=ax.transAxes, ha="right",
-            va="top", fontsize=5.2, color=st.GREY, linespacing=1.4)
+            va="top", fontsize=st.sz(5.2), color=st.GREY, linespacing=1.4)
     HEAD["e_margin_threshold"] = int(MARGIN)
     HEAD["e_n_psms_total"] = int(len(d))
     HEAD["e_n_psms_above_margin"] = int((d >= MARGIN).sum())
@@ -249,7 +253,7 @@ if H:
              note="one row per acquired-lysine PSM; margin = hyperscore - nextscore, the binned quantity")
 
 # ---------------------------------------------------------------- e: spectrum quality
-ax = fig.add_subplot(gs[2, 6:12]); st.panel_label(ax, "f", dx=-0.28, dy=1.09)
+ax = fig.add_subplot(gs[2, 6:12]); st.head(fig, ax, "f")
 # Are variant identifications supported by worse spectra than ordinary ones? If so, the
 # detections would be suspect regardless of FDR.
 import glob as _g
@@ -276,10 +280,10 @@ if vh and bh:
             label="variant (%d)" % len(V))
     ax.axvline(B.median(), color=st.GREY, lw=0.9, ls="--")
     ax.axvline(V.median(), color=st.BLUE, lw=0.9, ls="--")
-    ax.set_xlabel("hyperscore", fontsize=6); ax.set_ylabel("density", fontsize=6)
-    ax.legend(frameon=False, fontsize=5.0, loc="upper right", handlelength=1.1)
+    ax.set_xlabel("hyperscore", fontsize=st.sz(6)); ax.set_ylabel("density", fontsize=st.sz(6))
+    ax.legend(frameon=False, fontsize=st.sz(5.0), loc="upper right", handlelength=1.1)
     ax.text(0.97, 0.55, "medians %.1f vs %.1f" % (V.median(), B.median()),
-            transform=ax.transAxes, ha="right", fontsize=5.2, color=st.GREY)
+            transform=ax.transAxes, ha="right", fontsize=st.sz(5.2), color=st.GREY)
     HEAD["f_median_hyperscore_variant"] = round(float(V.median()), 1)
     HEAD["f_median_hyperscore_background"] = round(float(B.median()), 1)
     HEAD["f_n_variant_psms"] = int(len(V))
@@ -301,7 +305,7 @@ if vh and bh:
 try:
     import figS_spectrum as SP
     axl = fig.add_subplot(gs[3:5, 0:12]); axl.set_axis_off()
-    st.panel_label(axl, "g", dx=-0.055, dy=1.02)
+    st.head(fig, axl, "g")
     sub = gs[3:5, 0:12].subgridspec(2, 1, height_ratios=[0.22, 1.05], hspace=0.02)
     SP.draw_spectrum(fig, sub[0], sub[1])
     # the panel's numbers are read back from the module that draws it, not retyped here
@@ -321,22 +325,22 @@ try:
 except Exception as e:
     ax = fig.add_subplot(gs[3:5, 0:12]); ax.set_axis_off()
     ax.text(.5, .5, "spectrum panel unavailable: %s" % str(e)[:70], ha="center",
-            transform=ax.transAxes, fontsize=6)
+            transform=ax.transAxes, fontsize=st.sz(6))
 
 # headline numbers per panel, printed so no legend holds a number the script does not report
 try:
-    print("c: missed cleavage at the site \u2014 first basic K %.1f%% PSM / %.1f%% seq | first basic R %.1f%% / %.1f%%"
+    print("c: missed cleavage at the site, first basic K %.1f%% PSM / %.1f%% seq | first basic R %.1f%% / %.1f%%"
           % (psm["K"], seq["K"], psm["R"], seq["R"]))
 except Exception as _e: print("c: not built (%s)" % _e)
 try:
-    print("d: missed cleavage overall \u2014 acquired-lysine peptides %.1f%% vs background %.1f%%" % (acq, bg))
+    print("d: missed cleavage overall, acquired-lysine peptides %.1f%% vs background %.1f%%" % (acq, bg))
 except Exception as _e: print("d: not built (%s)" % _e)
 try:
-    print("e: score margin \u2014 %d of %d PSMs clear margin>=10, across %d sites"
+    print("e: score margin, %d of %d PSMs clear margin>=10, across %d sites"
           % (int((d >= 10).sum()), len(d), nsite))
 except Exception as _e: print("e: not built (%s)" % _e)
 try:
-    print("f: hyperscore \u2014 variant median %.1f vs background median %.1f (n %d vs %d)"
+    print("f: hyperscore, variant median %.1f vs background median %.1f (n %d vs %d)"
           % (V.median(), B.median(), len(V), len(B)))
 except Exception as _e: print("f: not built (%s)" % _e)
 st.save(fig, "figS2")

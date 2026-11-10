@@ -2,7 +2,7 @@
 """Main-text content, one entry per section, assembled by build.py into a single manuscript.
 
 Cite references as [[key]] or [[key1,key2]]; the builder numbers them globally in order of first
-appearance. `fig` names the figure image (in ccle/) and `cap` its caption paragraphs.
+appearance. `fig` names the figure image (in ccle_plex05/) and `cap` its caption paragraphs.
 `status` is "draft" for written sections and "todo" for placeholders carried from the outline.
 """
 
@@ -10,123 +10,213 @@ appearance. `fig` names the figure image (in ccle/) and `cap` its caption paragr
 # Every item below is a stated requirement or encouragement in the Bioorganic & Medicinal Chemistry
 # guide for authors, read 6 September 2026. Where the guide is explicit the requirement is quoted.
 
-HIGHLIGHTS = dict(status="draft", spec=(
- "REQUIRED FORMAT: 3 to 5 bullet points, each a maximum of 85 characters INCLUDING SPACES, "
- "submitted as a separate editable file with \"highlights\" in the file name. Encouraged, not "
- "mandatory. All five are within the limit; character counts are appended in brackets by the build, measured rather than asserted, and are not part of the bullet."), body=[
- # Bullets 1 and 2 were merged on 7 September to free the fifth slot for the probe result
- # without losing anything: the p-value belongs in the abstract and §2.1, not in a highlight.
- "Cancer mutation creates 295,411 new lysines, 1.68-fold enriched on driver hotspots",
- "Conventional search finds none; mutation-aware 0.63%, 0.35% past the margin",
- "Reported 1% FDR is 4.70% for variant peptides without a score margin",
- "Structure predicts ligandability at AUC 0.617 against a \u2265 0.72 ceiling",
- "Probe charge steers labelling: the only 2 of 22 site features that differ",
+# ---------------------------------------------------------------- Resource availability
+# Required by Cell Press for all research articles, with exactly these three subsections.
+# Added 19 October 2026; the manuscript had none. It is main text and counts against the 7,000.
+# The two bracketed items are the only things that cannot be written from what is on record.
+RESOURCE_AVAIL = dict(status="draft", body=[
+ "**Lead contact.** Requests for further information should be directed to the lead contact, "
+ "Mikail E. Abbasov (mikail-abbasov@ou.edu).",
+ "**Materials availability.** This study generated no new unique reagents. The lysine-directed "
+ "probes and compounds reanalyzed here were reported in the three source studies and are "
+ "available from their corresponding authors.",
+ "**Data and code availability.** This study generated no new primary mass-spectrometry data. "
+ "The proteomic data reanalyzed here are the CCLE proteomes at MassIVE MSV000085836, and the "
+ "three chemoproteomic screens are available from their original publications. Variant calls are "
+ "from DepMap Public 26Q1, the TCGA MC3 controlled call set and COSMIC Cancer Mutation Census "
+ "v103; sequences are MANE v1.2 and GENCODE v38; population frequencies are gnomAD v4.1 and the "
+ "gnomAD v2.1.1 non-cancer exome subset; structures are AlphaFold DB. All derived site tables, "
+ "the mutation-aware database construction, the entrapment analysis and every figure script are "
+ "deposited at [REPOSITORY DOI] and are sufficient to reproduce every number reported here. Any "
+ "additional information required to reanalyze the data reported in this paper is available from "
+ "the lead contact on request.",
 ])
 
-GRAPHICAL_ABSTRACT = dict(status="todo", spec=(
- "REQUIRED AT SUBMISSION \u2014 the guide states \"You are required to provide a graphical abstract\". "
- "531 \u00d7 1328 pixels (h \u00d7 w) or proportionally more, readable at 5 \u00d7 13 cm, submitted as a separate "
- "file. Preferred formats TIFF, EPS, PDF or MS Office. Not yet made. The natural content is the "
- "two-gate cartoon from Figure 2a beside the AKT1 E17K contrast from Figure 8e \u2014 a lysine that "
- "can be drugged and cannot be seen."))
+HIGHLIGHTS = dict(status="drafted", spec=(
+ "REQUIRED, and read from the Cell Chemical Biology final-submission page on 20 October 2026: "
+ "\"You may include up to four highlights. Avoid the use of abbreviations. The length of each "
+ "highlight must not exceed 85 characters (including spaces).\" They are uploaded in a single "
+ "Word document SEPARATE from the main text, together with the eTOC blurb and the Significance "
+ "paragraph, under the Editorial Manager option that includes \"highlights and eTOC blurb\". "
+ "Because that document is separate from the main text, none of its three components counts "
+ "against the 7,000. Character counts are appended in brackets by the build, measured rather "
+ "than asserted, and are not part of the bullet."), body=[
+ # Corrected 20 October 2026 against the final-submission page. Two earlier readings were wrong:
+ # the limit is FOUR, not three to five, and it is mandatory rather than encouraged; and the
+ # 85-character limit is Cell Press's own, not a carry-over from the BMC guide.
+ # Abbreviations are now spelled out, since the page asks for them to be avoided: FDR became
+ # "false discovery" and AUC became "area under the curve".
+ # The probe bullet was the fifth and is the one dropped, because bullets 1 to 4 trace the
+ # paper's argument end to end (the class exists, it is unseen, the error rate does not hold,
+ # and prediction cannot route around it) while the probe result is a separate finding about
+ # reagents. Swapping it back in for bullet 4 is a one-line change if MEA prefers it:
+ #   "Probes differing in the acyl leaving group split on 2 of 22 features, both charge"
+ "Cancer mutation creates 295,411 acquired lysines, driver-hotspot odds ratio 1.68",
+ "Mutation-aware search sees 0.63% of 8,470 observations, 0.35% past the margin",
+ "Reported 1% false discovery is 4.70% for variant peptides without a score margin",
+ "Structure predicts ligandability at an area under the curve of 0.617, ceiling 0.72",
+])
+
+GRAPHICAL_ABSTRACT = dict(status="drafted", fig="graphical_abstract.png", spec=(
+ "REQUIRED AT SUBMISSION: the guide states \"You are required to provide a graphical abstract\". "
+ "531 \u00d7 1328 pixels (h \u00d7 w) or proportionally more, readable at 5 \u00d7 13 cm, submitted as a "
+ "separate file. Preferred formats TIFF, EPS, PDF or MS Office. Drawn at exactly that aspect, "
+ "13.28 \u00d7 5.31 cm at 600 dpi, by ccle_plex05/graphical_abstract_v2.py. Confirm the pixel "
+ "minimum and the accepted formats with the editor, since the Elsevier author pages cannot be "
+ "fetched from here.\n\n"
+ "FOUR PICTURES, each carrying one number, because the earlier version was a slide: four columns "
+ "of heading, subtitle, number and two description lines, which a reader outside the field meets "
+ "as a wall of type. (1) a protein chain with one residue rewritten to lysine, Figure 1a; (2) one "
+ "hundred acquired lysines as dots with 82 of them drawn inside the region the screens already "
+ "engage, Figures 4a, 8b and 8c; (3) the same chain digested twice, a new cysteine leaving one "
+ "peptide and a new lysine splitting it into two, Figure 2a; (4) 8,470 cells, one per "
+ "acquired-lysine observation, with the 53 recovered picked out, Figures 2b and 2c.\n\n"
+ "PANEL 4 IS THE ARGUMENT FOR DRAWING THIS IN THE PIPELINE. The grid is exactly 110 \u00d7 77 = "
+ "8,470 cells and exactly 53 are filled, both read from the ledgers, and the rendered file is "
+ "re-counted by connected components to confirm 53 blocks survive to the artwork. A generative "
+ "tool draws an approximate field, and an approximate field is a fabricated one.\n\n"
+ "BOUNDS HELD IN THE ARTWORK. Panel 2 says the sites occupy the same structural space as engaged "
+ "lysines, not that they have been engaged, and the footer says so. Panel 3 is a mechanism drawn "
+ "from the four peptide species of Figure 2a, not a measurement. Nothing asserts that the barrier "
+ "is detection rather than chemistry, which is still open for approval.\n\n"
+ "Every number is read from results/panel_data/*_head.json, so the artwork cannot drift from the "
+ "panels. The conventional search's zero, which no ledger held, is computed and deposited by the "
+ "same script. The specialist results, the composite AUC against its ceiling and the two of "
+ "twenty-two probe features, sit in the footer rather than in a panel."))
 
 DECLARATIONS = [
- ("Acknowledgements", "todo",
-  "Separate section immediately before the reference list \u2014 the guide is explicit that it must not "
-  "sit on the title page or as a title footnote. Include anyone who helped with language, writing or "
-  "proof-reading."),
- ("Author contributions", "todo",
-  "REQUIRED. The corresponding author must acknowledge co-author contributions using CRediT roles: "
-  "conceptualization, data curation, formal analysis, funding acquisition, investigation, "
-  "methodology, project administration, resources, software, supervision, validation, "
-  "visualization, writing \u2013 original draft, writing \u2013 review and editing."),
- ("Declaration of competing interests", "todo",
-  "REQUIRED, and uploaded separately as a .doc/.docx via the declarations tool. Discloses employment, "
-  "consultancies, stock, honoraria, expert testimony, patents, grants and any journal affiliation. "
-  "Authors with nothing to declare select that option explicitly."),
- ("Funding", "todo",
-  "REQUIRED, in the guide's standard form: \"Funding: This work was supported by the National "
-  "Institutes of Health [grant numbers xxxx, yyyy]\". The role of sponsors in study design, "
-  "collection, analysis, interpretation, writing and the decision to submit must be stated, or their "
-  "non-involvement stated."),
- ("Declaration of generative AI and AI-assisted technologies in the manuscript preparation process", "todo",
-  "REQUIRED IF APPLICABLE, as a new section immediately before the reference list, in the guide's "
-  "form: \"During the preparation of this work the author(s) used [TOOL] in order to [REASON]. After "
-  "using this tool/service, the author(s) reviewed and edited the content as needed and take(s) full "
-  "responsibility for the content of the published article.\" The exemption for basic grammar, "
-  "spelling and reference tools does not cover drafting assistance. AI tools must not be listed as "
-  "authors. THE WORDING IS THE PI'S DECISION."),
+ # Acknowledgements and the generative-AI declaration were removed on the PI's instruction,
+ # 19 September 2026. The guide records the AI section as required if applicable, with the
+ # exemption for grammar and reference tools not covering drafting assistance.
+ ("Author contributions", "drafted", [
+  "**CRediT authorship contribution statement.** "
+  "**Rajib Molla:** Data curation, Investigation, Writing \u2013 review & editing. "
+  "**Sona Tiwari:** Data curation, Investigation, Writing \u2013 review & editing. "
+  "**Ayan Mukherjee:** Visualization, Writing \u2013 review & editing. "
+  "**Md Khaled Hossain:** Investigation, Writing \u2013 review & editing. "
+  "**Mikail E. Abbasov:** Conceptualization, Methodology, Software, Formal analysis, Validation, "
+  "Visualization, Writing \u2013 original draft, Writing \u2013 review & editing, Supervision, "
+  "Project administration, Funding acquisition.",
+  # The attribution rationale was printed under the CRediT statement. It is addressed to the
+  # co-authors, to be confirmed before submission, and it is not a statement for a reader.
+  # Kept here so the basis of each role stays on the record.
+  # Rajib Molla assembled the acquired-lysine site catalogue and its reported mechanisms;
+  # Sona Tiwari supplied the primary literature and the patient-level frequencies behind
+  # table S1; Ayan Mukherjee is attributed Visualization for the chemical structures in
+  # figures 6a and 7e, and the role should be dropped if they do not appear;
+  # Md Khaled Hossain located references and reviewed the draft.
+  ]),
+ ("Declaration of competing interests", "drafted", ["None."]),
+ ("Funding", "drafted", [
+  "This work was supported by the National Institute of General Medical Sciences of the National "
+  "Institutes of Health under award R35GM143027, and by a University of Oklahoma Health Sciences "
+  "Center College of Pharmacy Seed Grant, PHR20102."]),
  ("Data and code availability", "draft", None),
 ]
 
+
 FRONT = dict(
- # Settled 7 September 2026. Every word traces to a sentence already in the manuscript:
- # "absent by construction" is §2.2 — a reference database cannot contain these peptides, which is
- # why the conventional search returns zero and why that zero is a passed control rather than a
- # failure; "not by chemistry" is the Conclusion verbatim, resting on §2.8's nine environment
- # features. The earlier working title claimed "ligandable", which §2.8 explicitly refuses — those
- # sites have been tested against nothing. That was critic finding 1, and this closes it.
- title="Absent by construction, not by chemistry: the lysines cancer creates",
- title_note="Settled 7 September 2026. Avoid any title containing \"drugable\" or \"ligandable\" — the paper measures neither for this class.",
- authors="[PLACEHOLDER] author list and affiliations",
- venue="Bioorganic & Medicinal Chemistry — Tetrahedron Prize special issue honouring B. F. Cravatt (invited Research Article).",
+ # Reset twice on 18 September 2026. The 7 September title, "Absent by construction, not by
+ # chemistry: the lysines cancer creates", went for two reasons: the thesis-and-colon shape read
+ # as a Perspective, and "not by chemistry" was the Conclusion sentence §2.8 forbids.
+ # The first replacement stated that reference-database proteomics cannot detect the class. That
+ # is true and trivial: a reference database cannot contain a peptide whose boundaries mutation
+ # redrew, so the conventional zero is a passed control and needs no experiment. Putting the
+ # control on the cover is what made it read as obvious.
+ # The title now carries the result one gate further in, which no reader can call obvious, and
+ # states it as the positive count rather than as a negative. Three earlier attempts failed in
+ # three different ways: one was trivially true, one called a plex a proteome, and one said the
+ # search "still misses" the class, which is false because 53 detections were made. A title
+ # that prints both numbers lets the reader do the division and cannot overshoot.
+ # A mutation-aware database of 10.17 million peptide entries, searched over the 42 TMT plexes
+ # that carry the 375 CCLE cell-line proteomes (nine lines per plex plus a bridge channel),
+ # still recovers the mutant peptide in only 0.63% of 8,470 site-in-
+ # cell-line observations, on 52 distinct genomic sites, with 30 of the 53 clearing the score
+ # margin (§2.2). The region is covered in 7.28% of cases, and where it is covered the mutant
+ # is missed 95.6% of the time, so the barrier survives the fix everyone would name first.
+ # The title gives the count and its denominator rather than the percentage: 0.63% is a rate per
+ # site-in-cell-line observation, and alone on a cover it would be read against §2.1's 295,411
+ # distinct sites, which is the denominator trap the paper polices everywhere else. Printing
+ # 53 and 8,470 together removes the ambiguity and names the unit.
+ # The earlier working title claimed "ligandable", which §2.8 explicitly refuses; those sites
+ # have been tested against nothing. That was critic finding 1 and it stays closed.
+  # Replaced 19 October 2026 with the title agreed in the 13 October front-matter pass and
+ # confirmed by MEA. 12 words, 96 characters, inside the Cell Press guidance of 10 to 12 words
+ # and 145 characters. The 21 September title named the result as a bare count; this one names
+ # what the paper measures, which is where the coverage and error-rate limits are.
+ title="Proteome-wide reanalysis identifies coverage and error-rate limits on acquired lysines in cancer",
+ running_title="Coverage and error-rate limits on acquired lysines",   # 50 characters
+ title_old_2026_09_21="A mutation-aware search of 375 cancer cell-line proteomes recovers 53 of 8,470 acquired-lysine observations"
+       "acquired-lysine observations",
+ title_note="Reset 18 September 2026, twice. Avoid any title containing \"drugable\" or \"ligandable\"; the paper measures neither for this class. Avoid any title asserting that the obstacle is not the chemistry, for the same reason §2.8 refuses it in the text.",
+ authors="Rajib Molla\u00b9, Sona Tiwari\u00b9, Ayan Mukherjee\u00b9, Md Khaled Hossain\u00b9, Mikail E. Abbasov\u00b9,\u00b2,\u00b3,\u2074",
+ affiliations=("\u00b9Department of Pharmaceutical Sciences, College of Pharmacy, University of "
+               "Oklahoma Health Sciences Center, Oklahoma City, OK 73117. \u00b2Department of "
+               "Biochemistry and Physiology, College of Medicine, University of Oklahoma Health "
+               "Sciences Center, Oklahoma City, OK 73104. \u00b3Stephenson Cancer Center, "
+               "University of Oklahoma Health Sciences Center, Oklahoma City, OK 73104. "
+               "\u2074Harold Hamm Diabetes Center, University of Oklahoma Health Sciences Center, "
+               "Oklahoma City, OK 73104."),
+ venue="Cell Chemical Biology (Resource). Retargeted 9 October 2026 from the Bioorganic & Medicinal Chemistry Tetrahedron Prize special issue honoring Benjamin F. Cravatt; that commitment still needs withdrawing.",
 )
 
-KEYWORDS = dict(status="draft", body=[
- "chemoproteomics", "lysine", "covalent", "ligandability", "proteomics", "variant", "AlphaFold",
-], note=("Seven, the maximum the guide allows, all single words as the guide prefers. The earlier "
-         "eight-keyword list used multi-word entries the guide discourages."))
+KEYWORDS = dict(status="drafted", body=[
+ # Set by MEA, 9 November 2026. Nine of the ten Cell Press allows, comma-separated.
+ "acquired lysines", "cancer mutation", "mass-spectrometry-based chemoproteomics",
+ "activity-based protein profiling", "covalent modification", "ligandability",
+ "false discovery rate", "variant peptide", "AlphaFold",
+], note="Nine of the ten Cell Press allows, comma-separated.")
 
 ABSTRACT = dict(status="drafted", body=[
  "[NOT RENDERED. The abstract is drafted in drafted.py as P_ABSTRACT and build.py reads it "
  "from there. This entry is kept only so the section table stays complete; edit drafted.py.]",
 ])
 
-INTRO = dict(status="todo", body=[
- "[TO BE DRAFTED — target ~700 words, four moves. (1) Covalent lysine chemistry is mature enough to ask the question; cite the three screens. (2) Mutation makes new lysines and nobody has counted them as a target class; E→K is a known common substitution, so cite the priors and do not claim novelty there; name the counter-position (passenger-like) and flag that Figure 1d answers it. (3) The reason nobody has is a measurement problem: a new lysine changes peptide boundaries, and variant-peptide FDR has mostly been tested incorrectly. (4) What this paper does: a reanalysis of published data, no new data, every script published.]",
+INTRO = dict(status="drafted", body=[
+ "[superseded by spine.py, which carries this section's prose; see git history]",
 ])
 
 RESULTS = [
- dict(n="2.1", status="draft", heading="Cancer mutation creates a large, driver-enriched class of new lysines",
+ dict(n="2.1", status="drafted", heading="Cancer mutation creates a large, driver-enriched class of new lysines",
       fig="fig1.png", figno=1,
-      body=["[TO BE DRAFTED — ~800 words. Must establish: the class is large and multi-source (295,411 sites, 20,365 genes; 93,769 multi-source); E→K is the commonest route but not because lysine is special (rank 1 of 363 observed pairs; trinucleotide-adjusted only 1.12-fold; lysine 4th by residues gained, 5th by net flux, cysteine 2nd); the sites are somatic (91.12% of assessed absent or below 1e-5, with 6.73% never assessed counted separately); they are driver-enriched (OR 1.68, p = 1.3e-10) — and the Hess flag is conservative by construction because that method exists to strip passenger hotspots; identifiable processes write them (UV 23.5/9.6, MSI 20.6/6.3, POLE 15.2/6.0, APOBEC 8.3/4.3, with smoking and CpG running the other way); burden is lineage-specific with an internal control (melanoma 39 per tumour, uveal melanoma 0, all 32 lineages shown); and the excess is real against two independent germline references (6.72% against 3.29%, non-cancer control 3.41%).]"],
+      body=["[superseded by spine.py, which carries this section's prose; see git history]"],
       cap=["[Caption to be finalised from the figure legends document.]"]),
- dict(n="2.2", status="draft", heading="The class is largely invisible to conventional proteomics",
+ dict(n="2.2", status="drafted", heading="The class is mostly missed by a search built to find it",
       fig="fig2.png", figno=2,
-      body=["[TO BE DRAFTED — ~900 words. Gate 1: 617 of 8,470 regions ever covered (7.28%); the 6.99%/6.79% figures are the cross-architecture agreement check over all 10,372 variant sites and must be labelled as that, not as the gate-1 result. Gate 2: 53 of 8,470 (0.63%), 27 of 617 (4.38%); conventional search returns zero, a passed control. Drivers: of the ten driver hotspots whose region was covered, none yielded a mutant peptide — and NRAS Q61K was recovered in HCC15 only by the mutant-only route, where the wild-type region was never observed. Two routes: 53 + 15 (7 shared) = 61 sites. State plainly that this is what has been looked for and found, not evidence of absence.]"],
+      body=["[superseded by spine.py, which carries this section's prose; see git history]"],
       cap=["[Caption to be finalised from the figure legends document.]"]),
- dict(n="2.3", status="draft", heading="Reported error rates do not hold for variant peptides",
+ dict(n="2.3", status="drafted", heading="Reported error rates do not hold for variant peptides",
       fig="fig3.png", figno=3,
-      body=["[TO BE DRAFTED — ~700 words. Burden-matched entrapment at r = 1: FDP 4.6% at margin 0 falling to 0.83% at margin ≥ 10, 1,033 variant identifications against 6 entrapment hits; pooled 0.58% across 42 plexes; decoys underestimate by 1.7-fold on plex 2. Do not claim burden-matched entrapment as a new method — cite Wen et al. and describe it as correct application. Figure S4h is not comparable with the 0.58% and the text must say so.]"],
+      body=["[superseded by spine.py, which carries this section's prose; see git history]"],
       cap=["[Caption to be finalised from the figure legends document.]"]),
- dict(n="2.4", status="draft", heading="Reactivity and ligandability separate only where the structure is trustworthy",
+ dict(n="2.4", status="drafted", heading="Reactivity and ligandability separate only where the structure is trustworthy",
       fig="fig4.png", figno=4,
-      body=["[TO BE DRAFTED — ~750 words. 245,684 lysines, 6,201 proteins, 30,805 labelled (12.5%); 14 site features, 5 charge and 9 shape, with pLDDT excluded as the gating variable. The sentence the section exists to write: under the confidence gate, shape features stop explaining reactivity (crowding +0.197 → −0.042, atom density +0.244 → +0.003, polar +0.183 → −0.002 at pLDDT ≥ 90) while holding in ligandability (crowding +0.143 → +0.100, polar +0.185 → +0.197), and that divergence is what separates the two properties. Report the gate ladder (shape tracking 0.97 → 0.90 → 0.77 → 0.35; p 0.487 / 0.081 / 0.019 / 0.008) and both permutation arms (+0.008 ungated, +0.638 gated). Say that the separation emerges only at the strictest gate.]"],
+      body=["[superseded by spine.py, which carries this section's prose; see git history]"],
       cap=["[Caption to be finalised from the figure legends document.]"]),
- dict(n="2.5", status="draft", heading="Ligandability is reproducible, and poorly predicted by the site features tested",
+ dict(n="2.5", status="drafted", heading="Ligandability is reproducible, and poorly predicted by the site features tested",
       fig="fig5.png", figno=5,
-      body=["[TO BE DRAFTED — ~850 words. AUC 0.617 against a measured reproducibility ceiling of at least 0.72; train 0.619, optimism +0.002. Report the composite BOTH ways — 0.617 including model confidence as a feature and 0.611 [0.590, 0.632] without it — which forecloses the objection that the model is partly predicting how well a site was modelled, and name this feature set distinctly from Figure 4's. The ceiling is flat across five confidence bands. No useful operating point: 11% of engaged sites recovered at 5% false positives, 19% at 10%. The shortfall is not a feature-count problem: 14 features carry about five independent properties. Breadth across 34 chemotypes. Enantiomers as a bounded observation, n = 2 pairs, leading with the agreement rather than the difference.]"],
+      body=["[superseded by spine.py, which carries this section's prose; see git history]"],
       cap=["[Caption to be finalised from the figure legends document.]"]),
- dict(n="2.6", status="draft", heading="Engagement is a property of the lysine, over the descriptors tested",
+ dict(n="2.6", status="drafted", heading="Engaged lysines share site properties across compounds, and no tested descriptor predicts which",
       fig="fig6.png", figno=6,
-      body=["[TO BE DRAFTED — ~700 words. 13 of 14 site features consistent within every one of 84 compounds; 0 of 84 descriptor correlations within NatChem alone and 0 of 72 in the 173-compound within-dataset test, against 3.6 expected; the pooled 21 of 84 was provenance, with molecular weight all but naming the screen (306/386/480 Da, p = 1.3e-9). Keep n = 84 and n = 173 apart. The heading is bounded because figure S7f shows the tested descriptors contain nothing encoding charge and every shape term is achiral by construction — and Figure 7 and Figure 5f both show molecular properties that do matter. Never word this as \"no property of the molecule matters\".]"],
+      body=["[superseded by spine.py, which carries this section's prose; see git history]"],
       cap=["[Caption to be finalised from the figure legends document.]"]),
- dict(n="2.7", status="draft", heading="The probe is not a neutral reporter: reagent charge steers labelling",
+ dict(n="2.7", status="drafted", heading="The probe is not a neutral reporter: reagent charge steers labelling",
       fig="fig7.png", figno=7, body=None, cap=None),   # filled from sec_2_7.py
- dict(n="2.8", status="draft", heading="Acquired lysines are structurally ordinary",
+ dict(n="2.8", status="drafted", heading="Acquired lysines are structurally ordinary",
       fig="fig8.png", figno=8, body=None, cap=None),   # filled from sec_2_8.py
 ]
 
-DISCUSSION = dict(status="todo", body=[
- "[TO BE DRAFTED — ~1,200 words, five moves. (1) What the paper establishes, in one paragraph. (2) The closest prior work, named: the three screens mapped wild-type lysines; Craven et al. drugged one acquired lysine by target-based design; neither asked whether the class is measurable. Rebut the passenger reading of E→K explicitly. (3) What follows for probe design — Figure 7 is the ABPP design principle, and it stops at the principle; the five-probe panel is not named here. (4) What follows for measurement — enrichment removes the abundance gate, a margin filter is required, entrapment must be burden-matched; keep this short. (5) Limitations in one honest block: cell lines throughout, screens not saturated so every ligandability estimate is a lower bound, cross-dataset generality the weakest evidence, descriptor coverage excludes charge and chirality, environment features only in Figure 8. Do not convert cell-line engagement into disease relevance anywhere.]",
+DISCUSSION = dict(status="drafted", body=[
+ "[superseded by spine.py, which carries this section's prose; see git history]",
 ])
 
-CONCLUSION = dict(status="todo", body=[
- "[TO BE DRAFTED — ~120 words. The class is large, driver-enriched and effectively unmeasured; the obstacle is detection; the chemistry to engage such sites already exists. Confirm whether this journal expects a separate Conclusion or folds it into the Discussion.]",
+CONCLUSION = dict(status="drafted", body=[
+ "[superseded by spine.py, which carries this section's prose; see git history]",
 ])
 
-METHODS = dict(status="todo", body=[
- "[TO BE DRAFTED. Sections required, with what each must state: variant catalogues and the union (DepMap 26Q1, TCGA MC3, COSMIC CMC v103; and that TCGA-OV and TCGA-LAML are whole-genome-amplified, so a PASS-only filter deletes them). Germline comparison (dbNSFP 5.4a, MANE, gnomAD v4.1 joint and v2.1.1 non-cancer; expected diploid count as the sum of 2 × allele frequency; not a count of distinct variants). Proteomics reanalysis (42 TMT plexes, 375 cell lines; both search architectures; the two-gate definition). Entrapment and FDR (FDRBench v1.1.1, r = 1, burden matching, the score-margin definition, and which estimator supports which claim). Site assignment (97.82% two-route concordance, 44,736 of 45,552; why assignments are called provisional). Occupancy and engagement (100 × (1 − compound/DMSO); engaged at ≥ 60%; ratio ≥ 4 equals 75% engagement and is a reporting convention). Structural features (AlphaFold models; the Cβ anchor; TWO feature sets named distinctly — Figure 4's 14 exclude pLDDT as the gating variable, Figure 5's 14 include model confidence, and the composite is reported both ways; TWO gate rungs — Figures 4b, c display pLDDT ≥ 90, Figure 8 is gated at ≥ 70). Cell lines (Figures 2–3 are 375 CCLE lines; Figures 4–8 are the chemoproteomic screens: CyMPSA in HeLa, meroterpenoids in MDA-MB-231 and MDA-MB-436, NatChem to be confirmed). Software and code (every script published, with versions).]",
+METHODS = dict(status="drafted", body=[
+ "[superseded by spine.py, which carries this section's prose; see git history]",
 ])
 
 DATA_AVAIL = dict(status="drafted", body=[
@@ -157,13 +247,62 @@ DATA_AVAIL = dict(status="drafted", body=[
  "information of the three published screens [[abbasov2021,bracken2024,ryan2024]]. No new "
  "chemoproteomic experiments were performed.",
 
+ # Deposit shape settled 19 September 2026 and narrowed 9 November: one public repository, no
+ # archived release. The 343 MB of deposited intermediates and the 120 MB of search databases
+ # are redistributed nowhere, which is stated here rather than implied.
  "**Code and deposited data.** All analysis and figure scripts, the panel-level data behind every "
- "figure, and the checks described below are deposited at [PLACEHOLDER repository] and archived "
- "at [PLACEHOLDER DOI]. The deposit has two tiers: every published panel can be redrawn from the "
- "deposited CSVs alone, and those CSVs can be regenerated from the public sources above. Each "
- "figure script also writes a machine-readable ledger of the numbers its panels contribute to "
- "the text; two scripts check those ledgers against the manuscript in both directions \u2014 "
- "numbers computed but no longer quoted, and numbers quoted that no script produces. A small "
- "number of intermediates could not be tied to a producing script by static analysis and are "
- "deposited as data rather than regenerated; they are labelled as such in the deposit.",
+ "figure, and the checks described below are available at "
+ "github.com/Mikail-Abbasov/acquired-lysines. The "
+ "code carries the MIT licence and the deposited data CC BY 4.0. The deposit has two tiers. "
+ "Every published panel can be redrawn from the deposited panel data alone, with no download. "
+ "Those files can in turn be regenerated from the public sources above, with two exceptions that "
+ "are stated rather than implied: twenty intermediates that are this study\u2019s own outputs "
+ "rather than public downloads, and the variant and decoy search databases. Neither is "
+ "redistributed, both are named in external_inputs.json, and the second tier is therefore "
+ "incomplete for the steps that read them while the first tier covers every figure affected. "
+ "Each figure script also writes a machine-readable ledger of the numbers its panels contribute "
+ "to the text; two scripts check those ledgers against the manuscript in both directions, "
+ "numbers computed but no longer quoted, and numbers quoted that no script produces.",
 ])
+
+# ================================================================ the separate upload
+# Read from the Cell Chemical Biology final-submission page, 20 October 2026. Highlights, the
+# eTOC blurb and the Significance paragraph "should appear together in a single Word document,
+# separate from the main manuscript text", uploaded under the Editorial Manager option that
+# includes "highlights and eTOC blurb". Because that document is separate from the main text,
+# none of it counts against the 7,000. This is a journal-mandated third file, which is the one
+# exception to the one-manuscript-one-SI rule.
+ETOC = dict(status="drafted", spec=(
+ "REQUIRED. 50 words or fewer, two sentences, third person, no \"we\" or \"I\". Should showcase "
+ "the context and significance of the findings and be readable by a non-specialist. Cell Press "
+ "house style names the authors; the name goes in once the author list is final."), body=(
+ "Covalent drugs need a residue that exists only in diseased cells, and cancer mutation writes "
+ "lysines by the hundred thousand. This reanalysis counts the class, finds that conventional "
+ "proteomics recovers under 1% of it, and measures the error rate on those detections, "
+ "placing the obstacle in detection rather than chemistry."))
+
+SIGNIFICANCE = dict(status="drafted", spec=(
+ "REQUIRED. A single paragraph of no more than 300 words, explaining the relevance and "
+ "significance of the study to the broad readership. No reference citations. Uploaded in the "
+ "same separate document as the Highlights and the eTOC blurb, so it does not count against the "
+ "7,000."), body=(
+ "A covalent drug is written around the residue it modifies, so the most valuable residue is one "
+ "that exists in the diseased cell and nowhere else. Cancer supplies such residues by mutation, "
+ "and the argument has already been made for cysteine, where a mutation-created thiol became a "
+ "drug target and then a drugged one. Lysine has not been counted the same way, although "
+ "mutation creates more of them. This work counts the class and then asks the question that "
+ "decides whether it can be worked on: has anyone been able to see it? Re-searching 42 "
+ "published proteomes with a mutation-aware database recovers the mutant peptide at well under "
+ "1% of the opportunities, and more than nine in ten are never observed in any "
+ "form. The reason is specific rather than general. A new lysine is a new cleavage site, so the "
+ "peptide a search must find is not the peptide it would have looked for, and the error control "
+ "that would license the few identifications it does make has been calibrated over whole "
+ "searches rather than within this atypical subset of one. Measured directly, with entrapment "
+ "sequences built to be indistinguishable from their targets by mass and length, the realized "
+ "error rate at a reported 1% filter is nearly fivefold higher, and a score margin restores it. "
+ "Set against what three chemoproteomic screens show about which lysines compounds engage, "
+ "nothing in the chemistry of these sites explains their absence from the record: they sit "
+ "within the ordinary range of the lysines this chemistry already reaches. The barrier is "
+ "detection, which is the tractable kind of problem. For anyone designing lysine-directed "
+ "chemistry, the practical consequence is that this target class has to be measured before it "
+ "can be prioritized, and the measurements that would do it are named here."))

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Figure S8 — support for Figure 7.
+Figure S8, support for Figure 7.
 
   a  Each probe against unlabelled lysines, all 22 features. Figure 7b shows only the
      difference between probes; this shows what each one prefers, so a reader can see that the
@@ -22,7 +22,9 @@ import matplotlib.pyplot as plt
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import abbasov_style as st
 import figure_data as fd
-st.apply()
+# One body type size for this figure; every other size is a ratio to it.
+BODY = 7.0
+st.apply(BODY)
 
 def find(n):
     for d in (".", "..", "ligand_rebuild", "../ligand_rebuild"):
@@ -53,7 +55,7 @@ gs = fig.add_gridspec(1, 4, left=0.085, right=0.980, top=0.905, bottom=0.150, ws
                       width_ratios=[1.30, 1.0, 1.0, 1.0])
 
 # ---------------------------------------------------------------- a
-ax = fig.add_subplot(gs[0, 0]); st.panel_label(ax, "a", dx=-0.52, dy=1.06)
+ax = fig.add_subplot(gs[0, 0]); st.head(fig, ax, "a")
 S = T22[T22.group == "STP_ONLY"].set_index("feature")
 N = T22[T22.group == "NASA_ONLY"].set_index("feature")
 feats = list(S.d.sort_values().index)
@@ -74,17 +76,17 @@ for i, f in enumerate(feats):
                        significant=bool(r.q < 0.05)))
 fd.panel("figS8", "a", _A,
          note="each probe against unlabelled lysines, within protein; all 22 site features")
-ax.set_yticks(range(len(feats))); ax.set_yticklabels([NICE(f) for f in feats], fontsize=4.4)
-ax.set_xlabel("preference vs unlabelled (d)", fontsize=6.0)
+ax.set_yticks(range(len(feats))); ax.set_yticklabels([NICE(f) for f in feats], fontsize=st.sz(5))
+ax.set_xlabel("preference vs unlabeled (d)", fontsize=st.sz(6.0))
 ax.set_ylim(-2.6, len(feats) - 0.4); ax.set_xlim(-0.46, 0.50)
 for j, (nm, c, mk) in enumerate([("anionic probe", st.ORANGE, "o"), ("neutral probe", st.GREY, "s")]):
     yy = -1.35 - j * 0.62
     ax.plot([-0.43], [yy], mk, color=c, ms=3.2, mew=0, clip_on=False)
-    ax.text(-0.40, yy, nm, fontsize=4.9, color=c, va="center")
+    ax.text(-0.40, yy, nm, fontsize=st.sz(5), color=c, va="center")
 for s_ in ("top", "right"): ax.spines[s_].set_visible(False)
 
 # ---------------------------------------------------------------- b
-ax = fig.add_subplot(gs[0, 1]); st.panel_label(ax, "b", dx=-0.34, dy=1.06)
+ax = fig.add_subplot(gs[0, 1]); st.head(fig, ax, "b")
 sub = M.sample(min(6000, len(M)), random_state=0)
 ax.plot(sub.rsa_tien, sub.enclosure, "o", ms=1.0, mew=0, color=st.LIGHTGREY)
 from scipy import stats as sstats
@@ -97,15 +99,15 @@ fd.panel("figS8", "b", sub[["uniprot", "position", "rsa_tien", "enclosure", "lab
          note=("the %d points drawn, a seed-0 subsample of %d lysines at pLDDT >= 70; "
                "Spearman rho %.4f and fit y = %.4f x + %.4f are computed on all %d"
                % (len(sub), len(M), rho, b[0], b[1], len(M))))
-ax.set_xlabel("relative solvent accessibility", fontsize=6.0)
-ax.set_ylabel("enclosure", fontsize=6.0)
+ax.set_xlabel("relative solvent accessibility", fontsize=st.sz(6.0))
+ax.set_ylabel("enclosure", fontsize=st.sz(6.0))
 ax.set_xlim(0, M.rsa_tien.quantile(0.999)); ax.set_ylim(0, 1.02)
 ax.text(0.97, 0.95, "ρ = %.2f\n%.0f%% shared" % (rho, 100 * rho ** 2), transform=ax.transAxes,
-        ha="right", va="top", fontsize=5.2, color=st.BLUE, fontweight="bold", linespacing=1.4)
+        ha="right", va="top", fontsize=st.sz(5.2), color=st.BLUE, linespacing=1.4)
 for s_ in ("top", "right"): ax.spines[s_].set_visible(False)
 
 # ---------------------------------------------------------------- c
-ax = fig.add_subplot(gs[0, 2]); st.panel_label(ax, "c", dx=-0.34, dy=1.06)
+ax = fig.add_subplot(gs[0, 2]); st.head(fig, ax, "c")
 # The pooled value was typed in as -0.032 until 2026-09-07. It is step 43b's pooled
 # site-level enclosure effect and every input to it is already loaded here, so it is
 # computed rather than transcribed: the panel and the prose cannot now drift apart.
@@ -124,19 +126,19 @@ fd.panel("figS8", "c",
          note="the same data, pooled and within protein; the sign reverses")
 for i, (nm, v, c) in enumerate([("pooled\nacross sites", POOL_D, st.ORANGE),
                                 ("within\nprotein", WITH_D, st.BLUE)]):
-    ax.barh([i], [v], height=0.46, color=c)
+    ax.barh([i], [v], height=st.BARW, color=c)
     ax.text(v + (0.006 if v > 0 else -0.006), i, "%+.3f" % v, va="center",
-            ha="left" if v > 0 else "right", fontsize=5.6, color=c, fontweight="bold")
+            ha="left" if v > 0 else "right", fontsize=st.sz(5.6), color=c)
 ax.axvline(0, color=st.GREY, lw=0.9)
 ax.set_yticks([0, 1]); ax.set_yticklabels(["pooled\nacross sites", "within\nprotein"],
-                                          fontsize=5.2, linespacing=1.35)
-ax.set_xlabel("enclosure, labelled vs unlabelled (d)", fontsize=6.0)
+                                          fontsize=st.sz(5.2), linespacing=1.35)
+ax.set_xlabel("enclosure, labeled vs unlabeled (d)", fontsize=st.sz(6.0))
 ax.set_xlim(-0.075, 0.115); ax.set_ylim(-0.7, 1.7)
 for s_ in ("top", "right", "left"): ax.spines[s_].set_visible(False)
 ax.tick_params(axis="y", length=0)
 
 # ---------------------------------------------------------------- d
-ax = fig.add_subplot(gs[0, 3]); st.panel_label(ax, "d", dx=-0.30, dy=1.06)
+ax = fig.add_subplot(gs[0, 3]); st.head(fig, ax, "d")
 # OBS was typed in as 0.233. It is step 22's probe contrast on cationic_8A, already
 # loaded above, so it is read from the table the panel is about.
 _CON = T22[T22.group == "STP_ONLY vs NASA_ONLY"].set_index("feature")
@@ -151,9 +153,9 @@ for i, (nm, lo, hi, c) in enumerate([("NASA neutral\n(assumed)", OBS, OBS, st.BL
                     arrowprops=dict(arrowstyle="-|>", color=c, lw=1.4))
         ax.plot([lo], [i], "o", color=c, ms=4.0, mew=0)
 ax.axvline(0, color=st.GREY, lw=0.8)
-ax.set_yticks([0, 1]); ax.set_yticklabels(["NASA neutral\n(assumed)", "NASA partly\nionised"],
-                                          fontsize=5.2, linespacing=1.35)
-ax.set_xlabel("true reagent effect,\ncationic 8Å (d)", fontsize=6.0, linespacing=1.4)
+ax.set_yticks([0, 1]); ax.set_yticklabels(["NASA neutral\n(assumed)", "NASA partly\nionized"],
+                                          fontsize=st.sz(5.2), linespacing=1.35)
+ax.set_xlabel("true reagent effect,\ncationic 8Å (d)", fontsize=st.sz(6.0), linespacing=1.4)
 ax.set_xlim(0, 0.52); ax.set_ylim(-0.7, 1.7)
 for s_ in ("top", "right", "left"): ax.spines[s_].set_visible(False)
 ax.tick_params(axis="y", length=0)

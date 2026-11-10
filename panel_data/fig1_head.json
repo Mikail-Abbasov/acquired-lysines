@@ -1,11 +1,20 @@
 {
- "script": "fig1.py",
- "written": "2026-09-07",
+ "script": "fig1_v3.py",
+ "stem": "fig1",
+ "written": "2026-11-08",
  "numbers": {
   "a_all_missense": 4395403,
   "a_genes": 20365,
   "a_multi_source": 93769,
+  "a_region_all_three": 3138,
+  "a_region_cosmic_only": 167321,
+  "a_region_depmap_cosmic": 6547,
+  "a_region_depmap_only": 22717,
+  "a_region_depmap_tcga": 147,
+  "a_region_tcga_cosmic": 83937,
+  "a_region_tcga_only": 11604,
   "a_union_K": 295411,
+  "a_union_label": 295411,
   "c_bands": {
    "absent": 154188,
    "lt_1e-5": 96892,

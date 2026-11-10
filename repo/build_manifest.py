@@ -23,15 +23,37 @@ numbers still match the manuscript is a separate job (verify.py) and this file i
 import os, re, sys, csv, json
 from collections import defaultdict
 
-TOP = os.path.expanduser("~/mnt/DepMap")
+# Resolved from this file's own location since 3 November 2026. It was hardcoded to
+# "~/mnt/DepMap", which is one sandbox's mount path: it does not exist on the author's own
+# machine, and certainly not in a stranger's clone, so every path below failed for anyone
+# who actually took the deposit at its word. The repository root is the parent of repo/.
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_ROOT = os.path.dirname(_HERE)
+
+
+def _firstdir(*cands):
+    for c in cands:
+        if c and os.path.isdir(c):
+            return c
+    return cands[0]
+
+
+TOP = _firstdir(_ROOT,
+                os.path.expanduser("~/mnt/DepMap"),
+                os.path.expanduser("~/Desktop/DepMap"))
 SEARCH_DIRS = ["ccle", "ligand_rebuild", "Datasets"]
 
 # The published figure set, in the order the manuscript presents it.
+# Published numbering, which is not the source numbering: source figures 5 and 6 are merged
+# into published Figure 5 by fig5pub_v1.py, and source 7 and 8 become published 6 and 7.
+# panel_data/figure_numbering.json carries the map, and the ledgers are keyed on the source
+# number, so a panel CSV called fig7_c.csv belongs to published Figure 6.
 FIGURES = [
+    ("Graphical abstract", "ga_v1.py"),
     ("Figure 1",  "fig1_v3.py"),   ("Figure 2",  "fig2_v3.py"),
     ("Figure 3",  "fig3_v3.py"),   ("Figure 4",  "fig4_v3.py"),
-    ("Figure 5",  "fig5_v1.py"),   ("Figure 6",  "fig6_v1.py"),
-    ("Figure 7",  "fig7_v1.py"),   ("Figure 8",  "fig8_v1.py"),
+    ("Figure 5",  "fig5pub_v1.py"),
+    ("Figure 6",  "fig7_v2.py"),   ("Figure 7",  "fig8_v2.py"),
     ("Figure S1", "figS1_v3.py"),  ("Figure S2", "figS2_v3.py"),
     ("Figure S3", "figS3_v3.py"),  ("Figure S4", "figS4_v3.py"),
     ("Figure S5", "figS5_v3.py"),  ("Figure S6", "figS6_v1.py"),

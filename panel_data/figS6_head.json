@@ -1,6 +1,7 @@
 {
- "script": "figS6.py",
- "written": "2026-09-07",
+ "script": "figS6_v1.py",
+ "stem": "figS6",
+ "written": "2026-11-09",
  "numbers": {
   "a_model_auc": 0.617,
   "a_n_half_splits": 50,

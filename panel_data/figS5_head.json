@@ -1,6 +1,7 @@
 {
- "script": "figS5.py",
- "written": "2026-09-07",
+ "script": "figS5_v3.py",
+ "stem": "figS5",
+ "written": "2026-11-05",
  "numbers": {
   "a_ligandability_shift_hi": 0.807,
   "a_ligandability_shift_lo": -0.598,

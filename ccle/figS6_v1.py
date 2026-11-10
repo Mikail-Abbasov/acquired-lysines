@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Figure S6 — support for Figure 5: everything the central comparison rests on.
+Figure S6, support for Figure 5: everything the central comparison rests on.
 
 Figure 5a claims a 0.106 AUC gap between what a structural model achieves (0.617) and how
 reproducible the labels are (0.723). Four things have to hold for that claim, and each gets a
@@ -11,13 +11,13 @@ panel here so a reviewer can check rather than trust:
      0.88-0.94 at engaged rates of 1-3%, where a few dozen positives make AUC unstable. NatChem
      is the only screen deep enough to estimate a ceiling at a realistic engaged rate.
   b  THE COMPOSITE BARELY BEATS ITS BEST COMPONENT: +0.019 AUC over distance-to-centroid. Shown,
-     not buried — it is part of the same argument, not an embarrassment to it.
+     not buried, it is part of the same argument, not an embarrassment to it.
   c  THE MODEL IS NOT OVERFIT.  Train 0.619, test 0.617, optimism +0.002, held out by protein.
      The gap in Figure 5a is not the model failing to fit; it is the model fitting all there is.
   d  MORE FEATURES WOULD NOT HELP.  14 features carry about 5 independent properties.
   e  THE BREADTH GRADIENT SURVIVES ITS OWN CONFOUND.  A site tested against few chemotypes
      cannot show high breadth. Holding testing depth constant strengthens most of the gradient
-     and flips three features — reported either way.
+     and flips three features, reported either way.
   f  A GENERAL COMPOSITE IS DEFENSIBLE.  Two unrelated chemotypes prefer the same features
      (0 of 13 differ significantly) and engage the same sites (OR 6.05, p 2e-11).
 """
@@ -26,9 +26,12 @@ import numpy as np, pandas as pd
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import os as _os
 import abbasov_style as st
 import figure_data as fd
-st.apply()
+# One body type size for this figure; every other size is a ratio to it.
+BODY = 7.0
+st.apply(BODY)
 from adjustText import adjust_text
 
 def find(n):
@@ -118,14 +121,29 @@ HEAD = {}   # headline numbers per panel, captured where they are computed
 
 # ---------------------------------------------------------------- figure
 fig = plt.figure(figsize=(st.DOUBLE, st.DOUBLE * 1.02))
-gs = fig.add_gridspec(4, 3, hspace=0.62, wspace=0.52,
-                      left=0.070, right=0.980, top=0.955, bottom=0.052,
+# left 0.070 -> 0.135 and wspace 0.52 -> 0.85, and the left margin is the important half.
+# Panels c and e carry 14 feature names down their y axes. At the raised body those names
+# needed about 223 px to the left of their axes and the margin gave 151, so they ran off the
+# page, fit_inside() shoved both panels right to rescue them, and panel c landed hard against
+# panels d and f: axes touching to within 0.8 px, with d and f's own tick numbers printing
+# inside panel c. Widening the gutter alone could not fix that, because the room the labels
+# needed was never in the gutter. Checked across left x wspace: this is the only pair that
+# clears every same-row label intrusion (c/d, c/f, e/d, e/f).
+gs = fig.add_gridspec(4, 3, hspace=0.62,
+                      wspace=0.85,
+                      left=0.135, right=0.980, top=0.955, bottom=0.052,
                       width_ratios=[1.0, 0.92, 0.92],
                       height_ratios=[1.0, 0.60, 0.60, 0.52])
 
 # ---------------------------------------------------------------- a: ceiling per dataset
-ax = fig.add_subplot(gs[0, 0:2]); st.panel_label(ax, "a", dx=-0.10, dy=1.07)
+ax = fig.add_subplot(gs[0, 0:2]); st.head(fig, ax, "a")
 STYLE = {"NatChem": (st.ORANGE, "o"), "CyMPSA": (st.GREY, "s"), "Meroterpenoid": (st.GREEN, "^")}
+# THE KEY NAMES THE SCREEN, NOT THE JOURNAL. "NatChem" is this lab's shorthand for the
+# Nature Chemistry screen and the paper does not use it: the manuscript calls that one the
+# fragment screen, after the 186 fragments it tested. The dict keys stay, because they are
+# what the deposited ledgers are keyed on.
+SHOW = {"NatChem": "fragment screen", "CyMPSA": "CyMPSA screen",
+        "Meroterpenoid": "meroterpenoid screen"}
 for ds, d in CEIL.items():
     c, mk = STYLE[ds]
     xs = [r[0] for r in d["rows"]]; ys = [r[3] for r in d["rows"]]
@@ -133,20 +151,22 @@ for ds, d in CEIL.items():
         ax.plot([r[0], r[0]], [r[4], r[5]], color=c, lw=0.9, solid_capstyle="round")
     ax.plot(xs, ys, "-", color=c, lw=1.1)
     ax.plot(xs, ys, mk, color=c, ms=3.6, mew=0,
-            label="%s — median %d compounds/site, %.1f%% of sites engaged\nat the deepest split"
-                  % (ds, d["med"], d["rows"][-1][2]))
+            label="%s, median %d compounds/site, %.1f%% of sites engaged\nat the deepest split"
+                  % (SHOW.get(ds, ds), d["med"], d["rows"][-1][2]))
     # % engaged moved into the legend: CyMPSA and Meroterpenoid both end at 5 compounds/half
     # with ceilings 0.012 apart, so point labels landed on top of each other
 ax.axhline(COMP[0], color=st.BLUE, lw=1.0, ls=(0, (3, 1.6)))
 ax.text(1.78, COMP[0] + 0.012, "the model, %.3f" % COMP[0], va="bottom", ha="left",
-        fontsize=5.4, color=st.BLUE)
+        fontsize=st.sz(5.4), color=st.BLUE)
 ax.set_xscale("log"); ax.set_xticks([2, 3, 5, 10, 20])
-ax.set_xticklabels([2, 3, 5, 10, 20], fontsize=6)
-ax.set_xlabel("compounds in each half (the deeper the split, the less noisy the label)",
-              fontsize=6.2)
-ax.set_ylabel("reproducibility ceiling (AUC)", fontsize=6.2)
+ax.set_xticklabels([2, 3, 5, 10, 20], fontsize=st.sz(6))
+# Shortened: the parenthetical ran the label wider than panel a and into panel c's
+# letter below it. What it explained is in legend (A).
+ax.set_xlabel("compounds in each half",
+              fontsize=st.sz(6.2))
+ax.set_ylabel("reproducibility ceiling (AUC)", fontsize=st.sz(6.2))
 ax.set_xlim(1.7, 30); ax.set_ylim(0.55, 1.05)
-ax.legend(frameon=False, fontsize=5.0, loc="upper right", handlelength=1.3, ncol=1,
+ax.legend(frameon=False, fontsize=st.sz(5.0), loc="upper right", handlelength=1.3, ncol=1,
           handletextpad=0.4, labelspacing=0.8, borderaxespad=0.2)
 # All five numbers in this note were typed, and one of them was wrong: the engaged-rate range
 # read 0.6–2.6%, but 2.6% is NatChem's rate at five compounds per half, not a shallow screen's.
@@ -154,12 +174,6 @@ ax.legend(frameon=False, fontsize=5.0, loc="upper right", handlelength=1.3, ncol
 _SH  = [r for _d in CEIL if _d != "NatChem" for r in CEIL[_d]["rows"]]
 _SHC = [r[3] for r in _SH]; _SHE = [r[2] for r in _SH]
 _NCR = CEIL["NatChem"]["rows"][-1]
-ax.text(0.30, 0.55, "The two shallow screens reach %.2f–%.2f, but at engaged rates of\n"
-        "%.1f–%.1f%%, where a few dozen positives make an AUC unstable.\nNatChem is the only screen "
-        "deep enough to measure a ceiling\nat a realistic engaged rate, and its ceiling is still "
-        "rising at\n%g compounds per half — so %.3f is a lower bound."
-        % (min(_SHC), max(_SHC), min(_SHE), max(_SHE), _NCR[0], _NCR[3]),
-        transform=ax.transAxes, fontsize=5.0, color=st.GREY, va="top", linespacing=1.55)
 HEAD["a_model_auc"] = float(COMP[0])
 HEAD["a_shallow_ceiling_min"] = round(float(min(_SHC)), 3)
 HEAD["a_shallow_ceiling_max"] = round(float(max(_SHC)), 3)
@@ -175,7 +189,7 @@ fd.panel("figS6", "a",
          note="one point per dataset per split depth; intervals over 50 random half-splits")
 
 # ---------------------------------------------------------------- e: breadth, depth-adjusted
-ax = fig.add_subplot(gs[1:3, 2]); st.panel_label(ax, "e", dx=-0.46, dy=1.03)
+ax = fig.add_subplot(gs[1:3, 2]); st.head(fig, ax, "e")
 R = sorted(RHO, key=lambda r: r[2])
 y = np.arange(len(R))
 for i, (f_, raw, adj) in enumerate(R):
@@ -183,18 +197,15 @@ for i, (f_, raw, adj) in enumerate(R):
     ax.plot([raw], [i], "o", color=st.LIGHTGREY, ms=3.2, mec=st.GREY, mew=0.5, zorder=2)
     ax.plot([adj], [i], "o", color=st.BLUE if adj > 0 else st.ORANGE, ms=3.6, mew=0, zorder=3)
 ax.axvline(0, color=st.GREY, lw=0.8)
-ax.set_yticks(y); ax.set_yticklabels([NICE(r[0]) for r in R], fontsize=5.0)
+ax.set_yticks(y); ax.set_yticklabels([NICE(r[0]) for r in R], fontsize=st.sz(5.0))
 ax.set_xlabel("correlation with how many chemotypes\nengage the site (Spearman ρ)",
-              fontsize=6.0, linespacing=1.4)
+              fontsize=st.sz(6.0), linespacing=1.4)
 ax.set_ylim(-3.2, len(R) + 1.5)
 ax.plot([], [], "o", color=st.LIGHTGREY, mec=st.GREY, mew=0.5, ms=3.2, label="raw")
 ax.plot([], [], "o", color=st.BLUE, ms=3.6, label="holding testing depth constant")
-ax.legend(frameon=False, fontsize=5.0, loc="lower right", handletextpad=0.3, borderaxespad=0.3)
+ax.legend(frameon=False, fontsize=st.sz(5.0), loc="lower right", handletextpad=0.3, borderaxespad=0.3)
 # "three features" was typed; it is the number of features whose sign changes under adjustment.
 _FLIP = sum(1 for _f, _raw, _adj in RHO if np.sign(_raw) != np.sign(_adj))
-ax.text(0.02, 0.995, "a site tested against few chemotypes cannot show\nhigh breadth; holding "
-        "depth constant strengthens most\nof the gradient and flips %d features outright" % _FLIP,
-        transform=ax.transAxes, fontsize=4.9, color=st.GREY, va="top", linespacing=1.5)
 for s in ("top", "right"): ax.spines[s].set_visible(False)
 HEAD["e_n_breadth_features"] = int(len(RHO))
 HEAD["e_n_features_sign_flipped"] = int(_FLIP)
@@ -204,7 +215,7 @@ fd.panel("figS6", "e",
          note="one dumbbell per breadth feature, raw and holding testing depth constant")
 
 # ---------------------------------------------------------------- b: single features
-ax = fig.add_subplot(gs[0, 2]); st.panel_label(ax, "b", dx=-0.26, dy=1.10)
+ax = fig.add_subplot(gs[0, 2]); st.head(fig, ax, "b")
 rows = [(NICE(f), v, lo, hi) for f, v, lo, hi in SINGLES][::-1]
 y = np.arange(len(rows))
 for yy, (lab, v, lo, hi) in zip(y, rows):
@@ -213,15 +224,11 @@ for yy, (lab, v, lo, hi) in zip(y, rows):
 ax.plot([COMP[1], COMP[2]], [len(rows)] * 2, color=st.BLUE, lw=1.8, solid_capstyle="round")
 ax.plot([COMP[0]], [len(rows)], "o", color=st.BLUE, ms=4.6, mew=0)
 ax.set_yticks(list(y) + [len(rows)])
-ax.set_yticklabels([r[0] for r in rows] + ["all %d together" % len(COEF)], fontsize=5.4)
+ax.set_yticklabels([r[0] for r in rows] + ["all %d together" % len(COEF)], fontsize=st.sz(5.4))
 ax.get_yticklabels()[-1].set_color(st.BLUE); ax.get_yticklabels()[-1].set_fontweight("bold")
 ax.axvline(0.5, color=st.GREY, lw=0.8, ls=(0, (2, 1.6)))
-ax.set_xlabel("AUC, held out by protein", fontsize=6.2)
+ax.set_xlabel("AUC, held out by protein", fontsize=st.sz(6.2))
 ax.set_xlim(0.36, 0.70); ax.set_ylim(-2.4, len(rows) + 0.6)
-ax.text(0.5, 0.035, "the composite gains only +%.3f over the best single\nfeature — the %d "
-        "features are not independent" % (COMP[0] - SINGLES[0][1], len(COEF)),
-        transform=ax.transAxes, ha="center", va="bottom", fontsize=5.0, color=st.GREY,
-        linespacing=1.5)
 for s in ("top", "right", "left"): ax.spines[s].set_visible(False)
 ax.tick_params(axis="y", length=0)
 HEAD["b_composite_auc"] = float(COMP[0])
@@ -238,21 +245,18 @@ fd.panel("figS6", "b",
          note="AUC held out by protein; one row per single feature plus the composite")
 
 # ---------------------------------------------------------------- d: train vs held-out
-ax = fig.add_subplot(gs[1, 1]); st.panel_label(ax, "d", dx=-0.26, dy=1.10)
+ax = fig.add_subplot(gs[1, 1]); st.head(fig, ax, "d")
 for i, (lab, v, c) in enumerate([("training fit", TRAIN, st.LIGHTGREY),
                                  ("held-out proteins", COMP, st.BLUE)]):
     ax.plot([v[1], v[2]], [i, i], color=c, lw=2.0, solid_capstyle="round")
     ax.plot([v[0]], [i], "o", color=c, ms=4.6, mew=0)
-    ax.text(v[0], i + 0.22, "%.3f" % v[0], ha="center", fontsize=6.0, fontweight="bold", color=c)
-ax.set_yticks([0, 1]); ax.set_yticklabels(["training fit", "held-out\nproteins"], fontsize=5.6,
+    ax.text(v[0], i + 0.22, "%.3f" % v[0], ha="center", fontsize=st.sz(6.0), color=c)
+ax.set_yticks([0, 1]); ax.set_yticklabels(["training fit", "held-out\nproteins"], fontsize=st.sz(5.6),
                                           linespacing=1.35)
-ax.set_xlabel("AUC", fontsize=6.2)
+ax.set_xlabel("AUC", fontsize=st.sz(6.2))
 ax.set_xlim(0.575, 0.66); ax.set_ylim(-0.7, 1.75)
 ax.text(0.5, 0.94, "optimism = %+.3f AUC" % (TRAIN[0] - COMP[0]), transform=ax.transAxes,
-        ha="center", fontsize=6.0, color=st.GREEN, fontweight="bold")
-ax.text(0.5, -0.42, "the model is not overfit — it is fitting all\nthere is to fit, and that is "
-        "the point", transform=ax.transAxes, ha="center", va="top", fontsize=5.2,
-        color=st.GREY, linespacing=1.5)
+        ha="center", fontsize=st.sz(6.0), color=st.GREEN)
 for s in ("top", "right", "left"): ax.spines[s].set_visible(False)
 ax.tick_params(axis="y", length=0)
 HEAD["d_train_auc"] = float(TRAIN[0])
@@ -264,7 +268,7 @@ fd.panel("figS6", "d",
          note="intervals are the 2.5th to 97.5th percentile over the protein-held-out splits")
 
 # ---------------------------------------------------------------- f: two chemotypes agree
-ax = fig.add_subplot(gs[2, 1]); st.panel_label(ax, "f", dx=-0.30, dy=1.07)
+ax = fig.add_subplot(gs[2, 1]); st.head(fig, ax, "f")
 xs = [t[1] for t in T1]; ys = [t[2] for t in T1]
 same = [t[3] == "yes" for t in T1]
 # "7 of 13", "6 of 13" and "0 of 13" were all typed. They are sums over T1.
@@ -274,29 +278,29 @@ lim = max(max(map(abs, xs)), max(map(abs, ys))) * 1.30
 ax.plot([-lim, lim], [-lim, lim], color=st.LIGHTGREY, lw=0.8, ls=(0, (2, 2)), zorder=0)
 ax.scatter([x for x, s_ in zip(xs, same) if s_], [y_ for y_, s_ in zip(ys, same) if s_],
            s=16, color=st.BLUE, linewidths=0, zorder=3,
-           label="same direction (%d of %d)" % (_NSAME, len(T1)))
+           label="same (%d of %d)" % (_NSAME, len(T1)))
 ax.scatter([x for x, s_ in zip(xs, same) if not s_], [y_ for y_, s_ in zip(ys, same) if not s_],
            s=16, facecolor=st.PAPER, edgecolor=st.ORANGE, linewidths=0.9, zorder=3,
-           label="opposite direction (%d of %d)" % (len(T1) - _NSAME, len(T1)))
+           label="opposite (%d of %d)" % (len(T1) - _NSAME, len(T1)))
 # Thirteen labels do not fit in this cell and no amount of nudging makes them: adjustText was
 # still returning overlaps at 3.9 pt. Name only the three features that disagree MOST between
 # the two chemotypes — the ones a reader would actually look for — and leave the rest as points.
 # Every per-feature value is in panel c and in step13_report.txt.
 _gap = sorted(range(len(T1)), key=lambda k: -abs(xs[k] - ys[k]))[:3]
-txt = [ax.text(xs[k], ys[k], NICE(T1[k][0]), fontsize=4.4, color=st.GREY) for k in _gap]
+txt = [ax.text(xs[k], ys[k], NICE(T1[k][0]), fontsize=st.sz(5), color=st.GREY) for k in _gap]
 adjust_text(txt, ax=ax, arrowprops=dict(arrowstyle="-", color=st.GREY, lw=0.35),
             expand=(1.5, 1.8))
 ax.set_xlim(-lim * 1.15, lim * 1.15); ax.set_ylim(-lim * 1.35, lim * 1.35)
-ax.set_xlabel("effect in CyMPSA (d)", fontsize=6.2)
-ax.set_ylabel("effect in meroterpenoids (d)", fontsize=5.8, labelpad=1.5)
-ax.legend(frameon=False, fontsize=4.7, loc="upper left", markerscale=0.9,
-          handletextpad=0.3, labelspacing=0.35, borderaxespad=0.3)
-ax.text(0.5, -0.30, "%d of %d features differ significantly between the two chemotypes, and the "
-        "same sites\nare engaged by both (%d of %s shared, %.1f expected, OR %.2f) — so one "
-        "general\ncomposite is defensible. The three most discordant features are named."
-        % (_NDIFF, len(T1), T2["both"], f"{T2['n']:,}", T2["exp"], T2["orv"]),
-        transform=ax.transAxes, ha="center", va="top", fontsize=5.0, color=st.GREY,
-        linespacing=1.5)
+ax.set_xlabel("effect in CyMPSA (d)", fontsize=st.sz(6.2))
+ax.set_ylabel("effect in meroterpenoids (d)", fontsize=st.sz(5.8), labelpad=1.5)
+# This is a scatter on the diagonal, so the free corners are upper left and lower right.
+# The key was in the lower right, where the point label "anionic 8A" also sits, and at
+# the raised body the two met. Upper left is no better: "net charge 8A" sits there. Left in
+# the lower right, where the clash is smaller, and noted as outstanding.
+# Back inside the axes. Below them it landed on the same baseline as panel c's x label and
+# panel f's own, three pieces of text across one line. The labels are shortened instead.
+ax.legend(frameon=False, fontsize=st.sz(5), loc="lower right", markerscale=0.9,
+          handletextpad=0.3, labelspacing=0.35, borderaxespad=0.2)
 HEAD["f_n_chemotype_features"] = int(len(T1))
 HEAD["f_n_same_direction"] = _NSAME
 HEAD["f_n_opposite_direction"] = int(len(T1) - _NSAME)
@@ -315,32 +319,27 @@ fd.panel("figS6", "f",
 # An AUC below 0.5 is an INVERTED feature, not a weak one: distance to centroid reads 0.402,
 # which step 10 reports as its flipped value, 0.598. Showing both makes the sign structure
 # visible — the two largest weights belong to features barely better than chance on their own.
-ax = fig.add_subplot(gs[1:3, 0]); st.panel_label(ax, "c", dx=-0.44, dy=1.03)
+ax = fig.add_subplot(gs[1:3, 0]); st.head(fig, ax, "c")
 CF = COEF.copy()
 CF["flip"] = np.maximum(CF.single_auc, 1 - CF.single_auc)
 CF = CF.sort_values("mean_coef")
 _y = np.arange(len(CF))
-ax.barh(_y, CF.mean_coef, height=0.66,
+ax.barh(_y, CF.mean_coef, height=st.BARW,
         color=[st.BLUE if v > 0 else st.ORANGE for v in CF.mean_coef])
 ax.axvline(0, color=st.GREY, lw=0.8)
-ax.set_yticks(_y); ax.set_yticklabels([NICE(f_) for f_ in CF.feature], fontsize=5.0)
+ax.set_yticks(_y); ax.set_yticklabels([NICE(f_) for f_ in CF.feature], fontsize=st.sz(5.0))
 ax.set_xlabel("weight in the composite\n(mean over %d splits)" % N_SPLITS,
-              fontsize=6.0, linespacing=1.4)
+              fontsize=st.sz(6.0), linespacing=1.4)
 ax.set_xlim(-0.40, 0.30); ax.set_ylim(-3.6, len(CF) - 0.35)
 _axt = ax.twiny()
 _axt.plot(CF.flip, _y, "o", color=st.GREEN, ms=3.2, mew=0, zorder=5)
 _axt.axvline(0.5, color=st.LIGHTGREY, lw=0.8, ls=(0, (2, 2)))
 _axt.set_xlim(0.36, 0.72); _axt.set_ylim(ax.get_ylim())
-_axt.set_xlabel("AUC on its own", fontsize=6.0, color=st.GREEN)
-_axt.tick_params(axis="x", colors=st.GREEN, labelsize=5.2)
+_axt.set_xlabel("AUC on its own", fontsize=st.sz(6.0), color=st.GREEN)
+_axt.tick_params(axis="x", colors=st.GREEN, labelsize=st.sz(5.2))
 ax.spines["right"].set_visible(False)
 # The feature and both AUCs were typed. They are the row of CF with the lowest single AUC.
 _INV = CF.loc[CF.single_auc.idxmin()]
-ax.text(0.985, 0.02, "an AUC below 0.5 is an inverted feature,\nnot a weak one: %s reads\n"
-        "%.3f, which is %.3f with the sign flipped"
-        % (NICE(_INV.feature), _INV.single_auc, _INV.flip),
-        transform=ax.transAxes, ha="right", va="bottom", fontsize=4.8, color=st.GREY,
-        linespacing=1.5)
 HEAD["c_n_coefficients"] = int(len(CF))
 HEAD["c_n_splits"] = N_SPLITS
 HEAD["a_n_half_splits"] = N_HALFSPLITS
@@ -359,7 +358,7 @@ fd.panel("figS6", "c",
 # is within ONE dataset; step 15 is what happens when the question is asked across two, and the
 # honest answer is that the group carrying the claim is 25 sites in 21 dimensions and two of the
 # six pairs do not clear their null. It sits here as a stated limitation, not as reinforcement.
-ax = fig.add_subplot(gs[3, 0:3]); st.panel_label(ax, "g", dx=-0.30, dy=1.05)
+ax = fig.add_subplot(gs[3, 0:3]); st.head(fig, ax, "g")
 S = S15.iloc[::-1].reset_index(drop=True)
 _y = np.arange(len(S))
 LBL = {"SHARED": "engaged by both", "CYMPSA_ONLY": "CyMPSA only",
@@ -373,26 +372,24 @@ for i_, r_ in S.iterrows():
     ax.text(r_.distance + 0.09, i_, "p %s   n %d vs %s"
             % (("= %.3f" % r_.p).rstrip("0").rstrip(".") if r_.p > 0.001 else "\u2264 0.001",
                r_.n_a, f"{int(r_.n_b):,}"),
-            va="center", fontsize=4.5, color=st.BLUE if sig else st.ORANGE)
+            va="center", fontsize=st.sz(5), color=st.BLUE if sig else st.ORANGE)
 ax.set_yticks(_y)
 ax.set_yticklabels(["%s vs %s" % (LBL[p.split(" vs ")[0]], LBL[p.split(" vs ")[1]])
-                    for p in S.pair], fontsize=5.0)
+                    for p in S.pair], fontsize=st.sz(5.0))
 # 21 dimensions, 2,000 shuffles, 25 sites and "two of six" were all typed into this panel.
 # The first two are stated by step 15; the last two are columns of the table being plotted.
 _NDIM   = int(re.search(r"full (\d+)-dimensional", R15).group(1))
 _NSHUF  = int(re.search(r"\((\d+) shuffles", R15).group(1))
 _NSHARE = int(S.loc[S.pair.str.startswith("SHARED"), "n_a"].min())
 _NFAIL  = int((S.p >= 0.05).sum())
-ax.set_xlabel("distance between group centres in %d-dimensional structural space" % _NDIM,
-              fontsize=6.0)
-ax.set_xlim(0, 4.6); ax.set_ylim(-0.85, len(S) - 0.25)
-ax.text(0.985, 0.03, "grey = null over %s shuffles, teal = clears it, rust = does not.\n"
-        "THE WEAKEST EVIDENCE IN THE PAPER, AND FIGURE 5e DEPENDS ON IT: the group\n"
-        "carrying the cross-dataset claim is %d sites in %d dimensions, and %d of %d pairs fall\n"
-        "short of their null. Figure 5e repeats this test along the breadth gradient WITHIN one\n"
-        "dataset; this is what happens when it is asked across two."
-        % (f"{_NSHUF:,}", _NSHARE, _NDIM, _NFAIL, len(S)),
-        transform=ax.transAxes, ha="right", fontsize=4.8, color=st.GREY, va="bottom",
+ax.set_xlabel("distance between group centers in %d-dimensional structural space" % _NDIM,
+              fontsize=st.sz(6.0))
+ax.set_xlim(0, 4.6); ax.set_ylim(-1.75, len(S) - 0.25)
+# The colour key stays in the panel because it decodes the marks; the argument that followed
+# it moved to legend (G) on 4 November, with the rest of this figure's in-panel prose.
+ax.text(0.985, 0.03, "grey = null over %s shuffles, teal = clears it, rust = does not"
+        % f"{_NSHUF:,}",
+        transform=ax.transAxes, ha="right", fontsize=st.sz(5), color=st.GREY, va="bottom",
         linespacing=1.5)
 HEAD["g_n_pairs"] = int(len(S))
 HEAD["g_n_pairs_short_of_null"] = _NFAIL

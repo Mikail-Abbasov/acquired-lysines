@@ -1,4 +1,4 @@
-# fig8 panel d -- fig8.py  |  local Ca displacement in a co-local shell, normalised to that protein's own wild-type-vs-wild-type floor
+# fig8 panel d -- fig8.py  |  local Ca displacement in a co-local shell, normalized to that protein's own wild-type-vs-wild-type floor
 site,label,wt_vs_wt_floor_angstrom,n_floor_pairs,median_K_vs_WT_relative,n_K_pairs,median_other_sub_relative,n_other_sub_pairs
 PTPN11 76,SHP2 E76K,0.1912712380290031,10,3.5328513476029197,15,3.2076904358528338,15
 NRAS 61,NRAS Q61K,1.59140944480896,1,1.0714970587376056,2,,0

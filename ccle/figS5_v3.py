@@ -1,17 +1,17 @@
 """
-figS_react, proposed rebuild — support for Figure 4.
+figS_react, proposed rebuild, support for Figure 4.
 
 WHAT CHANGED
 
 Old a drew five flat lines on a +/-0.8 axis and put the comparison that justifies the axis in
-a caption: "ligandability's steepest feature is 0.43 — thirtyfold larger". That number was
+a caption: "ligandability's steepest feature is 0.43, thirtyfold larger". That number was
 WRONG in a specific way. 0.43 is step38 Q1b hydrophobic_8A = 0.429 "slope/100%", a per-compound
 slope per 100 percentage points of occupancy. The reactivity side reports 0.013 as a slope PER
 TIER. Comparing them is a unit mismatch and inflates the ratio about fivefold. The matched
-comparator is step38's Q1a pooled occupancy table — the same object, a standardised shift from
-the first tier — which gives 0.083 per tier against reactivity's 0.013: SIX times, not thirty.
+comparator is step38's Q1a pooled occupancy table, the same object, a standardised shift from
+the first tier, which gives 0.083 per tier against reactivity's 0.013: SIX times, not thirty.
 The comparison is now drawn on the axis and computed in this script, not quoted.
-Series are labelled by CLASS, which is what colour actually encodes — the old legend named five
+Series are labelled by CLASS, which is what colour actually encodes, the old legend named five
 features that shared two styles.
 
 Old b is kept almost unchanged. It is the best panel in either figure.
@@ -32,7 +32,9 @@ from matplotlib.lines import Line2D
 from itertools import combinations
 import abbasov_style as st
 import figure_data as fd
-st.apply()   # these two scripts imported the style module for its colours but
+# One body type size for this figure; every other size is a ratio to it.
+BODY = 7.0
+st.apply(BODY)   # these two scripts imported the style module for its colours but
              # never applied it, so their typeface, sizes, spines and DPI were
              # matplotlib defaults while every other figure used the BMC style
 st.slate()         # palette from the supplied ramp; see abbasov_style.SLATE
@@ -65,12 +67,14 @@ HEAD = {}   # headline numbers per panel, captured where they are computed
 
 # Third row added 2026-09-02 for the gate panels (f, g).
 fig = plt.figure(figsize=(st.DOUBLE, st.SINGLE * 2.44))
-gs  = fig.add_gridspec(3, 3, hspace=0.54, wspace=0.40,
+# wspace 0.40 -> 0.92. At the raised body the in-panel labels of d and e reached back
+# across the gutter into panel b's tick numbers and feature names.
+gs  = fig.add_gridspec(3, 3, hspace=0.54, wspace=0.92,
                        left=0.075, right=0.985, top=0.940, bottom=0.050,
                        width_ratios=[1.0, 0.92, 1.0], height_ratios=[1.0, 1.0, 1.18])
 
 # ---------------------------------------------------------------- a: tiering null
-ax = fig.add_subplot(gs[0, 0]); st.panel_label(ax, "a", dx=-0.20, dy=1.09)
+ax = fig.add_subplot(gs[0, 0]); st.head(fig, ax, "a")
 rows, hdr = [], None
 KEEP = {"anionic_8A","net_charge_8A","propka_pKa","crowding_8A","hydrophobic_8A",
         "aromatic_8A","rsa_tien"}
@@ -108,24 +112,19 @@ ax.axhline(0, color=st.GREY, lw=0.8)
 for v in (lig_hi, lig_lo):
     ax.axhline(v, color=st.GREEN, lw=1.0, ls="--", zorder=1)
 ax.text(-0.22, lig_hi + 0.035, "where tiering by occupancy takes ligandability: %+.2f" % lig_hi,
-        fontsize=4.9, color=st.GREEN, ha="left", va="bottom")
+        fontsize=st.sz(5), color=st.GREEN, ha="left", va="bottom")
 ax.text(-0.22, lig_lo - 0.035, "and %+.2f" % lig_lo,
-        fontsize=4.9, color=st.GREEN, ha="left", va="top")
+        fontsize=st.sz(5), color=st.GREEN, ha="left", va="top")
 ax.set_ylim(-0.95, 0.98); ax.set_xlim(-0.3, xs[-1] + 0.3)
-ax.set_xlabel("labelled sites, tiered by detection depth", fontsize=6)
-ax.set_ylabel("shift from tier 1, d", fontsize=6)
-ax.tick_params(labelsize=5.2)
+ax.set_xlabel("labeled sites, tiered by detection depth", fontsize=st.sz(6))
+ax.set_ylabel("shift from tier 1, d", fontsize=st.sz(6))
+ax.tick_params(labelsize=st.sz(5.2))
 ax.legend(handles=[Line2D([], [], color=st.BLUE, lw=1.4, marker="o", ms=2.6, label="charge features"),
                    Line2D([], [], color=st.ORANGE, lw=1.4, marker="o", ms=2.6, label="shape features")],
-          frameon=False, fontsize=5.0, loc="upper left", bbox_to_anchor=(0.0, 0.80),
+          frameon=False, fontsize=st.sz(5.0), loc="upper left", bbox_to_anchor=(0.0, 0.80),
           handlelength=1.6)
 # The ratio was the word "six" typed into the panel. It is lig_slope / rea_slope and is now
 # computed, so it cannot drift away from the traces the panel draws.
-ax.text(0.96, 0.28, "steepest slope per tier %.3f,\nagainst %.3f for ligandability —\n"
-        "%.1f times smaller, and the\nsame feature on both sides"
-        % (rea_slope, lig_slope, lig_slope / rea_slope),
-        transform=ax.transAxes, ha="right", va="center", fontsize=4.8, color=st.GREY,
-        linespacing=1.55)
 for s in ("top", "right"): ax.spines[s].set_visible(False)
 HEAD["a_n_series"] = int(len(T1))
 HEAD["a_n_tiers"] = int(len(T1.columns) - 1)
@@ -142,7 +141,7 @@ fd.panel("figS5", "a",
          note="reactivity tiering null; ligandability comparator range in the head ledger")
 
 # ---------------------------------------------------------------- b: every feature, both gates
-ax = fig.add_subplot(gs[0:2, 1]); st.panel_label(ax, "b", dx=-0.42, dy=1.045)
+ax = fig.add_subplot(gs[0:2, 1]); st.head(fig, ax, "b")
 gates = sorted(G.gate.unique())
 g0 = G[G.gate == gates[0]].set_index("feature").d
 gL = G[G.gate == gates[-1]].set_index("feature").d
@@ -157,15 +156,15 @@ for k, (f, r_) in enumerate(tab.iterrows()):
     ax.scatter(r_.gated,  k, s=17, color=c, zorder=3)
     if abs(r_.gated - r_.no_gate) < 0.02:
         ax.annotate("no movement", (r_.gated, k), xytext=(-9, 0), textcoords="offset points",
-                    fontsize=4.4, color=st.GREY, va="center", ha="right")
+                    fontsize=st.sz(5), color=st.GREY, va="center", ha="right")
 ax.axvline(0, color=st.GREY, lw=0.9)
-ax.set_yticks(y); ax.set_yticklabels([NICE(f) for f in tab.index], fontsize=5.2)
+ax.set_yticks(y); ax.set_yticklabels([NICE(f) for f in tab.index], fontsize=st.sz(5.2))
 for t, f in zip(ax.get_yticklabels(), tab.index): t.set_color(COL(f))
-ax.set_xlabel("effect on being labelled, d", fontsize=6)
+ax.set_xlabel("effect on being labeled, d", fontsize=st.sz(6))
 ax.set_xlim(-0.56, 0.52); ax.set_ylim(-1.9, len(tab) - 0.4)
-ax.tick_params(axis="x", labelsize=5.2)
+ax.tick_params(axis="x", labelsize=st.sz(5.2))
 ax.text(0.985, 0.02, "open  no gate\nfilled  pLDDT ≥ %d" % gates[-1], transform=ax.transAxes,
-        ha="right", va="bottom", fontsize=5.0, color=st.GREY, linespacing=1.7)
+        ha="right", va="bottom", fontsize=st.sz(5.0), color=st.GREY, linespacing=1.7)
 for s in ("top", "right"): ax.spines[s].set_visible(False)
 HEAD["b_n_features"] = int(len(tab))
 HEAD["b_gate_plddt"] = int(gates[-1])
@@ -177,7 +176,7 @@ fd.panel("figS5", "b",
          note="one dumbbell per feature, ungated and at pLDDT >= %d" % gates[-1])
 
 # ---------------------------------------------------------------- c: robustness
-ax = fig.add_subplot(gs[0, 2]); st.panel_label(ax, "c", dx=-0.20, dy=1.09)
+ax = fig.add_subplot(gs[0, 2]); st.head(fig, ax, "c")
 # both sides at pLDDT >= 90 (step 11 for labelling, step 11b for ligandability)
 _lg = G2[G2.gate == G2.gate.max()].set_index("feature").d.rename("lig")
 F = (pd.concat([gL.rename("rg"), _lg,
@@ -201,15 +200,15 @@ for yy, kind in enumerate(("shape", "charge")):
     ax.scatter(vals, [yy]*len(vals), s=15, color=c, zorder=3, lw=0.5, edgecolor=st.PAPER)
     ax.scatter([full], [yy], s=70, marker="|", color=c, zorder=4, lw=1.7)
     ax.text(np.mean([min(vals), max(vals)]), yy + 0.13, "%.2f – %.2f" % (min(vals), max(vals)),
-            ha="center", fontsize=5.4, color=c)
+            ha="center", fontsize=st.sz(5.4), color=c)
     if yy == 1:
         ax.annotate("all %d" % _NK[kind], (full, yy), xytext=(0, -13),
-                    textcoords="offset points", ha="center", fontsize=4.5, color=c)
-ax.set_yticks([0, 1]); ax.set_yticklabels([_CLAB("shape"), _CLAB("charge")], fontsize=5.6)
+                    textcoords="offset points", ha="center", fontsize=st.sz(5), color=c)
+ax.set_yticks([0, 1]); ax.set_yticklabels([_CLAB("shape"), _CLAB("charge")], fontsize=st.sz(5.6))
 ax.set_ylim(-0.75, 1.85); ax.set_xlim(-0.04, 1.06)
-ax.tick_params(axis="x", labelsize=5.2)
-ax.set_xlabel("how closely labelling tracks ligandability\n(pLDDT ≥ 90), leaving each feature out in turn",
-              fontsize=6, linespacing=1.6)
+ax.tick_params(axis="x", labelsize=st.sz(5.2))
+ax.set_xlabel("how closely labeling tracks ligandability\n(pLDDT ≥ 90), leaving each feature out in turn",
+              fontsize=st.sz(6), linespacing=1.6)
 # the alternative grouping: by how large the ungated effect is, rather than by chemistry
 F["absd"] = F.react.abs()
 big = F.nlargest(int((F.kind == "charge").sum()), "absd").index
@@ -229,7 +228,7 @@ fd.panel("figS5", "c",
          note="leave-one-out; the all-features value for each class is in the head ledger")
 
 # ---------------------------------------------------------------- d: redundancy
-ax = fig.add_subplot(gs[1, 0]); st.panel_label(ax, "d", dx=-0.20, dy=1.09)
+ax = fig.add_subplot(gs[1, 0]); st.head(fig, ax, "d")
 pc12 = [float(x) for x in re.findall(r"PC\d\s+([\d.]+)%", R12)][:5]
 pc10 = [float(x) for x in re.findall(r"PC\d\s+([\d.]+)%", R10)][:8]
 # DIRECT LABELS, not a legend: in the five-colour palette the teal and the slate are only
@@ -247,10 +246,10 @@ for vals, c, lab, mk, key in (
     n80 = int(np.searchsorted(cum, 80) + 1)
     _N80[key] = n80
     ax.scatter([n80], [cum[n80 - 1]], s=52, facecolor="none", edgecolor=c, lw=1.2, zorder=4)
-    ax.text(len(cum) + 0.12, cum[-1], "  " + lab, color=c, fontsize=4.8, va="center",
+    ax.text(len(cum) + 0.12, cum[-1], "  " + lab, color=c, fontsize=st.sz(5), va="center",
             linespacing=1.5)
 ax.axhline(80, color=st.GREY, lw=0.9, ls="--")
-ax.text(8.5, 80.5, "80%", fontsize=5.0, color=st.GREY, ha="right", va="bottom")
+ax.text(8.5, 80.5, "80%", fontsize=st.sz(5.0), color=st.GREY, ha="right", va="bottom")
 HEAD["d_n_reactivity_features"] = int(len(pc12))
 HEAD["d_n_ligandability_features"] = _NLIG
 HEAD["d_reactivity_pc_pct"] = [float(v) for v in pc12]
@@ -265,40 +264,30 @@ fd.panel("figS5", "d",
           for _s, _vals in (("reactivity", pc12), ("ligandability", pc10[:6]))
           for _i, _v in enumerate(_vals)],
          note="one row per principal component of each feature set")
-ax.set_xlabel("number of components kept", fontsize=6)
-ax.set_ylabel("variance explained (%)", fontsize=6)
+ax.set_xlabel("number of components kept", fontsize=st.sz(6))
+ax.set_ylabel("variance explained (%)", fontsize=st.sz(6))
 ax.set_ylim(35, 108); ax.set_xlim(0.6, 8.6); ax.set_xticks(range(1, 7))
 ax.set_yticks(range(40, 101, 10))
-ax.tick_params(labelsize=5.2)
-ax.text(0.97, 0.03, "%d charge features → %d axes; %d\nligandability features → %d. Each set\n"
-        "is redundant, neither collapses to one\naxis — but they are different sets on\n"
-        "different populations, so this is not\n%d against %d."
-        % (len(pc12), _N80["reactivity"], _NLIG, _N80["ligandability"],
-           _N80["reactivity"], _N80["ligandability"]),
-        transform=ax.transAxes, va="bottom", ha="right",
-        fontsize=4.7, color=st.GREY, linespacing=1.55)
+ax.tick_params(labelsize=st.sz(5.2))
 for s in ("top", "right"): ax.spines[s].set_visible(False)
 
 # ---------------------------------------------------------------- e: mutual adjustment
-ax = fig.add_subplot(gs[1, 2]); st.panel_label(ax, "e", dx=-0.30, dy=1.09)
-d12 = D12.sort_values("uni_coef"); yy = np.arange(len(d12)); w = 0.36
+ax = fig.add_subplot(gs[1, 2]); st.head(fig, ax, "e")
+d12 = D12.sort_values("uni_coef"); yy = np.arange(len(d12)); w = st.grp(2)
 ax.barh(yy - w/2, d12.uni_coef,  w, color=st.LIGHTGREY, label="on its own")
 ax.barh(yy + w/2, d12.multi_coef, w, color=st.BLUE, label="adjusted for the others")
 ax.axvline(0, color=st.GREY, lw=0.9)
-ax.set_yticks(yy); ax.set_yticklabels([NICE(f) for f in d12.feature], fontsize=5.2)
-ax.set_xlabel("effect on being labelled", fontsize=6)
+ax.set_yticks(yy); ax.set_yticklabels([NICE(f) for f in d12.feature], fontsize=st.sz(5.2))
+ax.set_xlabel("effect on being labeled", fontsize=st.sz(6))
 ax.set_xlim(-0.30, 0.22); ax.set_ylim(-2.7, len(d12) - 0.4)
-ax.tick_params(axis="x", labelsize=5.2)
+ax.tick_params(axis="x", labelsize=st.sz(5.2))
 for k, r in zip(yy, d12.itertuples()):
     kept = abs(r.multi_coef) > abs(r.uni_coef) / 3
     ax.text(r.multi_coef + (-0.007 if r.multi_coef < 0 else 0.007), k + w/2, "%.3f" % r.multi_coef,
-            va="center", fontsize=4.6, ha="right" if r.multi_coef < 0 else "left",
+            va="center", fontsize=st.sz(5), ha="right" if r.multi_coef < 0 else "left",
             color=st.BLUE if kept else st.ORANGE)
-ax.legend(frameon=False, fontsize=4.7, loc="lower left", bbox_to_anchor=(-0.02, -0.01),
+ax.legend(frameon=False, fontsize=st.sz(5), loc="lower left", bbox_to_anchor=(-0.02, -0.01),
           handlelength=1.0, handletextpad=0.5, labelspacing=0.5)
-ax.text(0.99, 0.025, "salt bridge was anionic-neighbour\ndensity in another form",
-        transform=ax.transAxes, ha="right", va="bottom",
-        fontsize=4.6, color=st.GREY, linespacing=1.55)
 for s in ("top", "right"): ax.spines[s].set_visible(False)
 HEAD["e_n_features"] = int(len(d12))
 fd.panel("figS5", "e",
@@ -335,7 +324,7 @@ assert len(_ly) == 1, "LYSMD4 K72 (Q6MZR2) not uniquely in master_sites (%d rows
 _ly = _ly.iloc[0]
 _SUB = gs[2, 0:2].subgridspec(2, 2, hspace=0.40, wspace=0.04)
 _axl = fig.add_subplot(gs[2, 0:2]); _axl.set_axis_off()
-st.panel_label(_axl, "f", dx=-0.075, dy=1.03)
+st.head(fig, _axl, "f")
 
 def _shot(cell, name, title=None):
     a = fig.add_subplot(cell)
@@ -344,17 +333,17 @@ def _shot(cell, name, title=None):
         a.imshow(_mpimg.imread(p))
     else:
         a.text(0.5, 0.5, "missing struct/" + name, ha="center", va="center",
-               transform=a.transAxes, fontsize=5.5, color=st.ORANGE)
+               transform=a.transAxes, fontsize=st.sz(5.5), color=st.ORANGE)
     a.set_xticks([]); a.set_yticks([])
     for _sp in ("top", "right", "bottom", "left"): a.spines[_sp].set_visible(False)
-    if title: a.set_title(title, fontsize=5.4, color=st.GREY, pad=1.5)
+    if title: a.set_title(title, fontsize=st.sz(5.4), color=st.GREY, pad=1.5)
     return a
 
 _a = _shot(_SUB[0, 0], "pfkl_whole.png", "whole protein")
 _shot(_SUB[0, 1], "pfkl_site.png", "the lysine and everything within 8 \u00c5")
 _a.text(0.0, -0.10, "PFKL K677   pLDDT %.0f   %d compounds, %.0f%% occupancy   KEPT"
         % (_pf.plddt_site, int(_pf.n_engaged_60), _pf.max_occupancy),
-        transform=_a.transAxes, fontsize=5.4, color=st.BLUE, fontweight="bold")
+        transform=_a.transAxes, fontsize=st.sz(5.4), color=st.BLUE, fontweight="bold")
 HEAD["f_pfkl_plddt"] = float(_pf.plddt_site)
 HEAD["f_pfkl_n_compounds_engaged"] = int(_pf.n_engaged_60)
 HEAD["f_pfkl_max_occupancy_pct"] = float(_pf.max_occupancy)
@@ -362,16 +351,16 @@ _b = _shot(_SUB[1, 0], "lysmd4_whole.png")
 _shot(_SUB[1, 1], "lysmd4_site.png")
 _b.text(0.0, -0.10, "LYSMD4 K72   pLDDT %.0f   %d compounds, %.0f%% occupancy   DISCARDED"
         % (_ly.plddt_site, int(_ly.n_engaged_60), _ly.max_occupancy),
-        transform=_b.transAxes, fontsize=5.4, color=st.ORANGE, fontweight="bold")
+        transform=_b.transAxes, fontsize=st.sz(5.4), color=st.ORANGE, fontweight="bold")
 HEAD["f_lysmd4_plddt"] = float(_ly.plddt_site)
 HEAD["f_lysmd4_n_compounds_engaged"] = int(_ly.n_engaged_60)
 HEAD["f_lysmd4_max_occupancy_pct"] = float(_ly.max_occupancy)
 HEAD["f_lysmd4_uniprot"] = "Q6MZR2"
-_b.text(0.0, -0.21, "the same 8 \u00c5 sphere \u2014 in one of them there is no structure to measure",
-        transform=_b.transAxes, fontsize=5.0, color=st.GREY)
+_b.text(0.0, -0.21, "the same 8 \u00c5 sphere, in one of them there is no structure to measure",
+        transform=_b.transAxes, fontsize=st.sz(5.0), color=st.GREY)
 
 # ---------------------------------------------------------------- g: not a strength filter
-ax = fig.add_subplot(gs[2, 2]); st.panel_label(ax, "g", dx=-0.30, dy=1.06)
+ax = fig.add_subplot(gs[2, 2]); st.head(fig, ax, "g")
 _FE = pd.read_csv(find("features_final.csv"),
                   usecols=["uniprot", "position", "plddt_site"], low_memory=False)
 # sliced from the single read above; plddt_site is dropped here so it cannot collide with
@@ -394,17 +383,17 @@ ax.plot([i.mid for i in _med.index], _med.values, "-o", color=st.GREEN, lw=1.2, 
 ax.text(0.03, 0.60, "median occupancy is flat from 20 to 100 (%.0f%% in the\nlowest band, "
         "%.0f%% in the highest): the gate removes sites\nwhose features cannot be measured, "
         "not sites that are\nweakly engaged" % (_med.iloc[0], _med.iloc[-1]),
-        transform=ax.transAxes, fontsize=4.9, color=st.GREEN, linespacing=1.5, va="top",
+        transform=ax.transAxes, fontsize=st.sz(5), color=st.GREEN, linespacing=1.5, va="top",
         bbox=dict(facecolor=st.PAPER, edgecolor="none", pad=1.6))
-ax.text(_GATE - 1, 57.4, "gate %d" % _GATE, ha="right", va="bottom", fontsize=5.2,
-        color=st.ORANGE, fontweight="bold")
+ax.text(_GATE - 1, 57.4, "gate %d" % _GATE, ha="right", va="bottom", fontsize=st.sz(5.2),
+        color=st.ORANGE)
 ax.text(0.5, 1.005, "%s discarded (%.0f%%)   \u00b7   %s kept (%.0f%%)"
         % (f"{(~_K).sum():,}", 100*(~_K).mean(), f"{_K.sum():,}", 100*_K.mean()),
-        transform=ax.transAxes, ha="center", fontsize=5.4, color=st.GREY)
-ax.set_xlabel("AlphaFold confidence at the lysine (pLDDT)", fontsize=6)
-ax.set_ylabel("highest occupancy reached by any compound (%)", fontsize=6)
+        transform=ax.transAxes, ha="center", fontsize=st.sz(5.4), color=st.GREY)
+ax.set_xlabel("AlphaFold confidence at the lysine (pLDDT)", fontsize=st.sz(6))
+ax.set_ylabel("highest occupancy reached by any compound (%)", fontsize=st.sz(6))
 ax.set_xlim(20, 100); ax.set_ylim(55, 104)
-ax.legend(frameon=False, fontsize=5.2, loc="lower left", markerscale=2.6,
+ax.legend(frameon=False, fontsize=st.sz(5.2), loc="lower left", markerscale=2.6,
           handletextpad=0.3, borderaxespad=0.4)
 for _sp in ("top", "right"): ax.spines[_sp].set_visible(False)
 HEAD["g_gate_plddt"] = _GATE

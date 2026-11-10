@@ -1,6 +1,7 @@
 {
- "script": "figS9.py",
- "written": "2026-09-07",
+ "script": "figS9_v1.py",
+ "stem": "figS9",
+ "written": "2026-11-05",
  "numbers": {
   "a_d_control_cb": 0.41,
   "a_d_control_cb_symmetric": 0.407,

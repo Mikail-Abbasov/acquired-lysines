@@ -1,6 +1,7 @@
 {
- "script": "figS10.py",
- "written": "2026-09-07",
+ "script": "figS10_v1.py",
+ "stem": "figS10",
+ "written": "2026-11-05",
  "numbers": {
   "a_burden_max": 623,
   "a_burden_max_line": "MEWO",

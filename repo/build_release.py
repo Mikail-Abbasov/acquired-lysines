@@ -157,7 +157,7 @@ EXTRA_GLOBS = [
     "ccle/plex*_varpair.txt",
 ]
 
-ROOT_FILES = ["README.md", "LICENSE", "LICENSE-DATA", "CITATION.cff", ".zenodo.json",
+ROOT_FILES = ["README.md", "LICENSE", "LICENSE-DATA", "CITATION.cff",
               ".gitignore"]
 
 
@@ -403,11 +403,11 @@ def main():
     print("  scripts             %3d  (%.2f MB)" % (n_scripts, b_scripts / 1e6))
     print("  root files          %3d  (%.2f MB)" % (n_root, b_root / 1e6))
     print("  panel data+ledgers  %3d  (%.2f MB)   <- tier 1, goes to git" % (n_panel, b_panel / 1e6))
-    print("  deposited data      %3d  (%.1f MB)   <- Zenodo only" % (dep_n, dep_bytes / 1e6))
-    print("  intermediates       %3d  (%.1f MB)   <- Zenodo only" % (inter_n, inter_bytes / 1e6))
+    print("  deposited data      %3d  (%.1f MB)   <- not redistributed" % (dep_n, dep_bytes / 1e6))
+    print("  intermediates       %3d  (%.1f MB)   <- not redistributed" % (inter_n, inter_bytes / 1e6))
     print("\n  git tier   : %.2f MB   (code + panel data; every figure redrawable)" %
           ((b_scripts + b_root + b_panel) / 1e6))
-    print("  Zenodo tier: %.0f MB   (+ all inputs; every figure re-runnable)" %
+    print("  full tier:   %.0f MB   (+ all inputs; every figure re-runnable)" %
           ((b_scripts + b_root + b_panel + dep_bytes + inter_bytes) / 1e6))
     # The counters above are what THIS run copied. When the tree could not be cleared they
     # undercount, so report what is actually on disk as well -- that is what gets uploaded.

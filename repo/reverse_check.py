@@ -28,9 +28,28 @@ Integers below 100 are dropped: they match too much to be evidence either way.
 """
 import os, sys, json, glob, re, importlib.util
 
-TOP = os.path.expanduser("~/mnt/DepMap")
-MAN = os.path.join(TOP, "ccle", "manuscript")
-LED = os.path.join(TOP, "results", "panel_data")
+# Resolved from this file's own location since 3 November 2026. It was hardcoded to
+# "~/mnt/DepMap", which is one sandbox's mount path: it does not exist on the author's own
+# machine, and certainly not in a stranger's clone, so every path below failed for anyone
+# who actually took the deposit at its word. The repository root is the parent of repo/.
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_ROOT = os.path.dirname(_HERE)
+
+
+def _firstdir(*cands):
+    for c in cands:
+        if c and os.path.isdir(c):
+            return c
+    return cands[0]
+
+
+TOP = _firstdir(_ROOT,
+                os.path.expanduser("~/mnt/DepMap"),
+                os.path.expanduser("~/Desktop/DepMap"))
+MAN = _firstdir(os.path.join(TOP, "ccle", "manuscript"),
+                os.path.join(TOP, "ccle_plex05", "manuscript"))
+LED = _firstdir(os.path.join(TOP, "panel_data"),
+                os.path.join(TOP, "results", "panel_data"))
 
 sys.path.insert(0, MAN)
 import sections as S, si as SI
@@ -42,14 +61,44 @@ MINUS = "−"
 
 def blocks():
     """(where, text) so a finding can be pointed at its section rather than the whole paper."""
+    # Walked only drafted.py's P_* and CAP_* lists until 3 November 2026. The Cell Chem Biol
+    # restructure of 19 October moved the prose into spine.py, so from that day this check
+    # read a draft nothing builds from and reported on numbers the paper no longer contains.
+    # seams_check.py had the identical bug. Walking every container of every live prose module,
+    # rather than naming containers in one module, is what stops it recurring.
     out = []
-    for n in sorted(dir(D)):
-        v = getattr(D, n)
-        if n.startswith(("P_", "CAP_")) and isinstance(v, list):
-            for i, x in enumerate(v):
-                t = x[0] if isinstance(x, tuple) else x
-                if isinstance(t, str):
-                    out.append(("%s[%d]" % (n, i), t))
+    def _str(o, d=0):
+        if d > 7:
+            return
+        if isinstance(o, str):
+            yield o
+        elif isinstance(o, (list, tuple)):
+            for x in o:
+                yield from _str(x, d + 1)
+        elif isinstance(o, dict):
+            for x in o.values():
+                yield from _str(x, d + 1)
+    import importlib as _il
+    _seen = set()
+    for _mn in ("spine", "sections", "si", "dedup", "drafted"):
+        try:
+            _m = _il.import_module(_mn)
+        except Exception:
+            continue
+        for _n in sorted(dir(_m)):
+            if _n.startswith("__"):
+                continue
+            _v = getattr(_m, _n)
+            if not isinstance(_v, (str, list, tuple, dict)):
+                continue
+            for _t in _str(_v):
+                if len(_t) > 40 and _t not in _seen:
+                    _seen.add(_t)
+                    out.append(("%s.%s" % (_mn, _n), _t))
+    if len(out) < 40:
+        raise SystemExit("reverse_check: only %d prose blocks found. The checker is probably "
+                         "pointed at the wrong modules. Refusing to report a clean paper."
+                         % len(out))
     for e in SI.SI_NOTES:
         if len(e) > 3:
             for i, t in enumerate(e[3]):

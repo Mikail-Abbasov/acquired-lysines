@@ -1,6 +1,7 @@
 {
- "script": "figS7.py",
- "written": "2026-09-07",
+ "script": "figS7_v1.py",
+ "stem": "figS7",
+ "written": "2026-11-09",
  "numbers": {
   "a_n_compounds_pooled": 82,
   "a_n_compounds_slopes": 173,

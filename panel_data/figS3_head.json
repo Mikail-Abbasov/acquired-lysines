@@ -1,6 +1,7 @@
 {
- "script": "figS3.py",
- "written": "2026-09-07",
+ "script": "figS3_v3.py",
+ "stem": "figS3",
+ "written": "2026-11-05",
  "numbers": {
   "a clonality": "both detected 11%, mutant only 27% clonal (AF>=0.7), background 11%; n = 27, 26",
   "a_background_clonal_pct": 11,
@@ -16,8 +17,8 @@
   "c allele fraction": "detected median 0.48 vs all sites median 0.44",
   "c_allsites_median_af": 0.44,
   "c_detected_median_af": 0.48,
-  "d identification effects": "histidine (basic, not a cleavage site) -0.220, C-terminal K/R (every tryptic peptide) -0.004, internal K/R (missed cleavages) -0.621, basic centres, all -0.584",
-  "d_effect_basic_centres_all": -0.584,
+  "d identification effects": "histidine (basic, not a cleavage site) -0.220, C-terminal K/R (every tryptic peptide) -0.004, internal K/R (missed cleavages) -0.621, basic centers, all -0.584",
+  "d_effect_basic_centers_all": -0.584,
   "d_effect_c-terminal_k_r_every_tryptic_peptide": -0.004,
   "d_effect_histidine_basic_not_a_cleavage_site": -0.22,
   "d_effect_internal_k_r_missed_cleavages": -0.621,

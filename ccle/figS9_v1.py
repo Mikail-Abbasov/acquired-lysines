@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-figS9_v1.py — Support for Figure 8: the anchoring question, settled.
+figS9_v1.py, Support for Figure 8: the anchoring question, settled.
 
 Figure 8 measures the environment of positions where a lysine does not yet exist, so it has to
 choose a reference atom. That choice was made once and never tested. This figure tests it: the
@@ -27,7 +27,9 @@ import matplotlib.pyplot as plt
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import abbasov_style as st
 import figure_data as fd
-st.apply()
+# One body type size for this figure; every other size is a ratio to it.
+BODY = 7.0
+st.apply(BODY)
 ORANGE, BLUE, GREY, LIGHT, INK = st.ORANGE, st.BLUE, st.GREEN, st.LIGHTGREY, st.GREY
 
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
@@ -39,7 +41,7 @@ MOD = pd.read_csv(os.path.join(LR, "step27_modnz_measured.csv"), usecols=["nz_er
 TXT = open(os.path.join(LR, "step28b_report.txt")).read()
 
 SHORT = {"A  both sides at CB (the plan)": "CB\nboth sides",
-         "B  both sides modelled, at NZ": "modelled NZ\nboth sides",
+         "B  both sides modelled, at NZ": "modeled NZ\nboth sides",
          "C  MISMATCHED: union CB vs measured NZ": "MISMATCHED\nCB vs NZ",
          "D  both sides at CB, symmetric convention": "CB\nsymmetric"}
 SLUG = {"A": "cb", "B": "nz", "C": "mismatched", "D": "cb_symmetric"}
@@ -54,9 +56,8 @@ gs = fig.add_gridspec(2, 3, hspace=0.62, wspace=0.42,
                       left=0.075, right=0.985, top=0.96, bottom=0.085)
 
 # ------------------------------------------------------------------ a
-ax = fig.add_subplot(gs[0, 0]); st.panel_label(ax, "a", dx=-0.26, dy=1.09)
-ax.set_title("Distances, four ways", fontsize=7.5, pad=6, color=INK)
-w = 0.26
+ax = fig.add_subplot(gs[0, 0]); st.head(fig, ax, "a", "distances, four ways")
+w = st.grp(3)
 ax.bar(x - w, R.d_union_eng, w, color=ORANGE, edgecolor=INK, lw=0.5)
 ax.bar(x,     R.d_union_not, w, color=LIGHT,  edgecolor=INK, lw=0.5)
 ax.bar(x + w, R.d_control,   w, color=BLUE,   edgecolor=INK, lw=0.5)
@@ -68,35 +69,33 @@ fd.panel("figS9", "a",
                           ("acquired vs unengaged", "d_union_not"),
                           ("engaged vs unengaged (control)", "d_control"))],
          note="distance between group averages, four anchorings x three comparisons")
-ax.set_xticks(x); ax.set_xticklabels(R.short, fontsize=5.9, linespacing=1.3)
-ax.set_ylabel("Distance between group averages", fontsize=6.7)
+ax.set_xticks(x); ax.set_xticklabels(R.short, fontsize=st.sz(5.9), linespacing=1.3)
+ax.set_ylabel("distance between group averages", fontsize=st.sz(6.7))
 ax.set_ylim(0, 3.05)
 for lab, col, yy in (("acquired vs engaged", ORANGE, 2.92),
                      ("acquired vs unengaged", GREY, 2.72),
                      ("engaged vs unengaged (control)", BLUE, 2.52)):
-    ax.text(-0.42, yy, lab, color=col, fontsize=5.9, ha="left", va="center")
+    ax.text(-0.42, yy, lab, color=col, fontsize=st.sz(5.9), ha="left", va="center")
 
 # ------------------------------------------------------------------ b
-ax = fig.add_subplot(gs[0, 1]); st.panel_label(ax, "b", dx=-0.26, dy=1.09)
-ax.set_title("Measured against the control", fontsize=7.5, pad=6, color=INK)
-ax.bar(x, R.ratio_to_control, 0.55, color=[ORANGE if a else BLUE for a in R.art],
+ax = fig.add_subplot(gs[0, 1]); st.head(fig, ax, "b", "measured against the control")
+ax.bar(x, R.ratio_to_control, st.BARW, color=[ORANGE if a else BLUE for a in R.art],
        edgecolor=INK, lw=0.5)
 for xi, v in zip(x, R.ratio_to_control):
-    ax.text(xi, v + 0.13, "%.2f" % v, ha="center", va="bottom", fontsize=6.6, color=INK)
+    ax.text(xi, v + 0.13, "%.2f" % v, ha="center", va="bottom", fontsize=st.sz(6.6), color=INK)
 ax.axhline(1.0, color=INK, lw=0.9)
 fd.panel("figS9", "b",
          [dict(arm=r.arm, slug=r.slug, mismatched=bool(r.art),
                d_union_engaged=float(r.d_union_eng), d_control=float(r.d_control),
                ratio_to_control=float(r.ratio_to_control)) for r in R.itertuples()],
          note="each arm's acquired-vs-engaged distance divided by its own control")
-ax.set_xticks(x); ax.set_xticklabels(R.short, fontsize=5.9, linespacing=1.3)
-ax.set_ylabel("Multiple of the control", fontsize=6.7)
+ax.set_xticks(x); ax.set_xticklabels(R.short, fontsize=st.sz(5.9), linespacing=1.3)
+ax.set_ylabel("multiple of the control", fontsize=st.sz(6.7))
 ax.set_ylim(0, 8.0)
 
 # ------------------------------------------------------------------ c
-ax = fig.add_subplot(gs[0, 2]); st.panel_label(ax, "c", dx=-0.26, dy=1.09)
-ax.set_title("Overlap with the engaged region", fontsize=7.5, pad=6, color=INK)
-w = 0.32
+ax = fig.add_subplot(gs[0, 2]); st.head(fig, ax, "c", "overlap with the engaged region")
+w = st.grp(2)
 ax.bar(x - w / 2, 100 * R.overlap_union, w, color=ORANGE, edgecolor=INK, lw=0.5)
 ax.bar(x + w / 2, 100 * R.overlap_not, w, color=GREY, edgecolor=INK, lw=0.5)
 ax.axhline(90, color=BLUE, lw=1.0, ls=(0, (3, 2)))
@@ -106,44 +105,42 @@ fd.panel("figS9", "c",
           for nm, col in (("acquired union", "overlap_union"),
                           ("labelled, not engaged", "overlap_not"))],
          note="fraction of each population inside the region holding 90% of engaged lysines")
-ax.set_xticks(x); ax.set_xticklabels(R.short, fontsize=5.9, linespacing=1.3)
-ax.set_ylabel("Inside the 90% engaged region (%)", fontsize=6.7)
+ax.set_xticks(x); ax.set_xticklabels(R.short, fontsize=st.sz(5.9), linespacing=1.3)
+ax.set_ylabel("inside the 90% engaged region (%)", fontsize=st.sz(6.7))
 ax.set_ylim(0, 118)
-ax.text(-0.42, 112, "acquired", color=ORANGE, fontsize=5.9, ha="left", va="center")
-ax.text(0.85, 112, "labelled, not engaged", color=GREY, fontsize=5.9, ha="left", va="center")
-ax.text(3.45, 90, "engaged", color=BLUE, fontsize=5.9, ha="right", va="bottom")
+ax.text(-0.42, 112, "acquired", color=ORANGE, fontsize=st.sz(5.9), ha="left", va="center")
+ax.text(0.85, 112, "labeled, not engaged", color=GREY, fontsize=st.sz(5.9), ha="left", va="center")
+ax.text(3.45, 90, "engaged", color=BLUE, fontsize=st.sz(5.9), ha="right", va="bottom")
 
 # ------------------------------------------------------------------ d
-ax = fig.add_subplot(gs[1, 0]); st.panel_label(ax, "d", dx=-0.26, dy=1.09)
-ax.set_title("One site per protein", fontsize=7.5, pad=6, color=INK)
+ax = fig.add_subplot(gs[1, 0]); st.head(fig, ax, "d", "one site per protein")
 xx = np.arange(2); w = 0.32
 ax.bar(xx - w / 2, RAT.ratio_site, w, color=LIGHT, edgecolor=INK, lw=0.5)
 ax.bar(xx + w / 2, RAT.ratio_prot, w, color=BLUE, edgecolor=INK, lw=0.5)
 for xi, a_, b_ in zip(xx, RAT.ratio_site, RAT.ratio_prot):
-    ax.text(xi - w / 2, a_ + 0.035, "%.2f" % a_, ha="center", va="bottom", fontsize=6.4, color=INK)
-    ax.text(xi + w / 2, b_ + 0.035, "%.2f" % b_, ha="center", va="bottom", fontsize=6.4, color=BLUE)
+    ax.text(xi - w / 2, a_ + 0.035, "%.2f" % a_, ha="center", va="bottom", fontsize=st.sz(6.4), color=INK)
+    ax.text(xi + w / 2, b_ + 0.035, "%.2f" % b_, ha="center", va="bottom", fontsize=st.sz(6.4), color=BLUE)
 ax.axhline(1.0, color=INK, lw=0.9)
 fd.panel("figS9", "d",
          [dict(arm=r.arm, design=nm, ratio_to_control=float(getattr(r, col)))
           for r in RAT.itertuples()
           for nm, col in (("every site", "ratio_site"), ("one site per protein", "ratio_prot"))],
          note="what one-site-per-protein does to the excess; 20 draws, step 28b")
-ax.set_xticks(xx); ax.set_xticklabels(["CB\nboth sides", "modelled NZ\nboth sides"],
-                                      fontsize=5.9, linespacing=1.3)
-ax.set_ylabel("Multiple of the control", fontsize=6.7)
+ax.set_xticks(xx); ax.set_xticklabels(["CB\nboth sides", "modeled NZ\nboth sides"],
+                                      fontsize=st.sz(5.9), linespacing=1.3)
+ax.set_ylabel("multiple of the control", fontsize=st.sz(6.7))
 ax.set_ylim(0, 2.1); ax.set_xlim(-0.62, 1.62)
-ax.text(-0.55, 1.95, "every site", color=GREY, fontsize=5.9, ha="left", va="center")
-ax.text(0.42, 1.95, "one per protein", color=BLUE, fontsize=5.9, ha="left", va="center")
+ax.text(-0.55, 1.95, "every site", color=GREY, fontsize=st.sz(5.9), ha="left", va="center")
+ax.text(0.42, 1.95, "one per protein", color=BLUE, fontsize=st.sz(5.9), ha="left", va="center")
 
 # ------------------------------------------------------------------ e
-ax = fig.add_subplot(gs[1, 1]); st.panel_label(ax, "e", dx=-0.26, dy=1.09)
-ax.set_title("The built side chain, checked", fontsize=7.5, pad=6, color=INK)
+ax = fig.add_subplot(gs[1, 1]); st.head(fig, ax, "e", "the built side chain, checked")
 v = MOD.nz_error.dropna().values
 _cnt, _edges, _ = ax.hist(v, bins=60, color=LIGHT, edgecolor=INK, linewidth=0.25)
 med = float(np.median(v))
 ax.axvline(med, color=ORANGE, lw=1.2)
 ax.text(med + 0.15, ax.get_ylim()[1] * 0.92, "median %.2f Å" % med, color=ORANGE,
-        fontsize=6.2, ha="left", va="top")
+        fontsize=st.sz(6.2), ha="left", va="top")
 CB_NZ = 6.4   # extended all-trans lysine, Cbeta to Nzeta; declared, not measured
 fd.panel("figS9", "e",
          [dict(bin_left=float(_edges[i]), bin_right=float(_edges[i + 1]), measured_lysines=int(_cnt[i]))
@@ -151,15 +148,14 @@ fd.panel("figS9", "e",
          note=("modelled all-trans amine vs real amine, %s lysines, %d bins; median %.4f A, "
                "CB-to-NZ reference %.1f A" % (format(len(v), ","), len(_cnt), med, 6.4)))
 ax.axvline(CB_NZ, color=BLUE, lw=1.0, ls=(0, (3, 2)))
-ax.text(6.25, ax.get_ylim()[1] * 0.62, "CB\u2192NZ\n%.1f \u00c5" % CB_NZ, color=BLUE, fontsize=6.0,
+ax.text(6.25, ax.get_ylim()[1] * 0.62, "CB\u2192NZ\n%.1f \u00c5" % CB_NZ, color=BLUE, fontsize=st.sz(6.0),
         ha="right", va="top", linespacing=1.3)
-ax.set_xlabel("Modelled amine vs real amine (Å)", fontsize=6.7)
-ax.set_ylabel("Measured lysines (n = %s)" % format(len(v), ","), fontsize=6.7)
+ax.set_xlabel("modeled amine vs real amine (Å)", fontsize=st.sz(6.7))
+ax.set_ylabel("measured lysines (n = %s)" % format(len(v), ","), fontsize=st.sz(6.7))
 ax.set_xlim(0, 9)
 
 # ------------------------------------------------------------------ f
-ax = fig.add_subplot(gs[1, 2]); st.panel_label(ax, "f", dx=-0.26, dy=1.09)
-ax.set_title("Overlap at every cut", fontsize=7.5, pad=6, color=INK)
+ax = fig.add_subplot(gs[1, 2]); st.head(fig, ax, "f", "overlap at every cut")
 qs = [50, 75, 90, 95]
 rows = {}
 for line in TXT.splitlines():
@@ -174,12 +170,12 @@ for arm, ls in (("A", "-"), ("B", (0, (4, 2)))):
             ax.plot(qs, rows[(arm, pop)], linestyle=ls, color=col, marker="o",
                     ms=3.2, lw=1.1)
 ax.plot(qs, qs, linestyle=":", color=BLUE, lw=1.0)
-ax.set_xticks(qs); ax.set_xlabel("Size of the engaged region (%)", fontsize=6.7)
-ax.set_ylabel("Sites inside it (%)", fontsize=6.7)
+ax.set_xticks(qs); ax.set_xlabel("size of the engaged region (%)", fontsize=st.sz(6.7))
+ax.set_ylabel("sites inside it (%)", fontsize=st.sz(6.7))
 ax.set_ylim(35, 102)
-ax.text(50, 99, "acquired", color=ORANGE, fontsize=5.9, ha="left", va="top")
-ax.text(50, 93, "labelled, not engaged", color=GREY, fontsize=5.9, ha="left", va="top")
-ax.text(95, 96, "engaged", color=BLUE, fontsize=5.9, ha="right", va="bottom")
+ax.text(50, 99, "acquired", color=ORANGE, fontsize=st.sz(5.9), ha="left", va="top")
+ax.text(50, 93, "labeled, not engaged", color=GREY, fontsize=st.sz(5.9), ha="left", va="top")
+ax.text(95, 96, "engaged", color=BLUE, fontsize=st.sz(5.9), ha="right", va="bottom")
 _F_ROWS = dict(rows)   # panel f, printed so the legend does not have to hold unprinted numbers
 for _k in (("A", "acquired union"), ("B", "acquired union"),
            ("A", "labelled, not engaged"), ("B", "labelled, not engaged")):

@@ -28,7 +28,7 @@ RUNTIME -- this is the reason the script exists rather than the analysis
 dbNSFP 5.4a GRCh38 is 55 GB compressed, 91,571,221 rows. A full pass takes hours and cannot be run
 inside a short-lived shell. Run it detached and come back to it:
 
-    cd ccle
+    cd ~/Desktop/DepMap/ccle_plex05
     nohup python3 step54_germline_by_residue.py > step54_report.txt 2>&1 &
     tail -f step54_report.txt        # progress, with an ETA, every 10M rows
 

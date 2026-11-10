@@ -1,7 +1,11 @@
 {
- "script": "fig8.py",
- "written": "2026-09-07",
+ "script": "fig8_v2.py",
+ "stem": "fig8",
+ "written": "2026-11-09",
  "numbers": {
+  "a_measured_residues_within_8A_at_CB": 11.0,
+  "a_measured_residues_within_8A_at_NZ": 6.0,
+  "a_union_residues_within_8A_at_CB": 12.0,
   "b_largest_abs_z": 0.73,
   "b_n_features": 9,
   "b_n_identical_medians": 4,

@@ -25,9 +25,25 @@ Small integers below 10 are skipped -- "5" matches everything and proves nothing
 """
 import os, sys, json, glob, re, importlib.util
 
-TOP = os.path.expanduser("~/mnt/DepMap")
-MAN = os.path.join(TOP, "ccle", "manuscript")
-LED = os.path.join(TOP, "results", "panel_data")
+# Resolved from this file's own location since 3 November 2026; see reverse_check.py for why.
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_ROOT = os.path.dirname(_HERE)
+
+
+def _firstdir(*cands):
+    for c in cands:
+        if c and os.path.isdir(c):
+            return c
+    return cands[0]
+
+
+TOP = _firstdir(_ROOT,
+                os.path.expanduser("~/mnt/DepMap"),
+                os.path.expanduser("~/Desktop/DepMap"))
+MAN = _firstdir(os.path.join(TOP, "ccle", "manuscript"),
+                os.path.join(TOP, "ccle_plex05", "manuscript"))
+LED = _firstdir(os.path.join(TOP, "panel_data"),
+                os.path.join(TOP, "results", "panel_data"))
 
 sys.path.insert(0, MAN)
 import sections as S, si as SI
@@ -35,18 +51,44 @@ spec = importlib.util.spec_from_file_location("drafted", os.path.join(MAN, "draf
 D = importlib.util.module_from_spec(spec); spec.loader.exec_module(D)
 
 def prose():
-    out = []
-    for n in dir(D):
-        v = getattr(D, n)
-        if n.startswith(("P_", "CAP_")) and isinstance(v, list):
-            out += [x[0] if isinstance(x, tuple) else x for x in v if isinstance(
-                    x[0] if isinstance(x, tuple) else x, str)]
-    for e in SI.SI_NOTES:
-        if len(e) > 3: out += e[3]
-    for f in SI.SI_FIGS: out += f["cap"]
-    for t in getattr(SI, "SI_TABLES", []):
-        out += [c for r in t["rows"] for c in r] + list(t.get("foot", []))
-    out += list(S.HIGHLIGHTS["body"])
+    """Every string in every live prose module.
+
+    This walked drafted.py's P_* and CAP_* lists alone until 3 November 2026. The 19 October
+    restructure moved the prose into spine.py, so from that day the ledger was being checked
+    against a draft nothing builds from. seams_check.py and reverse_check.py had the same bug.
+    Walking containers generically is what stops a rename from reintroducing it.
+    """
+    def _str(o, d=0):
+        if d > 7:
+            return
+        if isinstance(o, str):
+            yield o
+        elif isinstance(o, (list, tuple)):
+            for x in o:
+                yield from _str(x, d + 1)
+        elif isinstance(o, dict):
+            for x in o.values():
+                yield from _str(x, d + 1)
+    import importlib as _il
+    out, seen = [], set()
+    for mn in ("spine", "sections", "si", "dedup", "drafted"):
+        try:
+            m = _il.import_module(mn)
+        except Exception:
+            continue
+        for n in dir(m):
+            if n.startswith("__"):
+                continue
+            v = getattr(m, n)
+            if not isinstance(v, (str, list, tuple, dict)):
+                continue
+            for t in _str(v):
+                if len(t) > 40 and t not in seen:
+                    seen.add(t)
+                    out.append(t)
+    if len(out) < 40:
+        raise SystemExit("verify: only %d prose blocks found; the checker is pointed at the "
+                         "wrong modules. Refusing to report a clean paper." % len(out))
     return " ".join(out)
 
 TEXT = prose()

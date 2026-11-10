@@ -5,7 +5,7 @@ One entry per source, keyed by a short id that sections cite as [[key]]. Numberi
 the builder in order of first appearance across the assembled manuscript, so sections never carry
 their own numbers and cannot drift out of step.
 
-PRIMARY RESEARCH PAPERS ONLY — no reviews. Every entry below was verified against PubMed on
+PRIMARY RESEARCH PAPERS ONLY, no reviews. Every entry below was verified against PubMed on
 5 September 2026; `verified` records that.
 """
 REFS = {
@@ -62,6 +62,10 @@ REFS = {
   "Xu D, Zheng H, Yu WM, Qu CK. Activating mutations in protein tyrosine phosphatase Ptpn11 (Shp2) "
   "enhance reactive oxygen species production that contributes to myeloproliferative disorder. "
   "PLoS One. 2013;8(5):e63152. doi:10.1371/journal.pone.0063152"),
+ "buhrman2007": dict(verified="PubMed 18073111", text=
+  "Buhrman G, Wink G, Mattos C. Transformation efficiency of RasQ61 mutants linked to structural "
+  "features of the switch regions in the presence of Raf. Structure. 2007;15(12):1618\u20131629. "
+  "doi:10.1016/j.str.2007.10.011"),
  "carpten2007": dict(verified="PubMed 17611497", text=
   "Carpten JD, Faber AL, Horn C, Donoho GP, Briggs SL, Robbins CM, et al. A transforming mutation "
   "in the pleckstrin homology domain of AKT1 in cancer. Nature. 2007;448(7152):439–444. "
@@ -70,6 +74,68 @@ REFS = {
   "Craven GB, Chu H, Sun JD, Carelli JD, Coyne B, Chen H, et al. Mutant-selective AKT inhibition "
   "through lysine targeting and neo-zinc chelation. Nature. 2025;637(8044):205–214. "
   "doi:10.1038/s41586-024-08176-4"),
+ # Added 15 September 2026 from the student reference submission of the same date. Every entry
+ # below was matched against PubMed by journal, year, volume, first page and first author before
+ # being accepted; five submitted citations were rejected because they resolved to a different
+ # paper, and are recorded in results/TableS1_reference_verification_2026-09-15.docx.
+ "ackermann2005": dict(verified="PubMed 15899789", text=
+  "Ackermann J, Frutschi M, Kaloulis K, McKee T, Trumpp A, Beermann F. Metastasizing melanoma "
+  "formation caused by expression of activated N-RasQ61K on an INK4a-deficient background. "
+  "Cancer Res. 2005;65(10):4005\u20134011. doi:10.1158/0008-5472.CAN-04-2970"),
+ "li2012": dict(verified="PubMed 22718121", text=
+  "Li A, Ma Y, Jin M, Mason S, Mort RL, Blyth K, et al. Activated mutant NRasQ61K drives aberrant "
+  "melanocyte signaling, survival, and invasiveness via a Rac1-dependent mechanism. J Invest "
+  "Dermatol. 2012;132(11):2610\u20132621. doi:10.1038/jid.2012.186"),
+ "boudreau2014": dict(verified="PubMed 24714748", text=
+  "Boudreau HE, Casterline BW, Burke DJ, Leto TL. Wild-type and mutant p53 differentially regulate "
+  "NADPH oxidase 4 in TGF-\u03b2-mediated migration of human lung and breast epithelial cells. "
+  "Br J Cancer. 2014;110(10):2569\u20132582. doi:10.1038/bjc.2014.165"),
+ "gebregiworgis2024": dict(verified="PubMed 38640594", text=
+  "Gebregiworgis T, Chan JY, Kuntz DA, Priv\u00e9 GG, Marshall CB, Ikura M. Crystal structure of "
+  "NRAS Q61K with a ligand-induced pocket near switch II. Eur J Cell Biol. 2024;103(2):151414. "
+  "doi:10.1016/j.ejcb.2024.151414"),
+ "gomes2018": dict(verified="PubMed 29652801", text=
+  "Gomes AS, Trov\u00e3o F, Andrade Pinheiro B, Freire F, Gomes S, Oliveira C, et al. The crystal "
+  "structure of the R280K mutant of human p53 explains the loss of DNA binding. Int J Mol Sci. "
+  "2018;19(4):1184. doi:10.3390/ijms19041184"),
+ "rubinstein2010": dict(verified="PubMed 20630094", text=
+  "Rubinstein JC, Sznol M, Pavlick AC, Ariyan S, Cheng E, Bacchiocchi A, et al. Incidence of the "
+  "V600K mutation among melanoma patients with BRAF mutations, and potential therapeutic response "
+  "to the specific BRAF inhibitor PLX4032. J Transl Med. 2010;8:67. doi:10.1186/1479-5876-8-67"),
+ "menzies2012": dict(verified="PubMed 22535154", text=
+  "Menzies AM, Haydu LE, Visintin L, Carlino MS, Howle JR, Thompson JF, et al. Distinguishing "
+  "clinicopathologic features of patients with V600E and V600K BRAF-mutant metastatic melanoma. "
+  "Clin Cancer Res. 2012;18(12):3242\u20133249. doi:10.1158/1078-0432.CCR-12-0052"),
+ "piresdasilva2019": dict(verified="PubMed 30630828", text=
+  "Pires da Silva I, Wang KYX, Wilmott JS, Holst J, Carlino MS, Park JJ, et al. Distinct molecular "
+  "profiles and immunotherapy treatment outcomes of V600E and V600K-mutant melanoma. Clin Cancer "
+  "Res. 2019;25(4):1272\u20131279. doi:10.1158/1078-0432.CCR-18-1680"),
+ "dunsche2023": dict(verified="PubMed 38097548", text=
+  "Dunsche L, Ivanisenko N, Riemann S, Schindler S, Beissert S, Angeli C, et al. A cytosolic "
+  "mutp53(E285K) variant confers chemoresistance of malignant melanoma. Cell Death Dis. "
+  "2023;14(12):831. doi:10.1038/s41419-023-06360-4"),
+ "christgen2012": dict(verified="PubMed 22945757", text=
+  "Christgen M, Noskowicz M, Heil C, Schipper E, Christgen H, Geffers R, et al. IPH-926 lobular "
+  "breast cancer cells harbor a p53 mutant with temperature-sensitive functional activity and "
+  "allow for profiling of p53-responsive genes. Lab Invest. 2012;92(11):1635\u20131647. "
+  "doi:10.1038/labinvest.2012.126"),
+ "angulo2013": dict(verified="PubMed 24136356", text=
+  "Angulo I, Vadas O, Gar\u00e7on F, Banham-Hall E, Plagnol V, Leahy TR, et al. Phosphoinositide "
+  "3-kinase \u03b4 gene mutation predisposes to respiratory infection and airway damage. Science. "
+  "2013;342(6160):866\u2013871. doi:10.1126/science.1243292"),
+ "grabiner2014": dict(verified="PubMed 24631838", text=
+  "Grabiner BC, Nardi V, Birsoy K, Possemato R, Shen K, Sinha S, et al. A diverse array of "
+  "cancer-associated MTOR mutations are hyperactivating and can predict rapamycin "
+  "sensitivity. Cancer Discov. 2014;4(5):554\u2013563. doi:10.1158/2159-8290.CD-13-0929"),
+ "lucas2014": dict(verified="PubMed 24165795", text=
+  "Lucas CL, Kuehn HS, Zhao F, Niemela JE, Deenick EK, Palendira U, et al. Dominant-activating "
+  "germline mutations in the gene encoding the PI(3)K catalytic subunit p110\u03b4 result in "
+  "T cell senescence and human immunodeficiency. Nat Immunol. 2014;15(1):88\u201397. "
+  "doi:10.1038/ni.2771"),
+ "penther2019": dict(verified="PubMed 30779244", text=
+  "Penther D, Viailly PJ, Latour S, Ruminy P, Bobee V, Kaplan B, et al. A recurrent clonally "
+  "distinct Burkitt lymphoma case highlights genetic key events contributing to oncogenesis. "
+  "Genes Chromosomes Cancer. 2019;58(9):595\u2013601. doi:10.1002/gcc.22743"),
  "nusinow2020": dict(verified="PubMed 31978347", text=
   "Nusinow DP, Szpyt J, Ghandi M, Rose CM, McDonald ER 3rd, Kalocsay M, et al. Quantitative "
   "proteomics of the Cancer Cell Line Encyclopedia. Cell. 2020;180(2):387–402.e16. "
@@ -98,15 +164,27 @@ REFS = {
   "GTP affinity and effector interactions. Nature. 2013;503(7477):548\u2013551. "
   "doi:10.1038/nature12796"),
 
+ "smith2013": dict(verified="PubMed 23487764", text=
+  "Smith MJ, Neel BG, Ikura M. NMR-based functional profiling of RASopathies and oncogenic RAS "
+  "mutations. Proc Natl Acad Sci U S A. 2013;110(12):4574\u20134579. doi:10.1073/pnas.1218173110"),
  "takahashi2024": dict(verified="PubMed 38653237", text=
   "Takahashi M, Chong HB, Zhang S, Yang T-Y, Lazarov MJ, Harry S, et al. DrugMap: a quantitative "
   "pan-cancer analysis of cysteine ligandability. Cell. 2024;187(10):2536\u20132556.e30. "
   "doi:10.1016/j.cell.2024.03.027"),
+ "kato2003": dict(verified="PubMed 12826609; MaveDB urn:mavedb:00001234-a-1 through -h-1, "
+                          "variant #414 = p.Glu286Lys, scores 18.3 25.9 23.5 12.0 13.3 6.0 11.7 21.8", text=
+  "Kato S, Han S-Y, Liu W, Otsuka K, Shibata H, Kanamaru R, Ishioka C. Understanding the "
+  "function\u2013structure and function\u2013mutation relationships of p53 tumor suppressor protein by "
+  "high-resolution missense mutation analysis. Proc Natl Acad Sci U S A. 2003;100(14):"
+  "8424\u20138429. doi:10.1073/pnas.1431692100"),
  "kuljanin2021": dict(verified="PubMed 33398154", text=
   "Kuljanin M, Mitchell DC, Schweppe DK, Gikandi AS, Nusinow DP, Bulloch NJ, Vinogradova EV, "
   "Wilson DL, Kool ET, Mancias JD, Cravatt BF, Gygi SP. Reimagining high-throughput profiling of "
   "reactive cysteines for cell-based screening of large electrophile libraries. Nat Biotechnol. "
   "2021;39(5):630\u2013641. doi:10.1038/s41587-020-00778-3"),
+ "der1986": dict(verified="PubMed 3510078", text=
+  "Der CJ, Finkel T, Cooper GM. Biological and biochemical properties of human rasH genes mutated "
+  "at codon 61. Cell. 1986;44(1):167\u2013176. doi:10.1016/0092-8674(86)90495-2"),
  "desai2024": dict(verified="PubMed 39468056", text=
   "Desai H, Andrews KH, Bergersen KV, Ofori S, Yu F, Shikwana F, et al. Chemoproteogenomic "
   "stratification of the missense variant cysteinome. Nat Commun. 2024;15(1):9284. "
@@ -140,4 +218,25 @@ REFS = {
   "Wen B, Freestone J, Riffle M, MacCoss MJ, Noble WS, Keich U. Assessment of false discovery rate "
   "control in tandem mass spectrometry analysis using entrapment. Nat Methods. 2025;22(7):"
   "1454–1463. doi:10.1038/s41592-025-02719-x"),
+ # --- added 9 Oct 2026: the broad-spectrum lysine ligandability census, and the two
+ #     Cell Chemical Biology computational precedents. All verified against PubMed that day.
+ "ward2017": dict(verified="PubMed 28445029", text=
+  "Ward CC, Kleinman JI, Nomura DK. NHS-esters as versatile reactivity-based probes for mapping "
+  "proteome-wide ligandable hotspots. ACS Chem Biol. 2017;12(6):1478\u20131483. "
+  "doi:10.1021/acschembio.7b00125"),
+
+ "zhou2025": dict(verified="PubMed 39543955", text=
+  "Zhou M, Li S, Tan Y, Huang W, Li Y, Yuan X, Li Z. Global profiling lysine reactivity and "
+  "ligandability with oxidant-triggered bioconjugation chemistry. Angew Chem Int Ed Engl. "
+  "2025;64(6):e202418473. doi:10.1002/anie.202418473"),
+
+ "boatner2023": dict(verified="PubMed 37119813", text=
+  "Boatner LM, Palafox MF, Schweppe DK, Backus KM. CysDB: a human cysteine database based on "
+  "experimental quantitative chemoproteomics. Cell Chem Biol. 2023;30(6):683\u2013698.e3. "
+  "doi:10.1016/j.chembiol.2023.04.004"),
+
+ "white2023": dict(verified="PubMed 37451266 (Meta-Analysis; primary computational analysis, not a review)", text=
+  "White MEH, Gil J, Tate EW. Proteome-wide structural analysis identifies warhead- and "
+  "coverage-specific biases in cysteine-focused chemoproteomics. Cell Chem Biol. "
+  "2023;30(7):828\u2013838.e4. doi:10.1016/j.chembiol.2023.06.021"),
 }

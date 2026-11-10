@@ -27,17 +27,15 @@ filename is assembled at run time or written through a config constant. They are
 than public downloads, they total 343 MB, and they are not redistributed. Tier 1 covers every
 figure that reads one; tier 2 does not, and the deposit says so rather than implying otherwise.
 
-## This repository and the archived release
+## What this repository holds
 
-There is one tree, not two. The archived release is a frozen snapshot of this repository at a
-tagged commit, so it holds exactly what you see here: the code, `panel_data/` and
-`external_inputs.json`. Neither carries the 343 MB of deposited intermediates or the 120 MB of
-variant and decoy search databases; `.gitignore` says so, and the table of gaps below says what
-that costs.
+The code, `panel_data/` and `external_inputs.json`. It does not carry the 343 MB of deposited
+intermediates or the 120 MB of variant and decoy search databases; `.gitignore` says so, and the
+table of gaps below says what that costs.
 
-Tier 1 therefore runs from a clone of this repository, or from the archive, with no download at
-all. Tier 2 runs for every step whose inputs are public and named in `external_inputs.json`, and
-not for the steps that read an undeposited intermediate.
+Tier 1 therefore runs from a clone of this repository with no download at all. Tier 2 runs for
+every step whose inputs are public and named in `external_inputs.json`, and not for the steps
+that read an undeposited intermediate.
 
 ## Layout
 
@@ -129,6 +127,29 @@ This class of bug is not hypothetical: `step31_crystal_validation.py` used to ov
 re-run on 7 September 2026. The matching script's report has since been renamed, and
 `build_release.py` now checks for collisions on every build.
 
+## Published numbering is not the numbering in these filenames
+
+The paper has seven figures and this repository has eight sets of scripts and ledgers, because
+source figures 5 and 6 are merged into one published Figure 5. `panel_data/figure_numbering.json`
+is written by the manuscript build and is the authority.
+
+| published | script | ledgers and panel CSVs |
+|---|---|---|
+| Graphical abstract | `ccle/ga_v1.py` | reads the ledgers below, deposits none |
+| Figure 1 to 4 | `ccle/fig1_v3.py` to `fig4_v3.py` | `fig1_*` to `fig4_*` |
+| Figure 5 | `ccle/fig5pub_v1.py` | `fig5_*` and `fig6_*` |
+| Figure 6 | `ccle/fig7_v2.py` | `fig7_*` |
+| Figure 7 | `ccle/fig8_v2.py` | `fig8_*` |
+| Figure S1 to S10 | `ccle/figS1_v3.py` to `figS10_v1.py` | `figS1_*` to `figS10_*` |
+
+`fig5pub_v1.py` draws no panels of its own. It reads the six surviving panel blocks out of
+`fig5_v2.py` and `fig6_v2.py` at run time and composes them, so those two scripts ship as well and
+are what the ledgers are keyed on. Six of their twelve panels are not in the published figure;
+their text is in Extended Results in the Supporting Information.
+
+Anything in this file written before 9 November 2026 that names a figure by number, including the
+Figure 8e note above, uses the source numbering.
+
 ## Reproducing a figure
 
 ```bash
@@ -147,4 +168,4 @@ this licence does not supersede; COSMIC in particular restricts commercial use. 
 
 ## Citation
 
-See `CITATION.cff`. The archived release has its own DOI; cite that alongside the paper.
+See `CITATION.cff`, and cite the paper.

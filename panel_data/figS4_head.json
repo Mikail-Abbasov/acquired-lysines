@@ -1,6 +1,7 @@
 {
- "script": "figS4.py",
- "written": "2026-09-07",
+ "script": "figS4_v3.py",
+ "stem": "figS4",
+ "written": "2026-11-05",
  "numbers": {
   "a_n_peptides_per_set": 147397,
   "a_n_plexes": 8,

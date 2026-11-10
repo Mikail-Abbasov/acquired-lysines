@@ -28,7 +28,7 @@ CONVENTIONS
   no rounding     values are written as computed; the figure rounds for display, the deposit
                   does not, so the two can differ and the CSV remains the source
 """
-import os, json, csv, datetime
+import os, sys, json, csv, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.abspath(os.path.join(HERE, "..", "results", "panel_data"))
@@ -68,7 +68,12 @@ def head(stem, HEAD):
     """Write the headline numbers this script computed, as JSON, for verify.py to diff."""
     _ensure()
     path = os.path.join(OUT, "%s_head.json" % stem)
-    payload = {"script": stem + ".py",
+    # "script" was stem + ".py" until 3 November 2026, which named a file that does not
+    # exist for most ledgers: the producer of fig1_head.json is fig1_v3.py, not fig1.py.
+    # In a deposit whose claim is reproducibility, that pointer has to be real.
+    _caller = os.path.basename(sys.argv[0]) if sys.argv and sys.argv[0] else ""
+    payload = {"script": _caller if _caller.endswith(".py") else stem + ".py",
+               "stem": stem,
                "written": datetime.date.today().isoformat(),
                "numbers": {k: HEAD[k] for k in sorted(HEAD)}}
     json.dump(payload, open(path, "w"), indent=1, default=str)

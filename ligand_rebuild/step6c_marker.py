@@ -195,8 +195,44 @@ if len(new):
     say("  by original verdict: recovered from %s"
         % feat[feat.qc != "ok"].verdict.value_counts().to_dict())
     s = new["shift"].dropna()
-    say("  shift from reported position: median %+.0f | |shift|<=1 in %d of %d"
-        % (s.median(), (s.abs() <= 1).sum(), len(s)))
+    a = s.abs()
+    say("")
+    say("  HOW FAR THE RESOLVED POSITIONS MOVED")
+    say("    Do not quote the signed median. %d shifts are negative and %d positive, so"
+        % ((s < 0).sum(), (s > 0).sum()))
+    say("    they cancel to a signed median of %+.0f residue while the typical displacement"
+        % s.median())
+    say("    is far larger. The magnitude is the informative figure.")
+    say("      |shift| median %.0f residues | IQR %.0f to %.0f | max %.0f"
+        % (a.median(), a.quantile(.25), a.quantile(.75), a.max()))
+    say("      at the reported position (shift 0) : %d of %d" % ((a == 0).sum(), len(s)))
+    say("      within one residue (|shift| <= 1)  : %d of %d" % ((a <= 1).sum(), len(s)))
+    say("    A shift of zero is impossible here, and its absence is not a warning sign.")
+    say("    Every row rescued at this step was AMBIGUOUS: the peptide matched the")
+    say("    sequence once, carried more than one lysine, and the reported number named")
+    say("    none of them. The marked lysine therefore can never be the residue that")
+    say("    number pointed at. The marker never reads the reported number as a")
+    say("    coordinate; it locates the peptide in the sequence and takes the marked")
+    say("    offset. The number is used only to join back to the source row.")
+    inside = outside = oor = 0
+    for r in new.itertuples():
+        Lx = load(r.uniprot)
+        if not Lx:
+            continue
+        _, _, order_x, seq_x = Lx
+        if not (order_x[0] <= r.position_reported <= order_x[-1]):
+            oor += 1
+            continue
+        jx = seq_x.find(r.peptide)
+        if jx >= 0 and r.position_reported in order_x[jx:jx + len(r.peptide)]:
+            inside += 1
+        else:
+            outside += 1
+    say("    where the reported number actually falls:")
+    say("      inside the matched peptide, on a residue that is not a lysine : %d" % inside)
+    say("      elsewhere in the same protein                                 : %d" % outside)
+    say("      outside the protein's modelled residue range altogether       : %d" % oor)
+    say("    step6c_audit_shift.py attributes the displacements to named isoforms.")
 
 final = pd.concat([feat[feat.qc == "ok"], new], ignore_index=True)
 final.to_csv("features_final.csv", index=False)

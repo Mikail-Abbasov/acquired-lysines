@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-fig2.py — Figure 2: acquired lysines are largely invisible to conventional proteomics. 3x3.
+fig2.py, Figure 2: acquired lysines are largely invisible to conventional proteomics. 3x3.
 
   a  the four peptide species an acquired lysine creates
-  b  gate 1 — regions never covered (two search architectures agree)
-  c  gate 2 — covered regions where the mutant is still missed
+  b  gate 1, regions never covered (two search architectures agree)
+  c  gate 2, covered regions where the mutant is still missed
   d  three sites with every alternative explanation excluded
   e  peptide length predicts which regions are never covered
   f  loss of the wild-type allele inverts gate 1
@@ -36,10 +36,12 @@ import figure_data as fd
 # different user account). On the original machine the two are identical.
 _TOP = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-st.apply()
+# One body type size for this figure; every other size is a ratio to it.
+BODY = 7.0
+st.apply(BODY)
 
 def find(n):
-    for d in (".", "..", os.path.join(_TOP, 'ccle'),
+    for d in (".", "..", os.path.join(_TOP, 'ccle_plex05'),
               _TOP,
               os.path.join(_TOP, 'Datasets'),
               os.path.join(_TOP, 'ligand_rebuild'),
@@ -53,7 +55,7 @@ def acquired_lysine_only(df):
 
     region_compare writes one row per mutated position, and a cell line carrying several
     mutations in one protein contributes a row for each. Those extra rows are real variant
-    sites that were legitimately searched — but they are not acquired lysines, and counting
+    sites that were legitimately searched, but they are not acquired lysines, and counting
     them inflates every denominator in this figure. In the 42-plex table 1,902 of 10,372 rows
     (18%) are of this kind. They are reported separately (Supplementary), not discarded.
     """
@@ -95,7 +97,7 @@ if p_all is not None:
 HEAD = {}   # headline numbers per panel, captured where they are computed
 
 
-ax = fig.add_subplot(gs[0, 0:4]); st.panel_label(ax, "a", dx=-0.26, dy=1.10)
+ax = fig.add_subplot(gs[0, 0:4]); st.head(fig, ax, "a")
 if PEP and SITES and FLUX:
     import re as _re
     d = pd.read_csv(SITES, low_memory=False); nm = pd.read_csv(FLUX, low_memory=False)[["ModelID", "CellLine"]]
@@ -112,13 +114,13 @@ if PEP and SITES and FLUX:
     q = q.merge(kk, on=["line", "gene", "ksite"], how="left")
     grp = [("both\ndetected", q[q.wt_detected == 1]), ("mutant\nonly", q[q.wt_detected == 0])]
     vals = [100 * (g.AF >= 0.7).mean() for _, g in grp]
-    ax.bar([0, 1], vals, color=[st.LIGHTGREY, st.BLUE], width=0.55)
+    ax.bar([0, 1], vals, color=[st.LIGHTGREY, st.BLUE], width=st.BARW)
     for i, (v, (lab, g)) in enumerate(zip(vals, grp)):
-        ax.text(i, v + 0.6, "%.0f%%" % v, ha="center", fontsize=6.2, fontweight="bold")
-        ax.text(i, -2.4, "n = %d" % len(g), ha="center", fontsize=5.4, color=st.GREY)
+        ax.text(i, v + 0.6, "%.0f%%" % v, ha="center", fontsize=st.sz(6.2))
+        ax.text(i, -2.4, "n = %d" % len(g), ha="center", fontsize=st.sz(5.4), color=st.GREY)
     ax.axhline(11, color=st.ORANGE, ls="--", lw=0.8)
-    ax.text(1.45, 11.8, "background 11%", fontsize=5.4, color=st.ORANGE, ha="right")
-    ax.set_xticks([0, 1]); ax.set_xticklabels([g[0] for g in grp], fontsize=5.8)
+    ax.text(1.45, 11.8, "background 11%", fontsize=st.sz(5.4), color=st.ORANGE, ha="right")
+    ax.set_xticks([0, 1]); ax.set_xticklabels([g[0] for g in grp], fontsize=st.sz(5.8))
     ax.set_ylabel("clonal, AF \u2265 0.7 (%)"); ax.set_ylim(-4, max(vals) * 1.5)
     # Keyed scalars beside the readable string: verify.py cannot diff a sentence.
     HEAD["a clonality"] = "%s clonal (AF>=0.7), background 11%%; n = %s" % (
@@ -133,7 +135,7 @@ if PEP and SITES and FLUX:
              n=int(len(_g))) for (_l, _g), _v in zip(grp, vals)], note="clonality control")
 
 # ------------------------------------------------------------------ a
-ax = fig.add_subplot(gs[0, 5:8]); st.panel_label(ax, "b", dx=-0.26)
+ax = fig.add_subplot(gs[0, 5:8]); st.head(fig, ax, "b")
 # Protein abundance from the CCLE quantification itself (Nusinow et al.), not a proxy. The file
 # is cell lines x UniProt accessions, so each site is looked up at its own protein IN ITS OWN
 # CELL LINE — the quantity that determines whether that protein was observable in that run.
@@ -160,17 +162,17 @@ if PEP and MS and GMAP and FLUX:
     for i2, (lab, v, col) in enumerate(grp, 1):
         ax.plot([i2 - 0.18, i2 + 0.18], [v.median()] * 2, color=st.GREY, lw=1.0, zorder=5)
         ax.text(i2, ax.get_ylim()[0], "n=%d" % len(v), ha="center", va="bottom",
-                fontsize=5.0, color=st.GREY)
+                fontsize=st.sz(5.0), color=st.GREY)
     ax.set_xticks(range(1, len(grp) + 1))
-    ax.set_xticklabels([g_[0] for g_ in grp], fontsize=5.6)
+    ax.set_xticklabels([g_[0] for g_ in grp], fontsize=st.sz(5.6))
     ax.set_ylabel("protein abundance in that cell line\n(log$_2$, CCLE quantification)",
-                  fontsize=5.8)
+                  fontsize=st.sz(5.8))
     if len(grp) == 3:
         from scipy import stats as _st
         a_, b_ = grp[2][1].values, grp[0][1].values
         cd = ((a_[:, None] > b_[None, :]).mean() - (a_[:, None] < b_[None, :]).mean())
-        ax.text(0.97, 0.05, "Cliff's $\\delta$ = %.2f" % cd, transform=ax.transAxes,
-                ha="right", va="bottom", fontsize=5.6, color=st.GREY)
+        ax.text(0.97, 0.05, "Cliff's \u03b4 = %.2f" % cd, transform=ax.transAxes,
+                ha="right", va="bottom", fontsize=st.sz(5.6), color=st.GREY)
         HEAD["b_cliffs_delta"] = round(float(cd), 2)
         for _g in grp:
             HEAD["b_n_" + str(_g[0]).replace(chr(10), " ").strip().lower().replace(" ", "_")] = int(len(_g[1]))
@@ -178,7 +180,7 @@ if PEP and MS and GMAP and FLUX:
                                % (cd, str(grp[2][0]).replace(chr(10), " "), str(grp[0][0]).replace(chr(10), " "),
                                   ", ".join("%s %d" % (str(g_[0]).replace(chr(10), " "), len(g_[1])) for g_ in grp)))
 
-ax = fig.add_subplot(gs[0, 9:12]); st.panel_label(ax, "c", dx=-0.22)
+ax = fig.add_subplot(gs[0, 9:12]); st.head(fig, ax, "c")
 if SITES and FLUX:
     d2 = pd.read_csv(SITES, low_memory=False)
     allaf = d2[d2.to_aa == "K"].AF.dropna()
@@ -186,16 +188,16 @@ if SITES and FLUX:
             label="all acquired lysines")
     if HITS:
         ax.axvline(0.48, color=st.BLUE, lw=1.3)
-        ax.text(0.52, ax.get_ylim()[1] * 0.86, "detected\nmedian 0.48", fontsize=5.6,
+        ax.text(0.52, ax.get_ylim()[1] * 0.86, "detected\nmedian 0.48", fontsize=st.sz(5.6),
                 color=st.BLUE, linespacing=1.4)
     ax.axvline(float(allaf.median()), color=st.GREY, lw=1.0, ls="--")
     ax.text(float(allaf.median()) - 0.02, ax.get_ylim()[1] * 0.45, "all sites\nmedian %.2f"
-            % allaf.median(), fontsize=5.6, color=st.GREY, ha="right", linespacing=1.4)
+            % allaf.median(), fontsize=st.sz(5.6), color=st.GREY, ha="right", linespacing=1.4)
     ax.set_xlabel("allele fraction"); ax.set_ylabel("density")
     HEAD["c_allsites_median_af"] = round(float(allaf.median()), 2)
     HEAD["c_detected_median_af"] = 0.48
     HEAD["c allele fraction"] = "detected median 0.48 vs all sites median %.2f" % float(allaf.median())
-    ax = fig.add_subplot(gs[1, 0:7]); st.panel_label(ax, "d", dx=-0.11)
+    ax = fig.add_subplot(gs[1, 0:7]); st.head(fig, ax, "d")
     # WHAT THIS PANEL USED TO SAY, AND WHY IT WAS WRONG.
     # The first version reported that only LENGTH separates identified peptides from missing
     # ones, from peptide_properties.csv — a calculation on UNLABELLED peptides that also
@@ -223,7 +225,7 @@ if SITES and FLUX:
         _i = _t.find("EFFECT ON IDENTIFICATION")
         _j = _t.find("EFFECT OF BASIC CENTRES", _i + 1)
         _sec = _t[_i:_j] if _i >= 0 else ""
-        for _k, _lab in (("basic centres", "basic centres, all"),
+        for _k, _lab in (("basic centres", "basic centers, all"),
                          ("internal K/R", "internal K/R\n(missed cleavages)"),
                          ("C-terminal K/R", "C-terminal K/R\n(every tryptic peptide)"),
                          ("histidine", "histidine\n(basic, not a cleavage site)")):
@@ -237,10 +239,10 @@ if SITES and FLUX:
                 (st.LIGHTGREY if "C-terminal" in l or "histidine" in l else st.BLUE)
                 for l in labs]
         y = np.arange(len(labs))
-        ax.barh(y, vals, height=0.6, color=cols)
+        ax.barh(y, vals, height=st.BARW, color=cols)
         ax.axvline(0, color=st.GREY, lw=0.9)
-        ax.set_yticks(y); ax.set_yticklabels(labs, fontsize=5.8, linespacing=1.4)
-        ax.set_xlabel("effect on identification (standardised)", fontsize=6)
+        ax.set_yticks(y); ax.set_yticklabels(labs, fontsize=st.sz(5.8), linespacing=1.4)
+        ax.set_xlabel("effect on identification (standardized)", fontsize=st.sz(6))
         for _l, _v in zip(labs, vals):
             HEAD["d_effect_" + _l.replace(chr(10), " ").strip().lower().replace(" ", "_")
                  .replace("/", "_").replace("(", "").replace(")", "").replace(",", "")] = round(float(_v), 3)
@@ -249,16 +251,14 @@ if SITES and FLUX:
                  for _l, _v in zip(labs, vals)], note="effect on identification")
         ax.set_xlim(min(min(vals) * 1.35, -0.1), 0.12)
         for yy, v in zip(y, vals):
-            ax.text(v - 0.02, yy, "%.3f" % v, ha="right", va="center", fontsize=5.4,
+            ax.text(v - 0.02, yy, "%.3f" % v, ha="right", va="center", fontsize=st.sz(5.4),
                     fontweight="bold" if abs(v) > 0.3 else "normal")
-        ax.text(0.5, -0.38, "A C-terminal K or R is universal and carries no information; an "
-                "internal one is a cleavage the protease missed.\nHistidine is the control: "
-                "basic, but never a cleavage site. Within peptides having NO missed cleavage, "
-                "the\napparent charge effect falls from \u22120.58 to \u22120.09.",
-                transform=ax.transAxes, ha="center", va="top", fontsize=5.0, color=st.GREY,
-                linespacing=1.5)
+        # The 45-word block that stood here said nothing legend (D) does not already say,
+        # number for number: C-terminal K/R -0.004, internal K/R as missed cleavages, histidine
+        # as the basic-but-never-cleaved control, and the -0.58 to -0.09 fall. It was printing
+        # through the next panel's letter at 83%, so it is gone rather than relocated.
 
-ax = fig.add_subplot(gs[1, 8:12]); st.panel_label(ax, "e", dx=-0.24)
+ax = fig.add_subplot(gs[1, 8:12]); st.head(fig, ax, "e")
 if HITS:
     h2 = acquired_lysine_only(pd.read_csv(HITS, sep="\t"))
     g2 = h2.groupby(["gene", "change", "line", "site"]).agg(
@@ -267,10 +267,10 @@ if HITS:
     cats = ["\u22651\nspectrum", "\u22652\nspectra", "\u22652\npeptides", ">1\nexperiment"]
     vals = [n2, int((g2.psms >= 2).sum()), int((g2.peps >= 2).sum()),
             int((g2.plexes > 1).sum())]
-    ax.bar(range(4), vals, color=[st.BLUE, st.BLUE, st.BLUE, st.ORANGE], width=0.66)
+    ax.bar(range(4), vals, color=[st.BLUE, st.BLUE, st.BLUE, st.ORANGE], width=st.BARW)
     for i3, v in enumerate(vals):
-        ax.text(i3, v + n2 * 0.03, "%d" % v, ha="center", fontsize=6, fontweight="bold")
-    ax.set_xticks(range(4)); ax.set_xticklabels(cats, fontsize=5.4)
+        ax.text(i3, v + n2 * 0.03, "%d" % v, ha="center", fontsize=st.sz(6))
+    ax.set_xticks(range(4)); ax.set_xticklabels(cats, fontsize=st.sz(5.4))
     ax.set_ylabel("acquired-lysine sites")
     ax.set_ylim(0, n2 * 1.22)
     HEAD["e evidence depth"] = ", ".join("%s %d" % (c.replace(chr(10), " "), v) for c, v in zip(cats, vals))
@@ -314,13 +314,13 @@ for _c in ("mutant_peptide_lengths.csv", "../results/mutant_peptide_lengths.csv"
     if os.path.exists(_c):
         LEN = pd.read_csv(_c); break
 
-ax = fig.add_subplot(gs[2, 0:8]); st.panel_label(ax, "f", dx=-0.10, dy=1.12)
+ax = fig.add_subplot(gs[2, 0:8]); st.head(fig, ax, "f")
 if LEN is not None:
     LO, HI = 7, 50
     # Row order puts the two dark fills apart, so no two neighbours read as the same series.
     SPECIES = [("wt",   "wild-type peptide over the site",          st.GREY),
                ("mut",  "mutant peptide, new lysine cleaves",       st.ORANGE),
-               ("abpp", "probe-labelled, acquired lysine blocked",  st.BLUE),
+               ("abpp", "probe-labeled, acquired lysine blocked",  st.BLUE),
                ("down", "downstream peptide, the second route",     st.GREEN)]
     ypos = np.arange(len(SPECIES))[::-1]
     for y, (k, lab, col) in zip(ypos, SPECIES):
@@ -328,17 +328,17 @@ if LEN is not None:
         short = 100 * (v < LO).mean()
         good = 100 * ((v >= LO) & (v <= HI)).mean()
         longp = 100 * (v > HI).mean()
-        ax.barh(y, short, color=col, height=0.60)
-        ax.barh(y, good, left=short, color=st.LIGHTGREY, height=0.60)
-        ax.barh(y, longp, left=short + good, color=st.GREY, height=0.60)
-        ax.text(short / 2, y, "%.0f%%" % short, ha="center", va="center", fontsize=6,
-                color=st.PAPER, fontweight="bold")
+        ax.barh(y, short, color=col, height=st.BARW)
+        ax.barh(y, good, left=short, color=st.LIGHTGREY, height=st.BARW)
+        ax.barh(y, longp, left=short + good, color=st.GREY, height=st.BARW)
+        ax.text(short / 2, y, "%.0f%%" % short, ha="center", va="center", fontsize=st.sz(6),
+                color=st.PAPER)
         ax.text(short + good / 2, y, "%.0f%% searchable" % good, ha="center", va="center",
-                fontsize=5.6, color=st.GREY)
-        ax.text(102, y, "median %.0f aa" % np.median(v), va="center", fontsize=5.6, color=st.GREY)
-    ax.set_yticks(ypos); ax.set_yticklabels([l for _, l, _ in SPECIES], fontsize=6)
+                fontsize=st.sz(5.6), color=st.GREY)
+        ax.text(102, y, "median %.0f aa" % np.median(v), va="center", fontsize=st.sz(5.6), color=st.GREY)
+    ax.set_yticks(ypos); ax.set_yticklabels([l for _, l, _ in SPECIES], fontsize=st.sz(6))
     ax.set_xlim(0, 126); ax.set_xticks([0, 25, 50, 75, 100])
-    ax.set_xlabel("share of the 8,020 acquired-lysine sites (%), by peptide length", fontsize=6)
+    ax.set_xlabel("share of the 8,020 acquired-lysine sites (%), by peptide length", fontsize=st.sz(6))
     # The band key lives in the caption, not the artwork: it collided with panel d's footer,
     # and the bars already carry their own labels.
     for sp in ("top", "right", "left"): ax.spines[sp].set_visible(False)

@@ -1,4 +1,4 @@
-# fig3 panel d -- fig3.py  |  SpecQuality medians, hits vs background
+# fig3 panel d -- fig3.py  |  SpecQuality medians, hits vs background (20 of 77 runs, 802,067 spectra)
 feature,hit_median,background_median,ratio_hit_over_background
 peak count,631.0,695.0,0.9079136690647482
 signal-to-noise,0.22105,0.1855,1.191644204851752

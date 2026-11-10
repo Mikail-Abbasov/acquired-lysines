@@ -1,6 +1,7 @@
 {
- "script": "graphical_abstract.py",
- "written": "2026-09-19",
+ "script": "graphical_abstract_v1.py",
+ "stem": "graphical_abstract",
+ "written": "2026-11-04",
  "numbers": {
   "akt1_e17k_peptides_searched": 3,
   "akt1_e17k_spectra": 0,

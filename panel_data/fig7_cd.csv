@@ -1,4 +1,4 @@
-# fig7 panel cd -- fig7.py  |  bootstrap decomposition: each probe against unlabelled lysines, and the probe-minus-probe difference
+# fig7 panel cd -- fig7.py  |  bootstrap decomposition: each probe against unlabeled lysines, and the probe-minus-probe difference
 feature,comparison,n_proteins,d,lo,hi
 cationic_8A,STP-only vs unlabelled,1026,0.1719814716868099,0.1148731013820483,0.2313571643739097
 cationic_8A,NASA-only vs unlabelled,1007,-0.0603551839246632,-0.1227058865874537,4.119363999574112e-05

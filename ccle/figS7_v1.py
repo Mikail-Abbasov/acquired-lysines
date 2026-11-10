@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
 """
-Figure S7 — support for Figure 6.
+Figure S7, support for Figure 6.
 
 Figure 6 claims that engagement is a property of the lysine and not of the molecule, resting on a
 null: no compound descriptor predicts which lysines a compound prefers. A null needs three things
-to be believed — that it is not an artefact of the design, that it is not an artefact of the 60%
-threshold, and that it is well powered — and it needs its boundary stated. Those are panels a-f.
+to be believed, that it is not an artefact of the design, that it is not an artefact of the 60%
+threshold, and that it is well powered, and it needs its boundary stated. Those are panels a-f.
 
   a  THE CONFOUND, NAMED. Pooled across datasets, 21 of 150 descriptor x site-feature pairs clear
-     q < 0.05. Every one of them involves a SIZE descriptor — molecular weight, heavy-atom count,
-     rotatable bonds, fsp3 — and molecular weight is almost a label for which screen a compound
+     q < 0.05. Every one of them involves a SIZE descriptor, molecular weight, heavy-atom count,
+     rotatable bonds, fsp3, and molecular weight is almost a label for which screen a compound
      came from. Within dataset: 0 of 150.
   b  The per-compound version of Fig. 6b, across occupancy rather than at one cut: 10 of 12
      features strengthen with occupancy in 173 compounds.
   c  No threshold at all. Site features against three continuous occupancy measures; 14, 12 and
      15 of 15 features remain significant.
   d  The decile profile, again threshold-free.
-  e  The compound-count gradient at five cuts, WITH the group sizes — 40% and 80% are the two
+  e  The compound-count gradient at five cuts, WITH the group sizes, 40% and 80% are the two
      that break monotonicity, and the panel shows why: n collapses at the extremes.
   f  WHAT THIS NULL CANNOT SEE. Not one of the ten descriptors or six shape terms encodes charge,
-     and every shape term is achiral by construction — NPR1 and NPR2 are identical for
+     and every shape term is achiral by construction, NPR1 and NPR2 are identical for
      enantiomers (step 32). So Fig. 6d is silent on exactly the two axes Figs. 5f and 7 test.
 """
 import os, re, sys, warnings
@@ -30,7 +30,9 @@ import matplotlib.pyplot as plt
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import abbasov_style as st
 import figure_data as fd
-st.apply()
+# One body type size for this figure; every other size is a ratio to it.
+BODY = 7.0
+st.apply(BODY)
 
 def find(n):
     for d in (".", "..", "ligand_rebuild", "../ligand_rebuild"):
@@ -83,13 +85,17 @@ assert len(SLOPE) == 12 and len(DEC) == 10 and len(CUTS) == 5, (len(SLOPE), len(
 
 HEAD = {}   # headline numbers per panel, captured where they are computed
 
-fig = plt.figure(figsize=(st.DOUBLE, st.DOUBLE * 0.90))
+# Panel c lists 14 features down its y-axis at 6.0 pt, which needs about 105 pt of row
+# pitch; row 0 gave it 102, and adjacent feature names printed through each other. The
+# type cannot come down, so the figure gets taller. Same cause as fig7 panel b. Panel f is
+# the binding one, not c: 10 rows in a 235 px axes, 11% short of what the labels need.
+fig = plt.figure(figsize=(st.DOUBLE, st.DOUBLE * 1.08))
 gs = fig.add_gridspec(3, 3, hspace=0.66, wspace=0.46,
                       left=0.072, right=0.982, top=0.945, bottom=0.058,
                       width_ratios=[1.0, 1.0, 1.0], height_ratios=[1.0, 1.0, 0.82])
 
 # ---------------------------------------------------------------- a: name the confound
-ax = fig.add_subplot(gs[0, 0]); st.panel_label(ax, "a", dx=-0.30, dy=1.07)
+ax = fig.add_subplot(gs[0, 0]); st.head(fig, ax, "a")
 # REBUILT ON STEP 37, 2026-09-07.
 # This panel used to plot step 31: 150 pairs over 10 descriptors -- a DIFFERENT analysis from the
 # one Figure 6d plots (step 37, 84 pairs over 6 descriptors). Both returned 21 significant pairs
@@ -107,19 +113,22 @@ y = np.arange(len(order))[::-1]
 # descriptors is answered quantitatively in Figure 6f (step 41).
 for yy, d in zip(y, order):
     n = int(cnt.get(d, 0))
-    ax.barh([yy], [n], height=0.66, color=st.ORANGE if n > 0 else st.LIGHTGREY)
-    ax.text(-0.12, yy, str(d).replace("_", " "), ha="right", va="center", fontsize=5.2,
+    ax.barh([yy], [n], height=st.BARW, color=st.ORANGE if n > 0 else st.LIGHTGREY)
+    ax.text(-0.12, yy, str(d).replace("_", " "), ha="right", va="center", fontsize=st.sz(5.2),
             color=st.GREY, fontweight="bold" if n > 0 else "normal")
 ax.set_yticks([])
 ax.set_xlabel("pairs clearing q < 0.05 when the three\ndatasets are pooled",
-              fontsize=6.0, linespacing=1.4)
+              fontsize=st.sz(6.0), linespacing=1.4)
 ax.set_xlim(0, max(cnt.values) * 1.18); ax.set_ylim(-1.2, len(order) - 0.4)
-ax.text(0.97, 0.05, "%d of %d pooled (%d compounds)\n%d of %d within NatChem (%d)\n"
+# "within NatChem" named the journal the screen was published in. The manuscript calls that
+# screen the fragment screen, and a panel cannot carry a superscript reference, so the panel
+# uses the paper's own name for it.
+ax.text(0.97, 0.05, "%d of %d pooled (%d compounds)\n%d of %d within the fragment screen (%d)\n"
         "%d of %d across slopes (%d)"
         % (len(SIG), len(POOL), int(POOL.n.iloc[0]),
            int((NATC.q < 0.05).sum()), len(NATC), int(NATC.n_compounds.iloc[0]),
            int((SLOP.q < 0.05).sum()), len(SLOP), int(SLOP.n.iloc[0])),
-        transform=ax.transAxes, ha="right", va="bottom", fontsize=5.0, color=st.ORANGE,
+        transform=ax.transAxes, ha="right", va="bottom", fontsize=st.sz(5.0), color=st.ORANGE,
         fontweight="bold", linespacing=1.4)
 for s_ in ("top", "right", "left"): ax.spines[s_].set_visible(False)
 HEAD["a_n_pairs_tested"] = int(len(POOL))
@@ -140,7 +149,7 @@ fd.panel("figS7", "a",
          note="step 37 pooled: one bar per compound descriptor, pairs clearing q < 0.05")
 
 # ---------------------------------------------------------------- b: slopes across occupancy
-ax = fig.add_subplot(gs[0, 1]); st.panel_label(ax, "b", dx=-0.34, dy=1.07)
+ax = fig.add_subplot(gs[0, 1]); st.head(fig, ax, "b")
 S = sorted(SLOPE, key=lambda r: r[1])
 y = np.arange(len(S))
 for i, (f_, sl, sd, q_, sig) in enumerate(S):
@@ -149,15 +158,14 @@ for i, (f_, sl, sd, q_, sig) in enumerate(S):
     ax.plot([sl - 1.96 * se, sl + 1.96 * se], [i, i], color=c, lw=1.3, solid_capstyle="round")
     ax.plot([sl], [i], "o", color=c, ms=3.6, mew=0)
 ax.axvline(0, color=st.GREY, lw=0.8)
-ax.set_yticks(y); ax.set_yticklabels([NICE(r[0]) for r in S], fontsize=5.2)
+ax.set_yticks(y); ax.set_yticklabels([NICE(r[0]) for r in S], fontsize=st.sz(5.2))
 ax.set_xlabel("how much the preference strengthens\nper 100 points of occupancy",
-              fontsize=6.0, linespacing=1.4)
+              fontsize=st.sz(6.0), linespacing=1.4)
 ax.set_xlim(-0.55, 0.55); ax.set_ylim(-0.6, len(S) + 0.3)
 # Top left is empty: the strongest slopes are positive and sit right.
 ax.text(0.02, 0.98, "%d of %d\nn = %d compounds"
         % (sum(1 for r in SLOPE if r[4]), len(SLOPE), _NCMP),
-        transform=ax.transAxes, ha="left", va="top", fontsize=5.4, color=st.BLUE,
-        fontweight="bold", linespacing=1.4)
+        transform=ax.transAxes, ha="left", va="top", fontsize=st.sz(5.4), color=st.BLUE, linespacing=1.4)
 for s in ("top", "right"): ax.spines[s].set_visible(False)
 HEAD["b_n_features"] = int(len(SLOPE))
 HEAD["b_n_features_strengthening"] = int(sum(1 for r in SLOPE if r[4]))
@@ -170,7 +178,7 @@ fd.panel("figS7", "b",
          note="one point per site feature, mean per-compound slope over %d compounds" % _NCMP)
 
 # ---------------------------------------------------------------- c: no threshold at all
-ax = fig.add_subplot(gs[0, 2]); st.panel_label(ax, "c", dx=-0.34, dy=1.07)
+ax = fig.add_subplot(gs[0, 2]); st.head(fig, ax, "c")
 MEAS = ["mean_occ", "max_occ", "sum_occ_norm"]
 LBLM = {"mean_occ": "mean occupancy", "max_occ": "highest occupancy",
         "sum_occ_norm": "total occupancy"}
@@ -183,10 +191,10 @@ for m_ in MEAS:
     ax.plot([d.rho.get(f, np.nan) for f in feats], y, mk, color=c, ms=3.0, mew=0,
             label="%s (%d of %d)" % (LBLM[m_], int((d.q < 0.05).sum()), len(d)))
 ax.axvline(0, color=st.GREY, lw=0.8)
-ax.set_yticks(y); ax.set_yticklabels([NICE(f) for f in feats], fontsize=4.6)
-ax.set_xlabel("correlation with occupancy (Spearman ρ)", fontsize=6.0)
+ax.set_yticks(y); ax.set_yticklabels([NICE(f) for f in feats], fontsize=st.sz(5))
+ax.set_xlabel("correlation with occupancy (Spearman ρ)", fontsize=st.sz(6.0))
 ax.set_ylim(-6.3, len(feats) + 0.6)   # blank strip below for the legend; no caption above
-ax.legend(frameon=False, fontsize=4.9, loc="lower left", handletextpad=0.3, borderaxespad=0.3)
+ax.legend(frameon=False, fontsize=st.sz(5), loc="lower left", handletextpad=0.3, borderaxespad=0.3)
 # The caption used to sit bottom-right, directly on the legend. The top-left corner is empty
 # because features are sorted by rho, so the highest rows are the ones furthest right.
 
@@ -202,7 +210,7 @@ fd.panel("figS7", "c",
          note="Spearman rho against three threshold-free occupancy measures")
 
 # ---------------------------------------------------------------- d: decile profile
-ax = fig.add_subplot(gs[1, 0]); st.panel_label(ax, "d", dx=-0.24, dy=1.07)
+ax = fig.add_subplot(gs[1, 0]); st.head(fig, ax, "d")
 DLB = {"rsa_tien": "exposure", "crowding_": "crowding 8Å", "atoms_10A": "atoms 10Å",
        "propka_pK": "predicted pKa", "in_pocket": "in pocket"}
 DC = [st.ORANGE, st.BLUE, st.BLUE, st.ORANGE, st.GREEN]
@@ -211,9 +219,9 @@ for j, h in enumerate(dhdr):
     ax.plot(xs, [d[3][j] for d in DEC], "-o", color=DC[j], lw=1.0, ms=2.4, mew=0,
             ls="-" if j % 2 == 0 else "--", label=DLB.get(h, h))
 ax.axhline(0, color=st.LIGHTGREY, lw=0.8)
-ax.set_xlabel("median highest occupancy in the decile (%)", fontsize=6.0)
-ax.set_ylabel("shift from the lowest decile", fontsize=6.0)
-ax.legend(frameon=False, fontsize=4.9, loc="lower left", handlelength=1.4, ncol=2,
+ax.set_xlabel("median highest occupancy in the decile (%)", fontsize=st.sz(6.0))
+ax.set_ylabel("shift from the lowest decile", fontsize=st.sz(6.0))
+ax.legend(frameon=False, fontsize=st.sz(5), loc="lower left", handlelength=1.4, ncol=2,
           columnspacing=0.9, borderaxespad=0.3)
 ax.set_ylim(-0.34, 0.32)
 HEAD["d_n_deciles"] = int(len(DEC))
@@ -226,7 +234,7 @@ fd.panel("figS7", "d",
 
 
 # ---------------------------------------------------------------- e: where n collapses
-ax = fig.add_subplot(gs[1, 1]); st.panel_label(ax, "e", dx=-0.26, dy=1.07)
+ax = fig.add_subplot(gs[1, 1]); st.head(fig, ax, "e")
 xs = np.arange(len(CUTS[2][1]))
 for cut, rows, mono in CUTS:
     # rust = breaks monotonicity in Fig. 6e; blue = the 60% cut the paper uses;
@@ -234,15 +242,15 @@ for cut, rows, mono in CUTS:
     c = st.ORANGE if not mono else (st.BLUE if cut == 60 else st.GREY)
     lw_ = 1.3 if cut == 60 else (1.1 if not mono else 0.8)
     ax.plot(xs, [r[1] for r in rows], "-o", color=c, lw=lw_, ms=2.9 if cut == 60 else 2.3, mew=0)
-    ax.text(len(rows) - 0.9, rows[-1][1], "  %d%%" % cut, fontsize=4.9, color=c, va="center",
+    ax.text(len(rows) - 0.9, rows[-1][1], "  %d%%" % cut, fontsize=st.sz(5), color=c, va="center",
             fontweight="bold" if (not mono or cut == 60) else "normal")
 _NREF = 50                       # the reference line this panel draws, named once
 ax.axhline(_NREF, color=st.GREY, lw=0.9, ls=(0, (3, 1.6)))
-ax.text(0.02, _NREF + 2, "%d sites" % _NREF, fontsize=4.9, color=st.GREY, va="bottom")
-ax.set_yscale("log")
-ax.set_xticks(xs); ax.set_xticklabels([r[0].replace(">=", "≥") for r in CUTS[2][1]], fontsize=5.4)
-ax.set_xlabel("compounds that engage the site", fontsize=6.0)
-ax.set_ylabel("sites in the group", fontsize=6.0)
+ax.text(0.02, _NREF + 2, "%d sites" % _NREF, fontsize=st.sz(5), color=st.GREY, va="bottom")
+ax.set_yscale("log"); st.plain_log(ax)
+ax.set_xticks(xs); ax.set_xticklabels([r[0].replace(">=", "≥") for r in CUTS[2][1]], fontsize=st.sz(5.4))
+ax.set_xlabel("compounds that engage the site", fontsize=st.sz(6.0))
+ax.set_ylabel("sites in the group", fontsize=st.sz(6.0))
 ax.set_xlim(-0.3, len(xs) + 0.7)
 # Open a clear decade below the data so the caption has its own space instead of lying across
 # the 70% and 80% end labels, which fall to the bottom right of the log axis.
@@ -266,17 +274,17 @@ CHG = pd.read_csv(find("step42_charge_information.csv"))
 CHI = pd.read_csv(find("step42_chirality.csv"))
 NPR = pd.read_csv(find("step42_npr_spread.csv"))
 
-fsub = gs[1, 2].subgridspec(2, 1, hspace=0.85, height_ratios=[1.25, 1.0])
-ax = fig.add_subplot(fsub[0, 0]); st.panel_label(ax, "f", dx=-0.26, dy=1.18)
+fsub = gs[1, 2].subgridspec(2, 1, hspace=0.62, height_ratios=[2.05, 1.0])
+ax = fig.add_subplot(fsub[0, 0]); st.head(fig, ax, "f")
 C = CHG.sort_values("rho_mw")
 yy = np.arange(len(C))
-ax.barh(yy - 0.19, C.rho_mw, height=0.36, color=st.LIGHTGREY)
-ax.barh(yy + 0.19, C.rho_charge, height=0.36, color=st.ORANGE)
-ax.set_yticks(yy); ax.set_yticklabels([d.replace("_", " ") for d in C.descriptor], fontsize=4.6)
-ax.set_xlabel("|ρ| with molecular weight (grey)\nand with net charge (rust)", fontsize=5.6,
+ax.barh(yy - st.grp(2) / 2, C.rho_mw, height=st.grp(2), color=st.LIGHTGREY)
+ax.barh(yy + st.grp(2) / 2, C.rho_charge, height=st.grp(2), color=st.ORANGE)
+ax.set_yticks(yy); ax.set_yticklabels([d.replace("_", " ") for d in C.descriptor], fontsize=st.sz(5))
+ax.set_xlabel("|ρ| with molecular weight (grey)\nand with net charge (rust)", fontsize=st.sz(5.6),
               linespacing=1.4)
 ax.set_xlim(0, 1.04); ax.set_ylim(-0.8, len(C) - 0.2)
-ax.tick_params(labelsize=4.6)
+ax.tick_params(labelsize=st.sz(5))
 for s_ in ("top", "right"): ax.spines[s_].set_visible(False)
 
 ax = fig.add_subplot(fsub[1, 0])
@@ -288,12 +296,12 @@ for i_, (lab, v, c) in enumerate(GRP):
     ax.plot(v, i_ + rgc.normal(0, 0.10, len(v)), "o", ms=2.2, mew=0, color=c)
     ax.plot([np.median(v)] * 2, [i_ - 0.28, i_ + 0.28], color=c, lw=1.6, solid_capstyle="round")
 _REFMAX = float(CHI[CHI.kind == "reflected"].dNPR1.max())
-ax.text(0.013, 0.0, "exactly %g" % _REFMAX, fontsize=5.0, color=st.BLUE, fontweight="bold",
+ax.text(0.013, 0.0, "exactly %g" % _REFMAX, fontsize=st.sz(5.0), color=st.BLUE,
         va="center", ha="left")
-ax.set_yticks(range(3)); ax.set_yticklabels([g[0] for g in GRP], fontsize=4.8)
-ax.set_xlabel("change in NPR1", fontsize=5.6)
+ax.set_yticks(range(3)); ax.set_yticklabels([g[0] for g in GRP], fontsize=st.sz(5))
+ax.set_xlabel("change in NPR1", fontsize=st.sz(5.6))
 ax.set_xlim(-0.012, 0.33); ax.set_ylim(-0.7, 2.7)
-ax.tick_params(labelsize=4.6)
+ax.tick_params(labelsize=st.sz(5))
 for s_ in ("top", "right"): ax.spines[s_].set_visible(False)
 HEAD["f_n_descriptors"] = int(len(CHG))
 HEAD["f_charge_max_abs_rho"] = round(float(CHG.rho_charge.max()), 3)

@@ -1,0 +1,237 @@
+[
+ {
+  "figno": 1,
+  "panels": [
+   "b"
+  ],
+  "mid_list": false,
+  "entry": "(B) Codon routes into and out of lysine. E to K ranks first of 363 observed substitution pairs at 181,252 sites, 4.12% of all missense; context-corrected enrichment 1.12-fold, against 3.59, 3.38 and 3.16 for R to H, R to C and R to Q. Lysine is gained 85.5% by C>T and lost 0% by C>T. Rust marks the C>T routes, which are G:C to A:T changes, half of all cancer missense mutation. No C>T route leaves lysine because AAA carries no G or C, and the only G to A available to AAG gives AAA, which is still lysine. Arrow width increases with the share shown beside it.",
+  "kept": "(B) Codon routes into and out of lysine. Lysine is gained 85.5% by C>T and lost 0% by C>T. Rust marks the C>T routes, which are G:C to A:T changes, half of all cancer missense mutation. No C>T route leaves lysine because AAA carries no G or C, and the only G to A available to AAG gives AAA, which is still lysine. Arrow width increases with the share shown beside it. Values in Table S2.",
+  "moved": [
+   "E to K ranks first of 363 observed substitution pairs at 181,252 sites, 4.12% of all missense; context-corrected enrichment 1.12-fold, against 3.59, 3.38 and 3.16 for R to H, R to C and R to Q."
+  ]
+ },
+ {
+  "figno": 1,
+  "panels": [
+   "g"
+  ],
+  "mid_list": false,
+  "entry": "(G) Somatic union 6.72% (295,411 of 4,395,403) against germline 3.29%, 2.04-fold. The germline value is an expected diploid count per individual, 471.1 acquired lysines among 14,342 missense variants, and not a count of distinct variants. The gnomAD v2.1.1 non-cancer exome subset gives 508.0 per individual, 3.41%. Across all twenty residues lysine ranks third at 2.05 and cysteine fourth at 1.76, in a distribution from 0.43 to 2.63, median 1.07.",
+  "kept": "(G) Somatic union 6.72% (295,411 of 4,395,403) against germline 3.29%, 2.04-fold. The germline value is an expected diploid count per individual, 471.1 acquired lysines among 14,342 missense variants, and not a count of distinct variants. Values in Table S2.",
+  "moved": [
+   "The gnomAD v2.1.1 non-cancer exome subset gives 508.0 per individual, 3.41%.",
+   "Across all twenty residues lysine ranks third at 2.05 and cysteine fourth at 1.76, in a distribution from 0.43 to 2.63, median 1.07."
+  ]
+ },
+ {
+  "figno": 2,
+  "panels": [
+   "a"
+  ],
+  "mid_list": false,
+  "entry": "**(A) Four peptide species can carry an acquired-lysine site, and only two contain it.** One real site, written out in full: LDHB E287K in NCIH1793, [K].GMYGIENK[287]VFLSLP​CILNAR.[G]. Bracketed residues outside the periods are the flanking residues in the protein and are not part of the peptide; the bracketed number is the position of the acquired lysine in UniProt P07195. Residues 280–299 are a single tryptic peptide of 20 residues in the wild-type protein. The acquired lysine, marked in orange on the two species that carry it, subdivides that peptide into an 8-residue mutant peptide and a 12-residue downstream peptide; the missed-cleavage form spans all 20, and the bars are drawn on one residue pitch so their lengths are those counts. Sequences and lengths are computed by digesting P07195 with and without the substitution, not transcribed. The mutant peptide and its missed-cleavage form carry the mutated residue; the downstream peptide and the wild-type peptide do not. An acquired lysine creates a tryptic cleavage site, so the mutant peptide has different boundaries from the wild-type peptide; the two are not one sequence with a letter changed. That same new boundary is what releases the downstream peptide, which therefore carries no mutated residue and still exists only in the mutant protein, and is why it can report a site it does not contain. For an E→K site the mutant is heavier by 303.26 Da once the new lysine carries TMTpro, with different hydrophobicity and charge state. **This site is an instance of the asymmetry the figure is about, not an illustration of it:** across the 42 plexes the 20-residue wild-type peptide was never observed and the 8-residue mutant peptide was, which places LDHB E287K among the 26 of 7,853 uncovered sites in panel C.",
+  "kept": "**(A) Four peptide species can carry an acquired-lysine site, and only two contain it.** One real site, written out in full: LDHB E287K in NCIH1793, [K].GMYGIENK[287]VFLSLP​CILNAR.[G]. Bracketed residues outside the periods are the flanking residues in the protein and are not part of the peptide; the bracketed number is the position of the acquired lysine in UniProt P07195. The acquired lysine, marked in orange on the two species that carry it, subdivides that peptide into an 8-residue mutant peptide and a 12-residue downstream peptide; the missed-cleavage form spans all 20, and the bars are drawn on one residue pitch so their lengths are those counts. Sequences and lengths are computed by digesting P07195 with and without the substitution, not transcribed. The mutant peptide and its missed-cleavage form carry the mutated residue; the downstream peptide and the wild-type peptide do not. An acquired lysine creates a tryptic cleavage site, so the mutant peptide has different boundaries from the wild-type peptide; the two are not one sequence with a letter changed. That same new boundary is what releases the downstream peptide, which therefore carries no mutated residue and still exists only in the mutant protein, and is why it can report a site it does not contain. Values in Table S2.",
+  "moved": [
+   "Residues 280–299 are a single tryptic peptide of 20 residues in the wild-type protein.",
+   "For an E→K site the mutant is heavier by 303.26 Da once the new lysine carries TMTpro, with different hydrophobicity and charge state. **This site is an instance of the asymmetry the figure is about, not an illustration of it:** across the 42 plexes the 20-residue wild-type peptide was never observed and the 8-residue mutant peptide was, which places LDHB E287K among the 26 of 7,853 uncovered sites in panel C."
+  ]
+ },
+ {
+  "figno": 2,
+  "panels": [
+   "b"
+  ],
+  "mid_list": false,
+  "entry": "(B) Both bars are the same 8,470 observations. A conventional 20,431-protein search covers 640 (7.56%); the mutation-aware peptide-level search over 10.17 million entries covers 617 (7.28%). 7,853 sites, 92.7%, are never covered in any of the 42 plexes.",
+  "kept": "(B) Both bars are the same 8,470 observations. Values in Table S2.",
+  "moved": [
+   "A conventional 20,431-protein search covers 640 (7.56%); the mutation-aware peptide-level search over 10.17 million entries covers 617 (7.28%). 7,853 sites, 92.7%, are never covered in any of the 42 plexes."
+  ]
+ },
+ {
+  "figno": 2,
+  "panels": [
+   "c"
+  ],
+  "mid_list": false,
+  "entry": "(C) The mutant peptide was detected at 27 of the 617 covered sites (4.38%) and at 26 of the 7,853 uncovered ones (0.33%) by the mutant-only route, 53 sites in all, 0.63% of the class, on 52 distinct genomic sites, at the search's reported 1% false-discovery rate, which is where the panel is drawn. Thirty of those 53 also clear the score margin of Figure 3B: 16 of 617 covered and 14 of 7,853 uncovered, 0.35% of the class on 29 distinct genomic sites. Detection is by a cleaved species, a missed-cleavage species, or both.",
+  "kept": "(C) The mutant peptide was detected at 27 of the 617 covered sites (4.38%) and at 26 of the 7,853 uncovered ones (0.33%) by the mutant-only route, 53 sites in all, 0.63% of the class, on 52 distinct genomic sites, at the search's reported 1% false-discovery rate, which is where the panel is drawn. Detection is by a cleaved species, a missed-cleavage species, or both. Values in Table S2.",
+  "moved": [
+   "Thirty of those 53 also clear the score margin of Figure 3B: 16 of 617 covered and 14 of 7,853 uncovered, 0.35% of the class on 29 distinct genomic sites."
+  ]
+ },
+ {
+  "figno": 2,
+  "panels": [
+   "f"
+  ],
+  "mid_list": false,
+  "entry": "(F) The downstream peptide gives 15 sites, 7 shared with the first route and 8 new, 61 in the union. It returned zero entrapment hits across 42 experiments (figure S4d) against 0.58% for variant-containing peptides in the same searches, which is why the two are kept apart. Of the 53 mutant-peptide sites, 41 rest on a single spectrum and 12 on two or more; of the 30 past the margin, 24 and six (figure S3e).",
+  "kept": "(F) The downstream peptide gives 15 sites, 7 shared with the first route and 8 new, 61 in the union. It returned zero entrapment hits across 42 experiments (figure S4d) against 0.58% for variant-containing peptides in the same searches, which is why the two are kept apart. Values in Table S2.",
+  "moved": [
+   "Of the 53 mutant-peptide sites, 41 rest on a single spectrum and 12 on two or more; of the 30 past the margin, 24 and six (figure S3e)."
+  ]
+ },
+ {
+  "figno": 3,
+  "panels": [
+   "b"
+  ],
+  "mid_list": false,
+  "entry": "(B) Margin dose-response over 1,489 rows, counted as distinct peptides. The false-discovery proportion is 4.70% at margin 0, 1,419 variant peptides against 70 entrapment, and falls to 3.91% at a margin of 2, 2.36% at 5 and 0.83% at 10, where 832 variant peptides survive against seven entrapment. Past a margin of 15 only one entrapment peptide remains, so the rate there reflects a single count rather than a cleaner set. A 1% reported false-discovery rate is not a 1% realized one for this class of peptide unless a margin is applied. Restricted to the acquired-lysine class the proportion is bounded at 7.9% by the rule of three, with the counts and the comparison against the rest of the variant class in Extended Results.",
+  "kept": "(B) Margin dose-response over 1,489 rows, counted as distinct peptides. Past a margin of 15 only one entrapment peptide remains, so the rate there reflects a single count rather than a cleaner set. A 1% reported false-discovery rate is not a 1% realized one for this class of peptide unless a margin is applied. Restricted to the acquired-lysine class the proportion is bounded at 7.9% by the rule of three, with the counts and the comparison against the rest of the variant class in Extended Results. Values in Table S2.",
+  "moved": [
+   "The false-discovery proportion is 4.70% at margin 0, 1,419 variant peptides against 70 entrapment, and falls to 3.91% at a margin of 2, 2.36% at 5 and 0.83% at 10, where 832 variant peptides survive against seven entrapment."
+  ]
+ },
+ {
+  "figno": 3,
+  "panels": [
+   "c"
+  ],
+  "mid_list": false,
+  "entry": "**(C) Per-plex consistency.** Identifications at margin ≥ 10, one point per plex on a log axis, with the two populations side by side. Teal is the variant identifications across all 42 plexes, 5 to 79 per plex. Rust is the entrapment, six identifications falling in four plexes, 30, 09, 38 and 33. Six among 1,039 is 0.58% pooled, and it is spread across four experiments rather than carried by one. **This is the identification denominator, not panel B’s peptide one.**",
+  "kept": "**(C) Per-plex consistency.** Identifications at margin ≥ 10, one point per plex on a log axis, with the two populations side by side. Six among 1,039 is 0.58% pooled, and it is spread across four experiments rather than carried by one. **This is the identification denominator, not panel B’s peptide one.** Values in Table S2.",
+  "moved": [
+   "Teal is the variant identifications across all 42 plexes, 5 to 79 per plex.",
+   "Rust is the entrapment, six identifications falling in four plexes, 30, 09, 38 and 33."
+  ]
+ },
+ {
+  "figno": 3,
+  "panels": [
+   "d"
+  ],
+  "mid_list": false,
+  "entry": "(D) Median spectral-quality features for the 38 acquired-lysine identifications expressed relative to 802,067 background spectra from 20 of the 77 runs in the same searches, so 1.0 is the background. Peak count 0.91-fold, signal-to-noise 1.19-fold, from medians of 631 against 695 peaks and 0.221 against 0.185. These features score a spectrum on its own properties, with no reference to the search engine, the database or the false-discovery rate. The plus one dalton tail accounts for 7.7% of variant and 7.3% of background spectra. SQS$_{GM}$ is omitted because the MGF export zeroed its intensity term, which would collapse a geometric mean.",
+  "kept": "(D) Median spectral-quality features for the 38 acquired-lysine identifications expressed relative to 802,067 background spectra from 20 of the 77 runs in the same searches, so 1.0 is the background. These features score a spectrum on its own properties, with no reference to the search engine, the database or the false-discovery rate. The plus one dalton tail accounts for 7.7% of variant and 7.3% of background spectra. SQS$_{GM}$ is omitted because the MGF export zeroed its intensity term, which would collapse a geometric mean. Values in Table S2.",
+  "moved": [
+   "Peak count 0.91-fold, signal-to-noise 1.19-fold, from medians of 631 against 695 peaks and 0.221 against 0.185."
+  ]
+ },
+ {
+  "figno": 4,
+  "panels": [
+   "b",
+   "c"
+  ],
+  "mid_list": false,
+  "entry": "(B, C) The paired display, ungated and at a confidence of 90 or above. Each feature's two effects are drawn on one line, a filled circle for the effect on being labeled and an open diamond for the effect on being blocked, so the movement under the gate reads directly. Average distance between the pair: ungated charge 0.074, shape 0.075; gated charge 0.068, shape 0.126.",
+  "kept": "(B, C) The paired display, ungated and at a confidence of 90 or above. Each feature's two effects are drawn on one line, a filled circle for the effect on being labeled and an open diamond for the effect on being blocked, so the movement under the gate reads directly. Values in Table S2.",
+  "moved": [
+   "Average distance between the pair: ungated charge 0.074, shape 0.075; gated charge 0.068, shape 0.126."
+  ]
+ },
+ {
+  "figno": 4,
+  "panels": [
+   "d"
+  ],
+  "mid_list": false,
+  "entry": "**(D) The gate, step by step.** Four representative features' reactivity effect at each rung. The strip beneath each rung is what that rung keeps, drawn to scale against the ungated 245,684 lysines, with the labeled share as the dark segment: none 245,684 of which 30,805 labeled (246k on the figure, 100% kept, 13% labeled), ≥ 50 189,913 of which 28,316 (190k, 77%, 15%), ≥ 70 167,057 of which 25,979 (167k, 68%, 16%), ≥ 90 97,722 of which 17,409 (98k, 40%, 18%). Charge features hold or strengthen across the ladder; shape features fall. The gate therefore costs 60% of all lysines by its tightest rung while raising the labeled share from 13% to 18%, so the two groups do not shrink at the same rate.",
+  "kept": "**(D) The gate, step by step.** Four representative features' reactivity effect at each rung. Charge features hold or strengthen across the ladder; shape features fall. The gate therefore costs 60% of all lysines by its tightest rung while raising the labeled share from 13% to 18%, so the two groups do not shrink at the same rate. Values in Table S2.",
+  "moved": [
+   "The strip beneath each rung is what that rung keeps, drawn to scale against the ungated 245,684 lysines, with the labeled share as the dark segment: none 245,684 of which 30,805 labeled (246k on the figure, 100% kept, 13% labeled), ≥ 50 189,913 of which 28,316 (190k, 77%, 15%), ≥ 70 167,057 of which 25,979 (167k, 68%, 16%), ≥ 90 97,722 of which 17,409 (98k, 40%, 18%)."
+  ]
+ },
+ {
+  "figno": 4,
+  "panels": [
+   "e"
+  ],
+  "mid_list": false,
+  "entry": "(E) The permutation test, over the gate ladder and against the null. Two stacked axes. Agreement is the correlation, across the features of one kind, between a feature's effect on reactivity and its effect on ligandability. The upper axis is that agreement as the gate tightens: charge stays at 0.98 to 0.99 throughout while shape falls 0.97, 0.90, 0.77, 0.35 at gates of none, 50, 70 and 90. Printed above each gate is the exact one-sided permutation p for the gap between the two kinds at that gate: 0.412, 0.034, 0.009 and 0.003. The lower is the null itself, all 5,005 ways of splitting these fifteen features six against nine, with both observed values marked: +0.009 ungated and +0.639 gated. Both are stated because either alone misleads, and figure S5g is the control against the gate keeping only the strongest sites.",
+  "kept": "(E) The permutation test, over the gate ladder and against the null. Two stacked axes. Agreement is the correlation, across the features of one kind, between a feature's effect on reactivity and its effect on ligandability. Printed above each gate is the exact one-sided permutation p for the gap between the two kinds at that gate: 0.412, 0.034, 0.009 and 0.003. Both are stated because either alone misleads, and figure S5g is the control against the gate keeping only the strongest sites. Values in Table S2.",
+  "moved": [
+   "The upper axis is that agreement as the gate tightens: charge stays at 0.98 to 0.99 throughout while shape falls 0.97, 0.90, 0.77, 0.35 at gates of none, 50, 70 and 90.",
+   "The lower is the null itself, all 5,005 ways of splitting these fifteen features six against nine, with both observed values marked: +0.009 ungated and +0.639 gated."
+  ]
+ },
+ {
+  "figno": 5,
+  "panels": [
+   "a"
+  ],
+  "mid_list": false,
+  "entry": "(A) What is measured, and what is done with it. A probe labels lysines; a compound competes with the probe, and occupancy is the share of probe labeling it competes away. All 1,642,330 site × compound measurements in the three screens are shown, 8,019 of them (0.49%) reaching 60%. The median compound quantifies 6,332 lysines and engages 14. Right: the design for one compound, its engaged sites against the sites it was quantified at and left below the cut.",
+  "kept": "(A) What is measured, and what is done with it. A probe labels lysines; a compound competes with the probe, and occupancy is the share of probe labeling it competes away. The median compound quantifies 6,332 lysines and engages 14. Right: the design for one compound, its engaged sites against the sites it was quantified at and left below the cut. Values in Table S2.",
+  "moved": [
+   "All 1,642,330 site × compound measurements in the three screens are shown, 8,019 of them (0.49%) reaching 60%."
+  ]
+ },
+ {
+  "figno": 5,
+  "panels": [
+   "c"
+  ],
+  "mid_list": false,
+  "entry": "(C) The measured model against the reproducibility ceiling. AUC 0.617 [0.594, 0.640] against a ceiling of 0.723 [0.706, 0.744] derived from agreement between independent halves of the same screen, a gap of 0.106; train AUC 0.619. 30,805 lysines on 6,201 proteins, 3,047 of them (9.9%) engaged by at least one compound. The ceiling drawn is the fragment screen's at twenty compounds per half, the deepest split the data support. That gap is reproducible signal the structure does not reach. It is not overfitting, since optimism is +0.002 AUC. The ceiling is still rising at the deepest split, so 0.723 is a lower bound. See also Figures S6B and S6D.",
+  "kept": "(C) The measured model against the reproducibility ceiling. The ceiling drawn is the fragment screen's at twenty compounds per half, the deepest split the data support. That gap is reproducible signal the structure does not reach. It is not overfitting, since optimism is +0.002 AUC. The ceiling is still rising at the deepest split, so 0.723 is a lower bound. See also Figures S6B and S6D. Values in Table S2.",
+  "moved": [
+   "AUC 0.617 [0.594, 0.640] against a ceiling of 0.723 [0.706, 0.744] derived from agreement between independent halves of the same screen, a gap of 0.106; train AUC 0.619. 30,805 lysines on 6,201 proteins, 3,047 of them (9.9%) engaged by at least one compound."
+  ]
+ },
+ {
+  "figno": 5,
+  "panels": [
+   "d"
+  ],
+  "mid_list": false,
+  "entry": "(D) What the model buys at any operating point. Receiver-operating curve for the composite, every site predicted once, with the band spanning 95% of 20 held-out splits. There is no operating point where this model is useful. At 5% false positives it recovers 11% of engaged sites, and at 10% it recovers 19%.",
+  "kept": "(D) What the model buys at any operating point. Receiver-operating curve for the composite, every site predicted once, with the band spanning 95% of 20 held-out splits. There is no operating point where this model is useful. Values in Table S2.",
+  "moved": [
+   "At 5% false positives it recovers 11% of engaged sites, and at 10% it recovers 19%."
+  ]
+ },
+ {
+  "figno": 5,
+  "panels": [
+   "e"
+  ],
+  "mid_list": false,
+  "entry": "(E) No compound property predicts which lysines a compound prefers. Every descriptor × site-feature-preference correlation, one point per pair, with rust marking pairs clearing q < 0.05. Pooled across the three screens (82 compounds), 21 of 84 pairs clear it against 4.2 expected; within the fragment screen alone (62 compounds), 0 of 84; in the within-dataset slope analysis (173 compounds), 0 of 72 against 3.6 expected. This is a statement about the descriptors that were tested, which Figure S7F and note N7 list.",
+  "kept": "(E) No compound property predicts which lysines a compound prefers. Every descriptor × site-feature-preference correlation, one point per pair, with rust marking pairs clearing q < 0.05. This is a statement about the descriptors that were tested, which Figure S7F and note N7 list. Values in Table S2.",
+  "moved": [
+   "Pooled across the three screens (82 compounds), 21 of 84 pairs clear it against 4.2 expected; within the fragment screen alone (62 compounds), 0 of 84; in the within-dataset slope analysis (173 compounds), 0 of 72 against 3.6 expected."
+  ]
+ },
+ {
+  "figno": 6,
+  "panels": [
+   "c",
+   "d"
+  ],
+  "mid_list": false,
+  "entry": "(C, D) What each probe prefers, and which part of the charge effect belongs to which. Effects are standardized differences across proteins; intervals are 95% percentile bootstrap confidence intervals, resampling proteins (Methods). Cationic residues within 8 Å, d = +0.233, and net charge within 8 Å, d = +0.180, are the two features that separate the probes; the next largest, aromatic contacts at d = 0.118, does not. Zero of five pocket features and zero of nine shape features differ. The q values and the full twenty-two-feature test are in Figure 6B.",
+  "kept": "(C, D) What each probe prefers, and which part of the charge effect belongs to which. Effects are standardized differences across proteins; intervals are 95% percentile bootstrap confidence intervals, resampling proteins (Methods). Zero of five pocket features and zero of nine shape features differ. The q values and the full twenty-two-feature test are in Figure 6B. Values in Table S2.",
+  "moved": [
+   "Cationic residues within 8 Å, d = +0.233, and net charge within 8 Å, d = +0.180, are the two features that separate the probes; the next largest, aromatic contacts at d = 0.118, does not."
+  ]
+ },
+ {
+  "figno": 6,
+  "panels": [
+   "e"
+  ],
+  "mid_list": false,
+  "entry": "(E) Concavity belongs to the site, not the reagent. Enclosure d = +0.073 (q = 1.1 × 10⁻⁵) for labeled against unlabeled lysines, and d = 0.019 (q = 0.71) between the two probes. See also Figures S8B and S8c.",
+  "kept": "(E) Concavity belongs to the site, not the reagent. See also Figures S8B and S8c. Values in Table S2.",
+  "moved": [
+   "Enclosure d = +0.073 (q = 1.1 × 10⁻⁵) for labeled against unlabeled lysines, and d = 0.019 (q = 0.71) between the two probes."
+  ]
+ },
+ {
+  "figno": 7,
+  "panels": [
+   "a"
+  ],
+  "mid_list": false,
+  "entry": "(A) One reference atom, on both sides. The first version of this comparison measured union positions at Cβ and measured lysines at Nζ, and returned a separation of 2.256 against a control of 0.330, a 6.84-fold ratio that is an artifact of the mismatch. The three legitimate anchorings, both sides at Cβ, both modeled at Nζ, and both at Cβ under a symmetric convention, give 0.571, 0.535 and 0.583 against controls of 0.410, 0.331 and 0.407. The panel shows the artifact and the correction.",
+  "kept": "(A) One reference atom, on both sides. The panel shows the artifact and the correction. Values in Table S2.",
+  "moved": [
+   "The first version of this comparison measured union positions at Cβ and measured lysines at Nζ, and returned a separation of 2.256 against a control of 0.330, a 6.84-fold ratio that is an artifact of the mismatch.",
+   "The three legitimate anchorings, both sides at Cβ, both modeled at Nζ, and both at Cβ under a symmetric convention, give 0.571, 0.535 and 0.583 against controls of 0.410, 0.331 and 0.407."
+  ]
+ }
+]

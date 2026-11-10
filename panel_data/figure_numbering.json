@@ -1,0 +1,69 @@
+{
+ "note": "Ledger files and panel CSVs are named by SOURCE figure number, which is the pre-merge numbering. The published paper uses the values on the right of source_to_published. Panels listed under cut_to_extended are not in the published figure; their text is in Extended Results in the Supporting Information.",
+ "source_to_published": {
+  "1": 1,
+  "2": 2,
+  "3": 3,
+  "4": 4,
+  "5": 5,
+  "6": 5,
+  "7": 6,
+  "8": 7
+ },
+ "published_figure_count": 7,
+ "panel_map": {
+  "1a": "1a",
+  "1b": "1b",
+  "1c": "1c",
+  "1d": "1d",
+  "1e": "1e",
+  "1f": "1f",
+  "1g": "1g",
+  "2a": "2a",
+  "2b": "2b",
+  "2c": "2c",
+  "2d": "2d",
+  "2e": "2e",
+  "2f": "2f",
+  "3a": "3a",
+  "3b": "3b",
+  "3c": "3c",
+  "3d": "3d",
+  "3e": "3e",
+  "3f": "3f",
+  "4a": "4a",
+  "4b": "4b",
+  "4c": "4c",
+  "4d": "4d",
+  "4e": "4e",
+  "4f": "4f",
+  "5a": "5c",
+  "5c": "5d",
+  "5e": "5f",
+  "6a": "5a",
+  "6b": "5b",
+  "6d": "5e",
+  "7a": "6a",
+  "7b": "6b",
+  "7c": "6c",
+  "7d": "6d",
+  "7e": "6e",
+  "8a": "7a",
+  "8b": "7b",
+  "8c": "7c",
+  "8d": "7d",
+  "8e": "7e"
+ },
+ "cut_to_extended": {
+  "5": [
+   "b",
+   "d",
+   "f"
+  ],
+  "6": [
+   "c",
+   "e",
+   "f"
+  ]
+ }
+}

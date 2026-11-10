@@ -20,3 +20,10 @@ __pycache__/
 ccle/plex*_varpep.fasta
 ccle/plex*_downpep.fasta
 SpecQuality/
+
+# Editing backups. Eight were staged for publication before this line existed.
+*.bak
+*.bak_*
+
+# macOS
+.DS_Store
