@@ -1173,7 +1173,6 @@ for _k, e in enumerate(_SI_KEEP):
     block(sdoc, [fix(_b) for _b in e[3]])
 if ORDER:
     _rh = _starts_page(para(sdoc, "References", bold=True)); bookmark(_rh, "SIREFS"); blank(sdoc)
-    para(sdoc, "The Supporting Information is numbered independently of the manuscript.", italic=True)
     blank(sdoc)
     for i, key in enumerate(ORDER, 1):
         para(sdoc, "[%d] %s" % (i, REFMOD.REFS[key]["text"])); blank(sdoc)

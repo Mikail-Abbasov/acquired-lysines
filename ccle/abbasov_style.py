@@ -1496,13 +1496,41 @@ def final_sheet(fig, stem, trim=None, ref="fig1.pdf"):
     dpi = 300.0 * 12.0 / _ref
     out = "%s_final.png" % stem
     fig.savefig(out, dpi=dpi, **({"bbox_inches": trim} if trim is not None else {}))
-    im = _PI.open(out)
+    im = _trim_foot(_PI.open(out))
     im.save(out, dpi=(300, 300))
     print("final: %s at the shared %.2f dpi raster -> %d x %d px declared 300 dpi "
           "(%.3f x %.3f in), body type %.3f pt"
           % (out, dpi, im.size[0], im.size[1], im.size[0] / 300.0, im.size[1] / 300.0,
              8.860 * dpi / 300.0))
     return out
+
+
+def _trim_foot(im, floor=20):
+    """A SHEET'S BOTTOM MARGIN EQUALS ITS TOP MARGIN, and no more.
+
+    The seven main figures finalize through a tight bounding box and come out with 18 to 19 px
+    of white above the art and 19 to 24 below it. The ten supplementary sheets do not, because
+    they share one canvas width, and they came out carrying 2.6 to 32.6 per cent of their
+    height as white at the foot. Figure S7 was a third blank. Cropping the FOOT only is what
+    keeps the shared width and the shared raster intact; a tight box would trim the sides too
+    and give every sheet a width of its own.
+
+    Nothing is cropped unless the excess is worth it, so a sheet that is already tight, which
+    is every main figure, comes back byte for byte unchanged.
+    """
+    import numpy as _np
+    a = _np.asarray(im.convert("L"))
+    h = a.shape[0]
+    rows = _np.nonzero((a < 245).sum(axis=1))[0]
+    if not len(rows):
+        return im
+    top, last = int(rows[0]), int(rows[-1])
+    keep = min(h, last + 1 + top)                 # the foot gets exactly the head's white
+    if h - keep < max(floor, 0.01 * h):
+        return im
+    print("   trim: %d px of white off the foot, %d -> %d px, bottom margin now %d to match the top"
+          % (h - keep, h, keep, top))
+    return im.crop((0, 0, im.size[0], keep))
 
 
 def save(fig, stem):
