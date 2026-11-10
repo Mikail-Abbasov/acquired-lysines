@@ -479,7 +479,34 @@ US = [("labelling","labeling"),("Labelling","Labeling"),("labelled","labeled"),
       # alone on purpose, since it is part of COSMIC's own name.
       ("catalogued","cataloged"),("catalogue","catalog"),("neighbour","neighbor"),
       ("realised","realized"),("generalised","generalized"),("centre","center"),
-      ("oesophagus","esophagus"),("analysed","analyzed"),("summarised","summarized")]
+      ("oesophagus","esophagus"),("analysed","analyzed"),("summarised","summarized"),
+      # Added 10 Nov. The SI shipped "Coloured", "Standardised" and two "characterised"
+      # past a pass that reported itself clean, because every pair here is matched case
+      # SENSITIVELY and only a handful carried a capitalised twin. The -isation forms come
+      # first in each family: replacing "characterise" first would leave "characterisation"
+      # untouched, since that word does not contain it.
+      ("characterisation","characterization"),("Characterisation","Characterization"),
+      ("characterised","characterized"),("Characterised","Characterized"),
+      ("characterise","characterize"),("Characterise","Characterize"),
+      ("coloured","colored"),("Coloured","Colored"),("colours","colors"),("Colours","Colors"),
+      ("colour","color"),("Colour","Color"),
+      ("optimised","optimized"),("Optimised","Optimized"),("organised","organized"),
+      ("utilised","utilized"),("prioritised","prioritized"),("minimised","minimized"),
+      ("maximised","maximized"),("emphasised","emphasized"),("hypothesised","hypothesized"),
+      ("parameterised","parameterized"),("visualised","visualized"),("penalised","penalized"),
+      ("randomised","randomized"),("initialised","initialized"),("stabilised","stabilized"),
+      ("categorised","categorized"),("specialised","specialized"),("finalised","finalized"),
+      ("favoured","favored"),("favour","favor"),("harboured","harbored"),("harbour","harbor"),
+      ("metres","meters"),("metre","meter"),("litres","liters"),("litre","liter"),
+      ("sulphate","sulfate"),("sulphur","sulfur"),("programme","program"),
+      # Capitalised twins for the pairs that already carried only a lower-case form.
+      ("Standardised","Standardized"),("Summarised","Summarized"),("Normalised","Normalized"),
+      ("Analysed","Analyzed"),("Recognised","Recognized"),("Localised","Localized"),
+      ("Realised","Realized"),("Generalised","Generalized"),("Synthesised","Synthesized"),
+      ("Modelled","Modeled"),("Modelling","Modeling"),("Neighbour","Neighbor"),
+      ("Centre","Center"),("Centred","Centered"),("Artefact","Artifact"),("Fibre","Fiber"),
+      ("Defence","Defense"),("Behaviour","Behavior"),("Ionised","Ionized"),
+      ("Oxidised","Oxidized"),("Tumours","Tumors")]
 US_HITS = {}
 _FIGWORD = re.compile(r"\b(figure)(s?)(?=\s+S?\d)")
 _FIGRUN  = re.compile(r"(?<=\bFigure )(S?\d{1,2}[A-Za-z]?"
@@ -953,15 +980,29 @@ for _i, f in enumerate(SI.SI_FIGS):
     # past it, which is how page 3 came out blank.
     if _i == len(SI.SI_FIGS) - 1:
         blank(sdoc)
+def _starts_page(par):
+    """EVERY LINE IN THE CONTENTS POINTS AT A PAGE OF ITS OWN.
+
+    Flowed, a contents could list two items at the same page number, which makes the page
+    number useless for the second one. The ten figures took their breaks on 10 November; this
+    is the same rule for the tables, the two section headings, the eleven notes and the
+    references. keep_with_next holds a heading to the first line of what it introduces.
+    """
+    pf = par.paragraph_format
+    pf.page_break_before = True
+    pf.keep_with_next = True
+    return par
+
+
 for t_ in getattr(SI, "SI_TABLES", []):
-    _tp = para(sdoc, fix("Table %s. %s" % (t_["no"], t_["title"])), bold=True)
+    _tp = _starts_page(para(sdoc, fix("Table %s. %s" % (t_["no"], t_["title"])), bold=True))
     bookmark(_tp, "SITAB_%s" % t_["no"]); blank(sdoc)
     table(sdoc, [t_["head"]] + [tuple(cite(c) for c in r) for r in t_["rows"]])
     blank(sdoc)
     block(sdoc, [fix(_b) for _b in t_["foot"]])
 
 if ARITH_ROWS:
-    _t2 = para(sdoc, "Table S2. Panel-level values for the main figures.", bold=True)
+    _t2 = _starts_page(para(sdoc, "Table S2. Panel-level values for the main figures.", bold=True))
     bookmark(_t2, "SITAB_S2"); blank(sdoc)
     para(sdoc, "Every value plotted in a main figure panel, moved here so that each main legend "
                "states what is shown, the test, the unit, the replicate structure and the "
@@ -970,7 +1011,7 @@ if ARITH_ROWS:
     table(sdoc, [("Figure", "Panel", "Values")] + [tuple(cite(c) for c in r) for r in ARITH_ROWS])
     blank(sdoc)
 
-_ext = para(sdoc, "Extended Results", bold=True); bookmark(_ext, "SIEXT"); blank(sdoc)
+_ext = _starts_page(para(sdoc, "Extended Results", bold=True)); bookmark(_ext, "SIEXT"); blank(sdoc)
 para(sdoc, "Analyses that support the main-text figures and are reported here in full. Panel "
            "letters are those of the source analysis; the main-text figures carry their own "
            "sequential lettering.", italic=True)
@@ -1000,7 +1041,7 @@ if getattr(SP, "EXTENDED_BACK", None):
          bold=True); blank(sdoc)
     block(sdoc, [fix(p) for p in SP.EXTENDED_BACK])
 
-_nh = para(sdoc, "Supplementary notes", bold=True); bookmark(_nh, "SINOTES"); blank(sdoc)
+_nh = _starts_page(para(sdoc, "Supplementary notes", bold=True)); bookmark(_nh, "SINOTES"); blank(sdoc)
 # ONLY THE NOTES THAT ARE SUBMITTED, renumbered sequentially, with no status label and no
 # account of which were cut. The audit that decided them is a working record and belongs in
 # the deposit, not in the document. NOTE_MAP, built above, keeps the three citations to a
@@ -1008,11 +1049,11 @@ _nh = para(sdoc, "Supplementary notes", bold=True); bookmark(_nh, "SINOTES"); bl
 if DRAFT:
     para(sdoc, SI.SI_NOTES_HEADER, italic=True); blank(sdoc)
 for e in _SI_KEEP:
-    _np = para(sdoc, fix("%s.  %s" % (NOTE_MAP[e[0]], e[2])), bold=True)
+    _np = _starts_page(para(sdoc, fix("%s.  %s" % (NOTE_MAP[e[0]], e[2])), bold=True))
     bookmark(_np, "SINOTE_%s" % NOTE_MAP[e[0]]); blank(sdoc)
     block(sdoc, [fix(_b) for _b in e[3]])
 if ORDER:
-    _rh = para(sdoc, "References", bold=True); bookmark(_rh, "SIREFS"); blank(sdoc)
+    _rh = _starts_page(para(sdoc, "References", bold=True)); bookmark(_rh, "SIREFS"); blank(sdoc)
     para(sdoc, "The Supporting Information is numbered independently of the manuscript.", italic=True)
     blank(sdoc)
     for i, key in enumerate(ORDER, 1):
@@ -1123,14 +1164,19 @@ if os.path.isdir(_led):
           % (len(ARITH_AUDIT), sum(1 for a in ARITH_AUDIT if a["mid_list"])))
 print("  panels: %d kept, %d moved to Extended Results" % (len(PANEL_MAP), len(CUT_OUT)))
 
-_BRIT = ("artefact", "tumour", "labelled", "behaviour", "catalogue", "ionised", "modelled",
-         "neighbour", "normalised", "standardised", "centre", "realised", "oesophagus",
-         "generalised", "analysed", "localised", "defence", "fibre", "recognised")
+# DERIVED from the pairs above, so a word the fixer knows is a word the checker looks for.
+# Hand-maintained, the two lists drifted and the SI shipped three British forms under a
+# "clean" line. Read case-insensitively, which is the other half of that failure.
+_BRIT = tuple(sorted({_a.lower() for _a, _b in US}))
+_BRIT_EXEMPT = ("Catalogue",)          # COSMIC's own name
 _MANGLED = ("catalogd", "modeld", "labeld", "normalizd", "standardizd", "realizd")
 for _label, _path in (("manuscript", m_out), ("SI", s_out)):
     import docx as _dx
     _t = "\n".join(p.text for p in _dx.Document(_path).paragraphs)
-    _b = sorted({w for w in _BRIT if re.search(r"\b%s" % w, _t)})
+    _tx = _t
+    for _ex in _BRIT_EXEMPT:
+        _tx = _tx.replace(_ex, "")
+    _b = sorted({w for w in _BRIT if re.search(r"\b%s" % w, _tx, re.I)})
     _m = sorted({w for w in _MANGLED if w.strip() in _t})
     if _b or _m:
         print("  !! %s: British forms left %s; mangled by the spelling pass %s"
