@@ -322,6 +322,31 @@ def cite(text):
     # a space, which set the numeral a word-space away from its own word.
     return re.sub(r"[ \t]+(?=\u00ab)", "", text)
 
+def cite_table(text):
+    """A citation inside a table, as ordinary text rather than a superscript.
+
+    A superscript numeral works in running prose because the word it cites is beside it. In
+    a table cell it reads as an exponent on whatever ends the sentence, and in a column that
+    holds nothing but the citation it reads as data. The bracketed form matches how the
+    reference list prints. The space cite() takes out before the marker goes back in, since
+    the numeral is no longer riding on the word.
+    """
+    t = re.sub(r"\u00ab(.+?)\u00bb", lambda m: " [%s]" % m.group(1), cite(text))
+    # ONE BRACKET, NOT SIX. Where the source writes six separate citations in a row, the
+    # superscript form ran them together as 2,3,4,5,6,7 and the bracketed form would have
+    # printed "[2], [3], [4], [5], [6], [7]". Adjacent groups merge and the numbers collapse
+    # the same way _fmt collapses them, so that cell reads [2-7].
+    def _merge(m):
+        ns = set()
+        for a, b in re.findall(r"(\d+)\s*[\u2013-]\s*(\d+)", m.group(0)):
+            ns.update(range(int(a), int(b) + 1))
+        for one in re.findall(r"(?<![\d\u2013-])(\d+)(?![\d\s]*[\u2013-]\s*\d)", m.group(0)):
+            ns.add(int(one))
+        return _fmt(sorted(ns)).replace("\u00ab", "[").replace("\u00bb", "]")
+    t = re.sub(r"\[[\d,\s\u2013-]+\](?:\s*,?\s*\[[\d,\s\u2013-]+\])+", _merge, t)
+    return re.sub(r"\s{2,}", " ", t).strip()
+
+
 # ---------------------------------------------------------------- shrink figures for the draft
 def _embed_copy(src, dst, cap=2000):
     """The copy that goes into the document.
@@ -506,8 +531,86 @@ US = [("labelling","labeling"),("Labelling","Labeling"),("labelled","labeled"),
       ("Modelled","Modeled"),("Modelling","Modeling"),("Neighbour","Neighbor"),
       ("Centre","Center"),("Centred","Centered"),("Artefact","Artifact"),("Fibre","Fiber"),
       ("Defence","Defense"),("Behaviour","Behavior"),("Ionised","Ionized"),
-      ("Oxidised","Oxidized"),("Tumours","Tumors")]
+      ("Oxidised","Oxidized"),("Tumours","Tumors"),
+      # Found in a Table S1 cell, which the checker could not see. -ed and -ing forms first:
+      # a bare "analyse" would turn the correct plural noun "analyses" into "analyzes", which
+      # is why that one is deliberately absent and only "analysed" is listed above.
+      ("hydrolysing","hydrolyzing"),("hydrolysed","hydrolyzed"),("hydrolyse","hydrolyze"),
+      ("Hydrolysed","Hydrolyzed"),("catalysing","catalyzing"),("catalysed","catalyzed"),
+      ("paralysed","paralyzed"),("dialysed","dialyzed"),("polymerised","polymerized"),
+      ("isomerised","isomerized"),("neutralised","neutralized"),("immunised","immunized"),
+      ("licences","licenses"),("licence","license"),("Licence","License")]
 US_HITS = {}
+
+# A LIST WAS THE WRONG SHAPE FOR THIS. Three rounds of adding words caught "Coloured", then
+# "hydrolysed", then "metastasising" and "signalling", each after the document had already
+# been declared clean. The -ise, -isation and -yse families are a RULE, so they are handled
+# as one, with the words US English genuinely spells -ise named as exceptions. The -our, -re
+# and doubled-l families are not a rule (US keeps "controlled" and "glamour"), so those stay
+# as lists. Case is carried over from whatever was written.
+_US_KEEP_ISE = set("""advertise advise apprise arise chastise circumcise comprise compromise
+demise despise devise disguise excise exercise franchise improvise incise merchandise premise
+promise raise revise rise supervise surmise surprise televise noise poise cruise bruise praise
+appraise braise concise precise paradise anise guise enterprise treatise expertise mortise
+valise tortoise porpoise turquoise malaise mayonnaise chaise liaise disenfranchise reprise
+enfranchise excercise""".split())
+_US_ISE = re.compile(r"\b([A-Za-z]{3,})is(e|es|ed|ing|ation|ations|able|er|ers)\b")
+# NOT the -yses form. "analyses" is the plural of a noun far more often than it is a verb in
+# this paper, and "analyzes" would be wrong for every one of them.
+_US_YSE = re.compile(r"\b([A-Za-z]*l)ys(e|ed|ing)\b")
+_US_LL = [("signalling","signaling"),("signalled","signaled"),("travelling","traveling"),
+          ("travelled","traveled"),("cancelling","canceling"),("cancelled","canceled"),
+          ("levelling","leveling"),("levelled","leveled"),("totalling","totaling"),
+          ("totalled","totaled"),("panelling","paneling"),("panelled","paneled"),
+          ("channelling","channeling"),("channelled","channeled"),
+          ("counselling","counseling"),("counselled","counseled"),("fuelled","fueled"),
+          ("marvelled","marveled"),("dialled","dialed"),("equalled","equaled")]
+_US_MISC = [("colour","color"),("behaviour","behavior"),("favour","favor"),
+            ("harbour","harbor"),("neighbour","neighbor"),("vapour","vapor"),
+            ("rigour","rigor"),("vigour","vigor"),("odour","odor"),("humour","humor"),
+            ("labour","labor"),("endeavour","endeavor"),("armour","armor"),
+            ("flavour","flavor"),("honour","honor"),("valour","valor"),
+            ("splendour","splendor"),("candour","candor"),("clamour","clamor"),
+            ("fibre","fiber"),("metre","meter"),("litre","liter"),("theatre","theater"),
+            ("spectre","specter"),("calibre","caliber"),("lustre","luster"),
+            ("sombre","somber"),("meagre","meager"),("sabre","saber"),("titre","titer"),
+            ("manoeuvre","maneuver"),("sulphur","sulfur"),("sulphate","sulfate"),
+            ("sulphide","sulfide"),("aluminium","aluminum"),("programme","program"),
+            ("oedema","edema"),("anaemia","anemia"),("haemoglobin","hemoglobin"),
+            ("paediatric","pediatric"),("foetal","fetal"),("gynaecolog","gynecolog"),
+            ("leukaemia","leukemia"),("oestrogen","estrogen"),("caesium","cesium")]
+
+
+def _carry_case(src, repl):
+    return repl[:1].upper() + repl[1:] if src[:1].isupper() else repl
+
+
+def us_rules(text):
+    """The rule-shaped half of the US spelling pass, run after the literal pairs."""
+    def _ise(m):
+        w = m.group(0)
+        # Test the BASE, not the inflection: the exception list holds "comprise", and what
+        # the text carries is "comprises" and "comprising".
+        if (w.lower() in _US_KEEP_ISE or (m.group(1) + "ise").lower() in _US_KEEP_ISE
+                or w.lower().endswith("wise")):
+            return w
+        out = m.group(1) + "iz" + m.group(2)
+        US_HITS[w.lower()] = US_HITS.get(w.lower(), 0) + 1
+        return _carry_case(w, out)
+
+    def _yse(m):
+        w = m.group(0)
+        US_HITS[w.lower()] = US_HITS.get(w.lower(), 0) + 1
+        return _carry_case(w, m.group(1) + "yz" + m.group(2))
+
+    text = _US_ISE.sub(_ise, text)
+    text = _US_YSE.sub(_yse, text)
+    for a, b in _US_LL + _US_MISC:
+        for form, repl in ((a, b), (a[:1].upper() + a[1:], b[:1].upper() + b[1:])):
+            if form in text:
+                US_HITS[a] = US_HITS.get(a, 0) + text.count(form)
+                text = text.replace(form, repl)
+    return text
 _FIGWORD = re.compile(r"\b(figure)(s?)(?=\s+S?\d)")
 _FIGRUN  = re.compile(r"(?<=\bFigure )(S?\d{1,2}[A-Za-z]?"
                       r"(?:\s*(?:,|and|or|to|through|[\u2013\u2014-])\s*S?\d{1,2}[A-Za-z]?)*)")
@@ -536,7 +639,7 @@ def us(text):
         if a in text:
             US_HITS[a] = US_HITS.get(a, 0) + text.count(a)
             text = text.replace(a, b)
-    return figcase(text)
+    return figcase(us_rules(text))
 
 
 # ---------------------------------------------------------------- legend arithmetic
@@ -991,13 +1094,23 @@ def _starts_page(par):
     pf = par.paragraph_format
     pf.page_break_before = True
     pf.keep_with_next = True
+    # AND TAKE OFF THE SEPARATOR THAT CAME BEFORE IT. block() closes with a blank line, and
+    # when the text above ends near the foot of a page that blank line flows onto the next
+    # page by itself; the break then pushes this paragraph past it and the page in between
+    # comes out empty. It happened twice, once to figure S2 and once to note N2. A blank
+    # line before a hard break is invisible anyway, so it goes.
+    _prev = par._p.getprevious()
+    while _prev is not None and _prev.tag.endswith("}p") and not _prev.findall(".//" + qn("w:t")):
+        _gone, _prev = _prev, _prev.getprevious()
+        _gone.getparent().remove(_gone)
     return par
 
 
 for t_ in getattr(SI, "SI_TABLES", []):
     _tp = _starts_page(para(sdoc, fix("Table %s. %s" % (t_["no"], t_["title"])), bold=True))
     bookmark(_tp, "SITAB_%s" % t_["no"]); blank(sdoc)
-    table(sdoc, [t_["head"]] + [tuple(cite(c) for c in r) for r in t_["rows"]])
+    _rows = [t_["head"]] + [tuple(cite_table(c) for c in r) for r in t_["rows"]]
+    fit_columns(table(sdoc, _rows), _rows)
     blank(sdoc)
     block(sdoc, [fix(_b) for _b in t_["foot"]])
 
@@ -1008,7 +1121,8 @@ if ARITH_ROWS:
                "states what is shown, the test, the unit, the replicate structure and the "
                "definition of every measure and error bar without also restating the panel. "
                "Nothing that bounds a claim was moved.", italic=True); blank(sdoc)
-    table(sdoc, [("Figure", "Panel", "Values")] + [tuple(cite(c) for c in r) for r in ARITH_ROWS])
+    _rows2 = [("Figure", "Panel", "Values")] + [tuple(cite(c) for c in r) for r in ARITH_ROWS]
+    fit_columns(table(sdoc, _rows2), _rows2)
     blank(sdoc)
 
 _ext = _starts_page(para(sdoc, "Extended Results", bold=True)); bookmark(_ext, "SIEXT"); blank(sdoc)
@@ -1048,8 +1162,13 @@ _nh = _starts_page(para(sdoc, "Supplementary notes", bold=True)); bookmark(_nh, 
 # note pointing at the right one after the renumber.
 if DRAFT:
     para(sdoc, SI.SI_NOTES_HEADER, italic=True); blank(sdoc)
-for e in _SI_KEEP:
-    _np = _starts_page(para(sdoc, fix("%s.  %s" % (NOTE_MAP[e[0]], e[2])), bold=True))
+for _k, e in enumerate(_SI_KEEP):
+    # N1 carries on under the heading. "Supplementary notes" has no text of its own, so
+    # breaking before N1 as well left a page holding two words. N2 onward still break, so
+    # every other line of the contents keeps a page to itself.
+    _np = para(sdoc, fix("%s.  %s" % (NOTE_MAP[e[0]], e[2])), bold=True)
+    if _k:
+        _starts_page(_np)
     bookmark(_np, "SINOTE_%s" % NOTE_MAP[e[0]]); blank(sdoc)
     block(sdoc, [fix(_b) for _b in e[3]])
 if ORDER:
@@ -1172,7 +1291,13 @@ _BRIT_EXEMPT = ("Catalogue",)          # COSMIC's own name
 _MANGLED = ("catalogd", "modeld", "labeld", "normalizd", "standardizd", "realizd")
 for _label, _path in (("manuscript", m_out), ("SI", s_out)):
     import docx as _dx
-    _t = "\n".join(p.text for p in _dx.Document(_path).paragraphs)
+    _doc = _dx.Document(_path)
+    _tp = [p.text for p in _doc.paragraphs]
+    for _tb in _doc.tables:
+        for _r in _tb.rows:
+            for _c in _r.cells:
+                _tp.append(_c.text)
+    _t = "\n".join(_tp)
     _tx = _t
     for _ex in _BRIT_EXEMPT:
         _tx = _tx.replace(_ex, "")

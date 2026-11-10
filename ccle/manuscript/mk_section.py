@@ -193,6 +193,7 @@ def table(doc, rows, header=True):
         for ci, val in enumerate(row):
             cell = cells[ci]; cell.text = ""
             p = cell.paragraphs[0]
+            p.alignment = WD_ALIGN_PARAGRAPH.LEFT
             pf = p.paragraph_format
             pf.space_before = Pt(0); pf.space_after = Pt(0); pf.line_spacing = 1.0
             for chunk, b, i, sup in _tokens(str(val)):
@@ -205,6 +206,106 @@ def table(doc, rows, header=True):
                         r.font.subscript = True
                     r.font.name = FONT; r.font.size = SIZE; _rfonts(r)
     return t
+
+_ARIAL = [None]
+
+
+def _arial(pt):
+    """A PIL font at 4x, so a width measured from it is good to a quarter point."""
+    from PIL import ImageFont
+    import matplotlib.font_manager as fm
+    if _ARIAL[0] is None:
+        try:
+            _ARIAL[0] = fm.findfont(fm.FontProperties(family="Arial"), fallback_to_default=False)
+        except Exception:
+            _ARIAL[0] = fm.findfont(fm.FontProperties(family="DejaVu Sans"))
+    return ImageFont.truetype(_ARIAL[0], int(round(pt * 4)))
+
+
+def _w_pt(text, pt=11.0):
+    """Width of a string in points, in the face the document actually prints."""
+    if not text:
+        return 0.0
+    try:
+        f = _arial(pt)
+        return f.getlength(text) / 4.0
+    except Exception:
+        return len(text) * pt * 0.5
+
+
+def fit_columns(t, rows, total_in=6.5, header=True):
+    """Give each column a width that follows how much text it carries.
+
+    Equal sixths put the one column holding four fifths of the words on the same width as a
+    column of two-digit numbers, so that column wrapped to a ribbon and the table ran down
+    the page. Two quantities set a width here. The floor is the longest single WORD in the
+    column, because a word narrower than its column cannot be broken and would stick out.
+    The share of what is left over goes by the SQUARE ROOT of the column's mean cell length:
+    straight proportion would hand the text column 95% and leave the rest unreadable, and
+    the square root keeps the order right while damping the extremes.
+    """
+    PAD = 11.5                      # Word's default cell margins, 0.08 in each side, in points
+    BOLD = 1.08                     # the header row prints bold, which is wider than the face
+    SAFE = 2.0                      # points of slack, so a word never breaks by a hair
+    n = len(rows[0])
+    body = rows[1:] if header and len(rows) > 1 else rows
+    floor, mean = [], []
+    for c in range(n):
+        col = [str(r[c]) for r in rows if c < len(r)]
+        words = [(w, 0) for w in re.split(r"\s+", _plain(str(rows[0][c]))) if w] if header else []
+        words += [(w, 1) for cell in col[1:] for w in re.split(r"\s+", _plain(cell)) if w]
+        floor.append(max([_w_pt(w) * (1.0 if b else BOLD) for w, b in words] or [0.0])
+                     + PAD + SAFE)
+        vals = [_w_pt(_plain(str(r[c]))) for r in body if c < len(r)]
+        mean.append(sum(vals) / len(vals) if vals else 0.0)
+    total = total_in * 72.0
+    if sum(floor) > total:                      # nothing fits; fall back to proportional floors
+        k = total / sum(floor)
+        widths = [f * k for f in floor]
+    else:
+        share = [m ** 0.5 for m in mean]
+        tot_s = sum(share) or 1.0
+        left = total - sum(floor)
+        widths = [floor[i] + left * share[i] / tot_s for i in range(n)]
+    _set_widths(t, [w / 72.0 for w in widths])
+    return widths
+
+
+_TAGRX = re.compile(r"\*\*|\*|[«»]")
+
+
+def _plain(s):
+    """The characters that actually print, with the inline markup taken off."""
+    return _TAGRX.sub("", s)
+
+
+def _set_widths(t, inches):
+    """Fixed layout, an explicit grid, and a width on every cell.
+
+    Word recomputes the grid from the cells unless the layout is fixed, and it ignores a
+    grid that no cell agrees with, so all three have to be written or the table springs
+    back to equal columns the first time it is opened.
+    """
+    from docx.oxml import OxmlElement
+    tbl = t._tbl
+    t.autofit = False
+    tblPr = tbl.tblPr
+    lay = tblPr.find(qn("w:tblLayout"))
+    if lay is None:
+        lay = OxmlElement("w:tblLayout"); tblPr.append(lay)
+    lay.set(qn("w:type"), "fixed")
+    tw = tblPr.find(qn("w:tblW"))
+    if tw is None:
+        tw = OxmlElement("w:tblW"); tblPr.append(tw)
+    tw.set(qn("w:w"), str(int(round(sum(inches) * 1440)))); tw.set(qn("w:type"), "dxa")
+    grid = tbl.find(qn("w:tblGrid"))
+    if grid is not None:
+        for gc, w in zip(grid.findall(qn("w:gridCol")), inches):
+            gc.set(qn("w:w"), str(int(round(w * 1440))))
+    for row in t.rows:
+        for cell, w in zip(row.cells, inches):
+            cell.width = Inches(w)
+
 
 def figure(doc, path, width_in=6.5, align=None):
     """LEFT by default, not centred.
