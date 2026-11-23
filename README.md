@@ -24,18 +24,23 @@ needs those downloads, and for the proteomic re-search it needs the search engin
 Twenty intermediates could not be traced to a producing script by static analysis, because the
 filename is assembled at run time or written through a config constant. They are labelled
 `deposited intermediate` in `external_inputs.json`. They are this project's own outputs rather
-than public downloads, they total 343 MB, and they are not redistributed. Tier 1 covers every
-figure that reads one; tier 2 does not, and the deposit says so rather than implying otherwise.
+than public downloads, and they total 343 MB. Fourteen of them (39 MB) are deposited in `data/`,
+together with the acquired-lysine site catalog. The other six (304 MB) are not redistributed. Tier 1
+covers every figure that reads one; tier 2 does not cover the steps that read one of the six, and
+the deposit says so rather than implying otherwise.
 
 ## What this repository holds
 
-The code, `panel_data/` and `external_inputs.json`. It does not carry the 343 MB of deposited
-intermediates or the 120 MB of variant and decoy search databases; `.gitignore` says so, and the
-table of gaps below says what that costs.
+The code, `panel_data/`, `data/` and `external_inputs.json`. `data/` holds the site-level tables:
+the catalog of 295,411 acquired-lysine sites and fourteen per-site tables behind the figures, each
+described in `data/README.md`. The repository does not carry the six larger intermediates (304 MB)
+or the 120 MB of variant and decoy search databases; the table of gaps below says what that costs.
 
 Tier 1 therefore runs from a clone of this repository with no download at all. Tier 2 runs for
-every step whose inputs are public and named in `external_inputs.json`, and not for the steps
-that read an undeposited intermediate.
+every step whose inputs are public and named in `external_inputs.json` or deposited in `data/`,
+and not for the steps that read one of the six undeposited intermediates. The scripts do not
+search `data/`, so before running a tier 2 step that reads one of the fourteen tables, copy it to
+the path `external_inputs.json` gives for it.
 
 ## Layout
 
@@ -44,6 +49,7 @@ ccle/                 the proteomic re-search, Figures 1-3 and S1-S4, S10
 ccle/manuscript/      the manuscript build: prose, captions, references, assembly
 ligand_rebuild/       the chemoproteomic ligandability analysis, Figures 4-8 and S5-S9
 panel_data/           one CSV per panel + one JSON ledger per figure  (tier 1)
+data/                 the acquired-lysine site catalog and fourteen site-level tables, with their own README
 repo/                 the manifest, the release builder, and the checks
 external_inputs.json  every input at the edge, with its source and version
 ```
@@ -94,8 +100,9 @@ Nothing DIFFERS. Every gap is a named input that is public but not redistributed
 | S4 | `plex*_varpair.txt` | 319 MB of entrapment pairings |
 
 One class of gap is different in kind. The twenty `deposited intermediate` entries in
-`external_inputs.json` are this project's own outputs, not public downloads, so where a step reads
-one there is no download that closes the gap and tier 2 cannot be run from this deposit at all.
+`external_inputs.json` are this project's own outputs, not public downloads. Fourteen are deposited
+in `data/`. For the other six, listed in `data/README.md`, there is no download that closes the gap,
+and a tier 2 step that reads one cannot be run from this deposit.
 
 **Tier 1 covers all of them**: every panel above can be redrawn from `panel_data/` with no
 download at all. The gaps are only in re-deriving that data from scratch.
@@ -162,9 +169,10 @@ in `abbasov_style.py`; the deposit helper is `figure_data.py`.
 
 ## Licence
 
-Code: MIT (`LICENSE`). Data: CC BY 4.0 (`LICENSE-DATA`). Several inputs carry upstream terms that
-this licence does not supersede; COSMIC in particular restricts commercial use. See
-`LICENSE-DATA`.
+Code: MIT (`LICENSE`). Data: CC BY 4.0 (`LICENSE-DATA`), covering `panel_data/` and `data/`. Several
+inputs carry upstream terms that this licence does not supersede; COSMIC in particular restricts
+commercial use, and the site catalog in `data/` includes COSMIC-listed sites. See `LICENSE-DATA`
+and `data/README.md`.
 
 ## Citation
 
